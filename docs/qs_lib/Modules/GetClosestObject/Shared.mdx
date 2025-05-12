@@ -1,0 +1,60 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getClosestObject
+
+Retrieves the handle and coordinates of the nearest object to a specified position.
+
+```lua
+lib.getClosestObject(position, maxRange)
+```
+
+- position: `vector3`
+  - The coordinates to search from.
+- maxRange?: `number`
+  - The maximum search distance.
+  - Default: `2.0`
+
+**Returns:**
+
+- object?: `number`
+- coordinates?: `vector3`
+
+## Examples
+
+### Example 1: Finding a Nearby Pickup Item
+
+Searches for the closest pickup item within 3.0 units of the player's position and collects it if found.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local item, itemCoords = lib.getClosestObject(playerPos, 3.0)
+
+if item then
+    CollectItem(item)
+    print("Collected item at coordinates:", itemCoords.x, itemCoords.y, itemCoords.z)
+else
+    print("No pickup item found nearby.")
+end
+```
+
+### Example 2: Locating a Nearby NPC
+
+Finds the closest NPC within the default range (2.0 units) from a specific location and interacts with it if present.
+
+```lua
+local searchPos = vector3(100.0, 200.0, 30.0)
+local npc, npcCoords = lib.getClosestObject(searchPos)
+
+if npc then
+    InteractWithNPC(npc)
+    print("Found NPC at coordinates:", npcCoords.x, npcCoords.y, npcCoords.z)
+else
+    print("No NPC found within range.")
+end
+```

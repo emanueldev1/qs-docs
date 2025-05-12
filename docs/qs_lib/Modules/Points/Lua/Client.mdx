@@ -1,0 +1,216 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for distance checking with qs_lib.
+---
+
+# Client
+
+## Points
+
+A streamlined system for proximity detection, providing callbacks for entering, exiting, and remaining within range of specified coordinates.
+
+## CPoint Class
+
+A structure defining a point with the following attributes.
+
+- id: `number`
+- coords: `vector3`
+- distance: `number`
+  - The radius within which the player is considered "inside" the point.
+- currentDistance: `number`
+  - The player's current distance from the point's center.
+- isClosest?: `boolean`
+- remove: `function()`
+  - Removes the point from the points registry.
+- onEnter?: `function(self: CPoint)`
+  - Executes when the player enters the point's range.
+- onExit?: `function(self: CPoint)`
+  - Executes when the player exits the point's range.
+- nearby?: `function(self: CPoint)`
+  - Executes each frame while the player is within the point's range.
+
+## lib.points.new
+
+```lua
+lib.points.new(settings)
+```
+
+- settings: `table`
+  - coords: `vector3`
+  - distance: `number`
+
+**Returns:**
+
+- point: `CPoint`
+
+### Examples
+
+#### Example 1: Notification Trigger Near Marker
+
+Creates a point that displays a marker and triggers a notification when the player is nearby and presses a key.
+
+```lua
+local point = lib.points.new({
+    coords = GetEntityCoords(cache.ped),
+    distance = 5,
+    dunak = 'nerd'
+})
+
+function point:onEnter()
+    print('entered range of point', self.id)
+end
+
+function point:onExit()
+    print('left range of point', self.id)
+end
+
+function point:nearby()
+    DrawMarker(2, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 1.0, 1.0, 200, 20, 20, 50, false, true, 2, false, nil, nil, false)
+
+    if self.currentDistance < 1 and IsControlJustReleased(0, 38) then
+        print('inside marker', self.id, 'dunak is a '.. self.dunak)
+    end
+end
+```
+
+#### Example 2: Dynamic Teleportation Point
+
+Sets up a point that teleports the player to a new location when they press a key while nearby.
+
+```lua
+local teleportPoint = lib.points.new({
+    coords = vec3(300.0, 400.0, 25.0),
+    distance = 10,
+    target = vec3(500.0, 600.0, 30.0)
+})
+
+function teleportPoint:onEnter()
+    print("Approaching teleport point:", self.id)
+end
+
+function teleportPoint:onExit()
+    print("Left teleport point:", self.id)
+end
+
+function teleportPoint:nearby()
+    DrawMarker(27, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 1.0, 0, 191, 255, 150, false, true, 2, false, nil, nil, false)
+
+    if self.currentDistance < 2 and IsControlJustReleased(0, 47) then -- G key
+        SetEntityCoords(PlayerPedId(), self.target.x, self.target.y, self.target.z)
+        print("Teleported to new location!")
+    end
+end
+```
+
+## lib.points.getAllPoints
+
+Retrieves a table of all points created in the resource.
+
+```lua
+lib.points.getAllPoints()
+```
+
+**Returns:**
+
+- points: `CPoint[]`
+
+### Examples
+
+#### Example 1: Listing All Points
+
+Prints the coordinates of all points in the resource.
+
+```lua
+local allPoints = lib.points.getAllPoints()
+for i, point in ipairs(allPoints) do
+    print("Point", i, "at:", point.coords.x, point.coords.y, point.coords.z)
+end
+```
+
+#### Example 2: Removing All Points
+
+Removes all points created in the resource.
+
+```lua
+local allPoints = lib.points.getAllPoints()
+for _, point in ipairs(allPoints) do
+    point:remove()
+    print("Removed point:", point.id)
+end
+```
+
+## lib.points.getNearbyPoints
+
+Fetches an array of all points currently within range of the player.
+
+```lua
+lib.points.getNearbyPoints()
+```
+
+**Returns:**
+
+- nearbyPoints: `CPoint[]`
+
+### Examples
+
+#### Example 1: Counting Nearby Points
+
+Counts and prints the number of points within range of the player.
+
+```lua
+local nearbyPoints = lib.points.getNearbyPoints()
+print("Number of nearby points:", #nearbyPoints)
+```
+
+#### Example 2: Displaying Nearby Point Details
+
+Prints the IDs and distances of all nearby points.
+
+```lua
+local nearbyPoints = lib.points.getNearbyPoints()
+for _, point in ipairs(nearbyPoints) do
+    print("Nearby point ID:", point.id, "Distance:", point.currentDistance)
+end
+```
+
+## lib.points.getClosestPoint
+
+Obtains the data for the point closest to the player.
+
+```lua
+lib.points.getClosestPoint()
+```
+
+**Returns:**
+
+- closestPoint?: `CPoint`
+
+### Examples
+
+#### Example 1: Identifying Closest Point
+
+Prints the ID and coordinates of the closest point to the player.
+
+```lua
+local closestPoint = lib.points.getClosestPoint()
+if closestPoint then
+    print("Closest point ID:", closestPoint.id, "at:", closestPoint.coords.x, closestPoint.coords.y, closestPoint.coords.z)
+else
+    print("No points found.")
+end
+```
+
+#### Example 2: Adjusting Closest Point Distance
+
+Modifies the distance of the closest point to the player.
+
+```lua
+local closestPoint = lib.points.getClosestPoint()
+if closestPoint then
+    closestPoint.distance = 15
+    print("Updated distance for closest point ID:", closestPoint.id, "to:", closestPoint.distance)
+else
+    print("No points found to adjust.")
+end
+```

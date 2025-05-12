@@ -1,0 +1,220 @@
+---
+title: Locale
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Locale
+
+Enables servers to set a default language and load locale files from resources using this module. Locale files must use the [ISO Language Code](http://www.lingoes.net/en/translator/langcode.htm) and be stored as `./locales/langcode.json`.
+
+## Setup
+
+To set a preferred language other than English, add the following convar to your `server.cfg`, replacing `en` with the desired language code.
+
+```yaml
+setr qs:locale en
+```
+
+Create a `locales` directory and add a file for your language.
+
+```json filename="locales/en.json"
+{
+  "vehicle_theft": "vehicle theft",
+  "suspect_gender": "suspect is %s",
+  "male": "male",
+  "female": "female"
+}
+```
+
+```json filename="locales/es.json"
+{
+  "vehicle_theft": "robo de vehículo",
+  "suspect_gender": "el sospechoso es %s",
+  "male": "hombre",
+  "female": "mujer"
+}
+```
+
+```lua filename="fxmanifest.lua"
+files {
+  'locales/*.json'
+}
+```
+
+## Usage
+
+Initialize the locale module in your resource (only once).
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.locale()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { initLocale } from '@emanueldev1/qs_lib/shared';
+
+    initLocale();
+    ```
+  </TabsContent>
+</Tabs>
+
+Use the `locale` function to format strings, passing additional arguments as needed.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    locale(key, ...)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { locale } from '@emanueldev1/qs_lib/shared';
+
+    locale(key, ...);
+    ```
+  </TabsContent>
+</Tabs>
+
+- key: `string`
+- vararg?: `string` | `number`
+
+### Examples
+
+#### Example 1: Displaying a Crime Report
+
+Initializes the locale module and prints a formatted crime report every 5 seconds.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.locale()
+
+    SetInterval(function()
+        print(locale('vehicle_theft'))
+        print(locale('suspect_gender', locale('female')))
+    end, 5000)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { initLocale, locale } from '@emanueldev1/qs_lib/shared';
+
+    initLocale();
+
+    setInterval(() => {
+      console.log(locale('vehicle_theft'));
+      console.log(locale('suspect_gender', locale('female')));
+    }, 5000);
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Multilingual Greeting
+
+Sets up a greeting message using locale strings and prints it periodically.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.locale()
+
+    SetInterval(function()
+        print(locale('hello', locale('user')))
+        print(locale('welcome_message', "Player"))
+    end, 6000)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { initLocale, locale } from '@emanueldev1/qs_lib/shared';
+
+    initLocale();
+
+    setInterval(() => {
+      console.log(locale('hello', locale('user')));
+      console.log(locale('welcome_message', "Player"));
+    }, 6000);
+    ```
+  </TabsContent>
+</Tabs>
+
+## Phrases
+
+You can define a locale string that references other locales to build a phrase, avoiding multiple `locale` calls.
+
+```json
+{
+  "welcome": "welcome %s",
+  "player_name": "player %s",
+  "welcome_player": "${welcome}! ${player_name}."
+}
+```
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    print(locale('welcome_player', 'guest', 'Alex'))
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { locale } from '@emanueldev1/qs_lib/shared';
+
+    console.log(locale('welcome_player', 'guest', 'Alex'));
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.getLocale
+
+Fetches a locale string from another resource and adds it to the current dictionary.
+
+```lua
+lib.getLocale(resourceName, localeKey)
+```
+
+- resourceName: `string`
+- localeKey: `string`
+
+### Examples
+
+#### Example 1: Fetching a Welcome Message
+
+Retrieves a welcome message from another resource and prints it.
+
+```lua
+local welcomeMessage = lib.getLocale('welcome_resource', 'welcome_message')
+print("Fetched welcome message:", welcomeMessage)
+```
+
+#### Example 2: Retrieving an Error Message
+
+Fetches an error message from a shared resource for display.
+
+```lua
+local errorMessage = lib.getLocale('errors_resource', 'invalid_action')
+print("Fetched error message:", errorMessage)
+```

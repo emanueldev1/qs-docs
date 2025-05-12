@@ -1,0 +1,374 @@
+---
+title: Menu
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Menu
+
+A keyboard-navigable menu system with dedicated event handlers.
+
+## lib.registerMenu
+
+Creates and stores a menu under a specified identifier.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerMenu(menuData, callback)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerMenu(menuData, callback);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuData: `table` (`object`)
+  - id: `string`
+  - title: `string`
+  - items: `table` (`array`)
+    - label: `string`
+    - progress?: `number`
+    - colorScheme?: `string`
+    - icon?: `string`
+      - FontAwesome icon or image URL (PNG/WebP) displayed on the left; FontAwesome recommended.
+    - iconColor?: `string`
+    - iconAnimation?: `'spin'` | `'spinPulse'` | `'spinReverse'` | `'pulse'` | `'beat'` | `'fade'` | `'beatFade'` | `'bounce'` | `'shake'`
+    - choices?: `string[]` or `{ label: string, description: string }[]`
+      - Creates a side-scrollable list if provided.
+      - When using objects with a description, it appears in the menu tooltip.
+    - checked?: `boolean`
+      - If true or false, makes the button a checkbox; if `choices` is also set, it becomes a scrollable list.
+    - description?: `string`
+      - Shows a tooltip below the menu for the hovered item.
+    - defaultIndex?: `number`
+      - Sets the initial index for the list.
+    - data?: `{[string]: any}`
+      - Passes custom arguments through the button.
+      - Automatically includes `isScroll` if `choices` is set, and `isCheck` if `checked` is defined.
+    - close?: `boolean`
+      - If false, keeps the menu open after interacting with this option.
+  - position?: `'top-left'` | `'top-right'` | `'bottom-left'` | `'bottom-right'`
+    - Default: `'top-left'`
+  - disableInput?: `boolean`
+    - Default: `false`
+  - canClose?: `boolean`
+    - If false, prevents exiting the menu without selecting a button.
+  - onClose?: `function`(keyPressed?: `'Escape'` | `'Backspace'`)
+    - Executes when the menu is closed via ESC or Backspace.
+  - onSelected?: `function`(selected: `number`, secondary: `number` | `boolean`, data: `{[string]: any}`)
+    - Executes when the selected menu item changes.
+  - onSideScroll?: `function`(selected: `number`, scrollIndex: `number`, data: `{[string]: any}`)
+    - Executes when a scroll list item changes.
+  - onCheck?: `function`(selected: `number`, checked: `boolean`, data: `{[string]: any}`)
+    - Executes when a checkbox is toggled.
+- callback: `function`(selected: `number`, scrollIndex: `number`, data: `{[string]: any}`)
+  - Runs when a menu item is activated.
+
+## lib.showMenu
+
+Opens the menu with the specified identifier.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showMenu(menuId)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showMenu(menuId);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuId: `string`
+
+## lib.hideMenu
+
+Closes the currently visible menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.hideMenu(runOnClose)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.hideMenu(runOnClose);
+    ```
+  </TabsContent>
+</Tabs>
+
+- runOnClose?: `boolean`
+  - If true, triggers the menu's `onClose` function.
+
+## lib.getOpenMenu
+
+Retrieves the ID of the currently visible menu, or `nil` if none is open.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.getOpenMenu()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.getOpenMenu();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.setMenuOptions
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.setMenuOptions(menuId, items, itemIndex)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.setMenuOptions(menuId, items, itemIndex);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuId: `string`
+- items: `table` (`object` or `array`)
+- itemIndex?: `number`
+  - If specified, updates only the item at the given index.
+
+**Example:**  
+Updates the 3rd item in the specified menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.setMenuOptions('settings_menu', {label = 'Updated Option', icon = 'gear'}, 3)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.setMenuOptions('settings_menu', { label: 'Updated Option', icon: 'gear' }, 3);
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Example 1: Player Settings Menu
+
+Registers a settings menu with options for sound and graphics, accessible via a command.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Recommendation</AlertTitle>
+  <AlertDescription>
+    Avoid repeatedly registering static menus that do not depend on dynamic values.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerMenu({
+        id = 'settings_menu',
+        title = 'Player Settings',
+        position = 'bottom-right',
+        onSelected = function(selected, secondary, data)
+            print("Selected item:", selected, "Secondary:", secondary, "Data:", json.encode(data))
+        end,
+        onCheck = function(selected, checked, data)
+            print("Checkbox toggled:", selected, "Checked:", checked)
+        end,
+        onClose = function(keyPressed)
+            print("Settings menu closed")
+            if keyPressed then
+                print("Closed with key:", keyPressed)
+            end
+        end,
+        items = {
+            {label = 'Sound Volume', choices = {'Low', 'Medium', 'High'}, defaultIndex = 2},
+            {label = 'Graphics Quality', choices = {'Low', 'Medium', 'High'}, icon = 'display'},
+            {label = 'Enable Notifications', checked = true}
+        }
+    }, function(selected, scrollIndex, data)
+        print("Activated item:", selected, "Scroll Index:", scrollIndex)
+    end)
+
+    RegisterCommand('settingsmenu', function()
+        lib.showMenu('settings_menu')
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerMenu({
+        id: 'settings_menu',
+        title: 'Player Settings',
+        position: 'bottom-right',
+        onSelected: (selected, secondary, data) => {
+            console.log("Selected item:", selected, "Secondary:", secondary, "Data:", JSON.stringify(data));
+        },
+        onCheck: (selected, checked, data) => {
+            console.log("Checkbox toggled:", selected, "Checked:", checked);
+        },
+        onClose: (keyPressed) => {
+            console.log("Settings menu closed");
+            if (keyPressed) {
+                console.log("Closed with key:", keyPressed);
+            }
+        },
+        items: [
+            { label: 'Sound Volume', choices: ['Low', 'Medium', 'High'], defaultIndex: 2 },
+            { label: 'Graphics Quality', choices: ['Low', 'Medium', 'High'], icon: 'display' },
+            { label: 'Enable Notifications', checked: true }
+        ]
+    }, (selected, scrollIndex, data) => {
+        console.log("Activated item:", selected, "Scroll Index:", scrollIndex);
+    });
+
+    RegisterCommand('settingsmenu', () => {
+        lib.showMenu('settings_menu');
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+### Example 2: Shop Menu with Submenu
+
+Registers a shop menu with options to buy items, linking to a submenu for weapons, and opens it via a command.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    -- Main shop menu
+    lib.registerMenu({
+        id = 'shop_menu',
+        title = 'Shop',
+        position = 'top-left',
+        onClose = function(keyPressed)
+            print("Shop closed")
+        end,
+        items = {
+            {label = 'Buy Health Pack', icon = 'heart', data = {item = 'health_pack', price = 50}},
+            {label = 'Weapons', description = 'Browse weapons', choices = {'Pistol', 'Rifle'}, icon = 'gun'}
+        }
+    }, function(selected, scrollIndex, data)
+        print("Purchased:", data.item, "for", data.price)
+    end)
+
+    -- Submenu for weapons
+    lib.registerMenu({
+        id = 'weapons_menu',
+        title = 'Weapons Shop',
+        position = 'top-left',
+        onSideScroll = function(selected, scrollIndex, data)
+            print("Scrolled to weapon:", scrollIndex)
+        end,
+        items = {
+            {label = 'Pistol', data = {weapon = 'pistol', price = 200}},
+            {label = 'Rifle', data = {weapon = 'rifle', price = 500}}
+        }
+    }, function(selected, scrollIndex, data)
+        print("Bought weapon:", data.weapon, "for", data.price)
+    end)
+
+    RegisterCommand('shopmenu', function()
+        lib.showMenu('shop_menu')
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    // Main shop menu
+    lib.registerMenu({
+        id: 'shop_menu',
+        title: 'Shop',
+        position: 'top-left',
+        onClose: (keyPressed) => {
+            console.log("Shop closed");
+        },
+        items: [
+            { label: 'Buy Health Pack', icon: 'heart', data: { item: 'health_pack', price: 50 } },
+            { label: 'Weapons', description: 'Browse weapons', choices: ['Pistol', 'Rifle'], icon: 'gun' }
+        ]
+    }, (selected, scrollIndex, data) => {
+        console.log("Purchased:", data.item, "for", data.price);
+    });
+
+    // Submenu for weapons
+    lib.registerMenu({
+        id: 'weapons_menu',
+        title: 'Weapons Shop',
+        position: 'top-left',
+        onSideScroll: (selected, scrollIndex, data) => {
+            console.log("Scrolled to weapon:", scrollIndex);
+        },
+        items: [
+            { label: 'Pistol', data: { weapon: 'pistol', price: 200 } },
+            { label: 'Rifle', data: { weapon: 'rifle', price: 500 } }
+        ]
+    }, (selected, scrollIndex, data) => {
+        console.log("Bought weapon:", data.weapon, "for", data.price);
+    });
+
+    RegisterCommand('shopmenu', () => {
+        lib.showMenu('shop_menu');
+    });
+    ```
+  </TabsContent>
+</Tabs>

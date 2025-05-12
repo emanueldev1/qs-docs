@@ -1,0 +1,64 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getClosestPlayer
+
+Retrieves the ID, ped handle, and coordinates of the nearest player to a specified location.
+
+```lua
+lib.getClosestPlayer(position, searchRange, includeSelf)
+```
+
+- position: `vector3`
+  - The location to search from.
+- searchRange?: `number`
+  - The maximum range to search within.
+  - Default: `2.0`
+- includeSelf?: `boolean`
+  - Whether to include the local player in the search. Ignored on the server.
+  - Default: `false`
+
+**Returns:**
+
+- playerId?: `number`
+- playerPed?: `number`
+- coordinates?: `vector3`
+
+## Examples
+
+### Example 1: Finding a Nearby Player to Trade With
+
+Searches for the closest player within 4.0 units of the current player's position, excluding themselves, and initiates a trade if found.
+
+```lua
+local myPos = GetEntityCoords(PlayerPedId())
+local traderId, traderPed, traderPos = lib.getClosestPlayer(myPos, 4.0, false)
+
+if traderId then
+    StartTradeWithPlayer(traderId)
+    print("Found player to trade with at:", traderPos.x, traderPos.y, traderPos.z)
+else
+    print("No player found to trade with nearby.")
+end
+```
+
+### Example 2: Challenging a Nearby Player to a Duel
+
+Finds the closest player within the default range (2.0 units) from a specific location, including the local player, and challenges them to a duel if present.
+
+```lua
+local duelSpot = vector3(300.0, 400.0, 50.0)
+local opponentId, opponentPed, opponentPos = lib.getClosestPlayer(duelSpot, nil, true)
+
+if opponentId then
+    ChallengePlayerToDuel(opponentId)
+    print("Challenged player at:", opponentPos.x, opponentPos.y, opponentPos.z)
+else
+    print("No player found to challenge for a duel.")
+end
+```

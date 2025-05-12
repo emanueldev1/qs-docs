@@ -1,0 +1,288 @@
+---
+title: Framework Bridge (Shared)
+sidebar_position: 8
+description: Documentation for shared framework-related bridge functions with qs_lib.
+---
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Framework Bridge (Shared)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Primary Use Case: Internal Framework Access for Other Bridges</AlertTitle>
+  <AlertDescription>
+    The Framework Bridge is primarily designed for internal use by other bridges, such as the <a href="/docs/qs_lib/Bridges/player/client">Player Bridge (Client)</a> and <a href="/docs/qs_lib/Bridges/player/server">Player Bridge (Server)</a>, to provide a unified interface for framework-specific functionality. While it exposes some functions directly through <code>lib.framework</code>, most practical and commonly used framework-related features (e.g., player management, job handling) are implemented in the Player Bridge, which leverages this Framework Bridge internally to abstract framework-specific logic. If you're looking for direct framework utilities like player data access or job management, the Player Bridge is likely where you'll find the most useful functions.
+  </AlertDescription>
+</Alert>
+
+The Framework Bridge provides a unified interface to interact with the shared object of the auto-detected framework (e.g., QBCore, ESX) through `lib.framework`. This bridge simplifies cross-framework development by abstracting framework-specific logic, allowing you to write code that works seamlessly across different frameworks without needing to know which one is in use. It is available on both client and server sides and is automatically configured based on the framework detected in `lib.bridge.framework`.
+
+## Overview
+
+In FiveM, servers often use frameworks like QBCore or ESX, each with its own shared object (e.g., `QBCore` in QBCore, `ESX` in ESX). These shared objects provide access to core framework functions and data, such as player information, items, and utilities. The Framework Bridge abstracts this by directly exposing the shared object through `lib.framework`, eliminating the need to manually retrieve it. For example:
+
+- On a QBCore server, `lib.framework.PlayerData` directly accesses QBCore's `PlayerData`.
+- On an ESX server, `lib.framework.GetPlayerData()` directly calls ESX's equivalent function.
+
+This allows you to write framework-agnostic code using a single interface, making your scripts portable and reusable across different servers. Internally, other bridges like the Player Bridge use this Framework Bridge to provide higher-level, framework-agnostic functions for common tasks such as player management, job handling, and more.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Detecting the Framework</AlertTitle>
+  <AlertDescription>
+    You can determine the currently detected framework by accessing <code>lib.bridge.framework</code>. This returns the framework's identifier (e.g., "qb-core" or "es_extended").
+    ```lua title="Example: Checking Framework Name"
+    local framework = lib.bridge.framework
+    print("Detected framework:", framework)
+    ```
+  </AlertDescription>
+</Alert>
+
+## Key Features
+
+- **Framework-Agnostic Access**: Use a single interface to interact with any supported framework's shared object.
+- **Direct Shared Object Access**: The shared object is automatically loaded into <code>lib.framework</code>, so you can directly access properties like <code>lib.framework.PlayerData</code> or methods like <code>lib.framework.Functions.GetPlayer()</code>.
+- **Cross-Side Compatibility**: Works on both client and server sides, with examples provided for each.
+- **Internal Utility**: Primarily used by other bridges to abstract framework-specific logic, enabling portable and reusable code.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Logging Setup</AlertTitle>
+  <AlertDescription>
+    Many examples in this documentation use the <code>lib.print</code> library to output data. To see these logs, ensure the logging level is set to "debug" by adding the following to your <code>server.cfg</code>:
+    ```bash
+    set qs:loglevel "debug"
+    ```
+    This applies to both client and server sides.
+  </AlertDescription>
+</Alert>
+
+## Getting Player Data on Server
+
+Fetches a player's data on the server side, such as QBCore's `QBCore.Functions.GetPlayer` or ESX's `ESX.GetPlayerFromId`. This typically returns a player object with data like inventory, job, and money.
+
+### Examples
+
+#### Example 1: Fetching Player Data on Server (QBCore)
+
+Retrieves a player's data on the server side using QBCore's `Functions.GetPlayer`.
+
+```lua title="Server: Fetching QBCore Player Data"
+RegisterCommand('getplysv', function(source, args, rawCommand)
+    local playerId = tonumber(args[1]) or source
+    local player = lib.framework.Functions.GetPlayer(playerId)
+    if player then
+        lib.print.debug("Player data for ID", playerId, ":", player.PlayerData.job.name, player.PlayerData.money.cash)
+    else
+        lib.print.debug("Player with ID", playerId, "not found.")
+    end
+end, false)
+```
+
+#### Example 2: Checking Player Inventory on Server (QBCore)
+
+Fetches a player's inventory on the server side with QBCore.
+
+```lua title="Server: Checking Player Inventory (QBCore)"
+RegisterCommand('getinvsv', function(source, args, rawCommand)
+    local playerId = tonumber(args[1]) or source
+    local player = lib.framework.Functions.GetPlayer(playerId)
+    if player then
+        local inventory = player.PlayerData.items
+        for _, item in pairs(inventory) do
+            lib.print.debug("Item:", item.name, "Amount:", item.amount)
+        end
+    else
+        lib.print.debug("Player with ID", playerId, "not found.")
+    end
+end, false)
+```
+
+#### Example 3: Fetching Player Data on Server (ESX)
+
+Retrieves a player's data on the server side using ESX's `GetPlayerFromId`.
+
+```lua title="Server: Fetching ESX Player Data"
+RegisterCommand('getplyesxsv', function(source, args, rawCommand)
+    local playerId = tonumber(args[1]) or source
+    local xPlayer = lib.framework.GetPlayerFromId(playerId)
+    if xPlayer then
+        lib.print.debug("Player data for ID", playerId, ":", xPlayer.job.name, xPlayer.getMoney())
+    else
+        lib.print.debug("Player with ID", playerId, "not found.")
+    end
+end, false)
+```
+
+#### Example 4: Checking Player Loadout on Server (ESX)
+
+Fetches a player's loadout (weapons) on the server side with ESX.
+
+```lua title="Server: Checking Player Loadout (ESX)" showLineNumbers
+RegisterCommand('getloadoutsv', function(source, args, rawCommand)
+    local playerId = tonumber(args[1]) or source
+    local xPlayer = lib.framework.GetPlayerFromId(playerId)
+    if xPlayer then
+        local loadout = xPlayer.getLoadout()
+        for _, weapon in pairs(loadout) do
+            lib.print.debug("Weapon:", weapon.name, "Ammo:", weapon.ammo)
+        end
+    else
+        lib.print.debug("Player with ID", playerId, "not found.")
+    end
+end, false)
+```
+
+## lib.framework.canUseItem
+
+Checks if an item can be used, returning its associated callback function if usable. This function is primarily useful for older ESX versions (e.g., `es_extended`).
+
+<Alert variant="warning" className="mb-4">
+  <AlertTitle>Deprecation Warning</AlertTitle>
+  <AlertDescription>
+    This function is primarily useful for older ESX versions. For modern frameworks like QBCore or newer ESX versions, consider using the inventory bridge functions (e.g., <code>lib.inventory.canUseItem</code>) instead, as documented in <a href="/docs/qs_lib/Bridges/inventory/server">Inventory Bridge (Server)</a>.
+  </AlertDescription>
+</Alert>
+
+```lua
+lib.framework.canUseItem(itemName)
+```
+
+- itemName: `string`
+  - The name of the item to check (e.g., "water").
+
+**Returns:**
+
+- callback: `function` | `nil`
+  - The callback function associated with the item if usable, or `nil` if not.
+
+### Examples
+
+#### Example 1: Checking if an Item is Usable (Server)
+
+Verifies if a "water" item can be used and retrieves its callback (ESX example).
+
+```lua title="Server: Checking Item Usability (ESX)"
+RegisterCommand('canuseitem', function(source, args, rawCommand)
+    local item = args[1] or "water"
+    local canUse = lib.framework.canUseItem(item)
+    if canUse then
+        lib.print.debug("Item", item, "is usable; executing callback.")
+        canUse(source) -- Execute the callback for the player
+    else
+        lib.print.debug("Item", item, "is not usable.")
+    end
+end, false)
+```
+
+#### Example 2: Handling a Non-Usable Item (Server)
+
+Checks if a non-registered item can be used and logs the result (ESX example).
+
+```lua title="Server: Handling Non-Usable Item (ESX)"
+RegisterCommand('checkitem', function(source, args, rawCommand)
+    local item = args[1] or "stone"
+    local canUse = lib.framework.canUseItem(item)
+    if canUse then
+        lib.print.debug("Item", item, "is usable; executing callback.")
+        canUse(source)
+    else
+        lib.print.debug("Item", item, "is not usable.")
+    end
+end, false)
+```
+
+#### Example 3: Conditional Item Use (Server)
+
+Uses the `canUseItem` check to conditionally trigger an action if the item is usable (ESX example).
+
+```lua title="Server: Conditional Item Use (ESX)"
+RegisterCommand('useifcan', function(source, args, rawCommand)
+    local item = args[1] or "bandage"
+    local canUse = lib.framework.canUseItem(item)
+    if canUse then
+        lib.print.debug("Using item", item, "for player", source)
+        canUse(source)
+        -- Additional logic after usage
+        local xPlayer = lib.framework.GetPlayerFromId(source)
+        xPlayer.addInventoryItem("health", 10) -- Simulated healing
+    else
+        lib.print.debug("Cannot use item", item)
+    end
+end, false)
+```
+
+## lib.framework.registerUseableItem
+
+Registers an item as usable with a specified callback function. This function is primarily useful for older ESX versions (e.g., `es_extended`).
+
+<Alert variant="warning" className="mb-4">
+  <AlertTitle>Deprecation Warning</AlertTitle>
+  <AlertDescription>
+    This function is primarily useful for older ESX versions. For modern frameworks like QBCore or newer ESX versions, consider using the inventory bridge functions (e.g., <code>lib.inventory.useableItem</code>) instead, as documented in <a href="/docs/qs_lib/Bridges/inventory/server">Inventory Bridge (Server)</a>.
+  </AlertDescription>
+</Alert>
+
+```lua
+lib.framework.registerUseableItem(itemName, callback)
+```
+
+- itemName: `string`
+  - The name of the item to register (e.g., "bread").
+- callback: `function`
+  - The function to call when the item is used, receiving the player source and item data as arguments.
+
+### Examples
+
+#### Example 1: Registering a Healing Item (Server)
+
+Registers a "potion" item as usable, healing the player when used (ESX example).
+
+```lua title="Server: Registering a Healing Item (ESX)" showLineNumbers
+lib.framework.registerUseableItem("potion", function(source, item)
+    local playerId = source
+    lib.print.debug("Player " .. playerId .. " used a potion to heal!")
+    -- Example: Heal the player (framework-specific logic)
+    local xPlayer = lib.framework.GetPlayerFromId(playerId)
+    xPlayer.addInventoryItem("health", 50) -- Simulated healing
+end)
+print("Registered potion as a usable item.")
+```
+
+#### Example 2: Registering a Consumable Food Item (Server)
+
+Registers a "bread" item to restore hunger when used (ESX example).
+
+```lua title="Server: Registering a Food Item (ESX)"
+lib.framework.registerUseableItem("bread", function(source, item)
+    local playerId = source
+    lib.print.debug("Player " .. playerId .. " ate bread to restore hunger!")
+    -- Example: Restore hunger (framework-specific logic)
+    local xPlayer = lib.framework.GetPlayerFromId(playerId)
+    xPlayer.addInventoryItem("hunger", 20) -- Simulated hunger restoration
+end)
+print("Registered bread as a usable item.")
+```
+
+#### Example 3: Registering an Item with Custom Logic (Server)
+
+Registers a "key" item that grants vehicle access when used (ESX example).
+
+```lua title="Server: Registering a Key Item (ESX)" showLineNumbers
+lib.framework.registerUseableItem("key", function(source, item)
+    local playerId = source
+    lib.print.debug("Player " .. playerId .. " used a key to unlock a vehicle!")
+    -- Example: Grant vehicle access (framework-specific logic)
+    local xPlayer = lib.framework.GetPlayerFromId(playerId)
+    xPlayer.addInventoryItem("vehicle_access", 1) -- Simulated access grant
+end)
+print("Registered key as a usable item.")
+```
+
+## Future Enhancements
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Upcoming Features</AlertTitle>
+  <AlertDescription>
+    Future updates will introduce more framework-agnostic functions to this bridge, enhancing its utility for cross-framework development. Currently, functions like <code>canUseItem</code>, <code>registerUseableItem</code>, and <code>getItemLabel</code> are mainly relevant for older ESX versions and have better alternatives in the inventory bridge (e.g., <code>lib.inventory.*</code>). Stay tuned for additional functions that will further simplify framework interactions, or explore the Player Bridge for more practical framework utilities.
+  </AlertDescription>
+</Alert>

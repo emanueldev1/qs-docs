@@ -1,0 +1,296 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for vehicle property management with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Client
+
+Manages vehicle properties in a format compatible with ESX and QBCore, including additional data like damaged or missing props.
+
+## Vehicle Properties
+
+Below is the list of properties that can be retrieved or set for a vehicle:
+
+- model?: `number`
+- plate?: `string`
+- plateIndex?: `number`
+- bodyHealth?: `number`
+- engineHealth?: `number`
+- tankHealth?: `number`
+- fuelLevel?: `number`
+- oilLevel?: `number`
+- dirtLevel?: `number`
+- color1?: `number` | `number[]`
+- color2?: `number` | `number[]`
+- pearlescentColor?: `number`
+- interiorColor?: `number`
+- dashboardColor?: `number`
+- wheelColor?: `number`
+- wheelWidth?: `number`
+- wheelSize?: `number`
+- wheels?: `number`
+- windowTint?: `number`
+- xenonColor?: `number`
+- neonEnabled?: `boolean[]`
+- neonColor?: `number` | `number[]`
+- extras?: `table<number | string, 0 | 1>`
+- tyreSmokeColor?: `number` | `number[]`
+- modSpoilers?: `number`
+- modFrontBumper?: `number`
+- modRearBumper?: `number`
+- modSideSkirt?: `number`
+- modExhaust?: `number`
+- modFrame?: `number`
+- modGrille?: `number`
+- modHood?: `number`
+- modFender?: `number`
+- modRightFender?: `number`
+- modRoof?: `number`
+- modEngine?: `number`
+- modBrakes?: `number`
+- modTransmission?: `number`
+- modHorns?: `number`
+- modSuspension?: `number`
+- modArmor?: `number`
+- modNitrous?: `number`
+- modTurbo?: `number`
+- modSubwoofer?: `boolean`
+- modSmokeEnabled?: `boolean`
+- modHydraulics?: `boolean`
+- modXenon?: `boolean`
+- modFrontWheels?: `number`
+- modBackWheels?: `number`
+- modCustomTiresF?: `boolean`
+- modCustomTiresR?: `boolean`
+- modPlateHolder?: `number`
+- modVanityPlate?: `number`
+- modTrimA?: `number`
+- modOrnaments?: `number`
+- modDashboard?: `number`
+- modDial?: `number`
+- modDoorSpeaker?: `number`
+- modSeats?: `number`
+- modSteeringWheel?: `number`
+- modShifterLeavers?: `number`
+- modAPlate?: `number`
+- modSpeakers?: `number`
+- modTrunk?: `number`
+- modHydrolic?: `number`
+- modEngineBlock?: `number`
+- modAirFilter?: `number`
+- modStruts?: `number`
+- modArchCover?: `number`
+- modAerials?: `number`
+- modTrimB?: `number`
+- modTank?: `number`
+- modWindows?: `number`
+- modDoorR?: `number`
+- modLivery?: `number`
+- modRoofLivery?: `number`
+- modLightbar?: `number`
+- windows?: `number[]`
+- doors?: `number[]`
+- tyres?: `table<number | string, 1 | 2>`
+- bulletProofTyres?: `boolean`
+
+## lib.setVehicleProperties
+
+Applies specified properties to a vehicle (e.g., mods, plate text) and returns `true` if the client owns the entity.
+
+```lua
+lib.setVehicleProperties(vehicleHandle, properties)
+```
+
+- vehicleHandle: `entity`
+- properties: `table`
+
+**Returns:**
+
+- isEntityOwner: `boolean`
+
+### Examples
+
+#### Example 1: Customizing a Vehicle's Appearance
+
+Sets custom properties on a vehicle, such as color and mods, for the client owner.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    RegisterNetEvent('qs_lib:setVehicleProperties', function(netid, data)
+        local vehicle = NetToVeh(netid)
+        local success = lib.setVehicleProperties(vehicle, data)
+        if success then
+            print("Vehicle properties set successfully by owner!")
+        else
+            print("Client does not own the vehicle.")
+        end
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { setVehicleProperties } from '@emanueldev1/qs_lib/client';
+
+    onNet('qs_lib:setVehicleProperties', (netid, data) => {
+      const vehicle = NetToVeh(netid);
+      const success = setVehicleProperties(vehicle, data);
+      if (success) {
+        console.log("Vehicle properties set successfully by owner!");
+      } else {
+        console.log("Client does not own the vehicle.");
+      }
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Applying a Custom Plate
+
+Sets a custom license plate on a vehicle for the client owner.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    RegisterNetEvent('qs_lib:setVehicleProperties', function(netid, data)
+        local vehicle = NetToVeh(netid)
+        data.plate = "CUSTOMPL"
+        local success = lib.setVehicleProperties(vehicle, data)
+        if success then
+            print("Custom plate set successfully!")
+        else
+            print("Failed to set custom plate: client not owner.")
+        end
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { setVehicleProperties } from '@emanueldev1/qs_lib/client';
+
+    onNet('qs_lib:setVehicleProperties', (netid, data) => {
+      const vehicle = NetToVeh(netid);
+      data.plate = "CUSTOMPL";
+      const success = setVehicleProperties(vehicle, data);
+      if (success) {
+        console.log("Custom plate set successfully!");
+      } else {
+        console.log("Failed to set custom plate: client not owner.");
+      }
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+## Recommended Usage
+
+The server should instruct the entity owner to set vehicle properties using the following event trigger.
+
+```lua
+TriggerClientEvent('qs_lib:setVehicleProperties', entityOwner, vehNetId, data)
+```
+
+### Examples
+
+#### Example 1: Server-Side Vehicle Customization
+
+Triggers the client owner to apply custom vehicle properties from the server.
+
+```lua
+-- Server-side code
+local entityOwner = 1 -- Example player ID
+local vehNetId = 123 -- Example network ID
+local data = { color1 = 112, modSpoilers = 2 }
+TriggerClientEvent('qs_lib:setVehicleProperties', entityOwner, vehNetId, data)
+```
+
+#### Example 2: Server-Side Plate Update
+
+Instructs the client owner to update the vehicle's license plate from the server.
+
+```lua
+-- Server-side code
+local entityOwner = 2 -- Example player ID
+local vehNetId = 456 -- Example network ID
+local data = { plate = "VIP123" }
+TriggerClientEvent('qs_lib:setVehicleProperties', entityOwner, vehNetId, data)
+```
+
+## lib.getVehicleProperties
+
+Retrieves the properties of a vehicle, such as its mods, plate, and condition.
+
+```lua
+lib.getVehicleProperties(vehicleHandle)
+```
+
+- vehicleHandle: `number`
+  - The handle of the vehicle to retrieve properties from.
+
+### Examples
+
+#### Example 1: Fetching Current Vehicle Properties
+
+Gets the properties of the vehicle the player is currently using.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local vehicle = GetVehiclePedIsUsing(PlayerPedId())
+    local props = lib.getVehicleProperties(vehicle)
+    print("Vehicle plate:", props.plate, "Color1:", props.color1)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const vehicle = GetVehiclePedIsUsing(PlayerPedId());
+    const props = lib.getVehicleProperties(vehicle);
+    console.log("Vehicle plate:", props.plate, "Color1:", props.color1);
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Logging Vehicle Health
+
+Retrieves and logs the health properties of a vehicle.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local vehicle = GetVehiclePedIsUsing(PlayerPedId())
+    local props = lib.getVehicleProperties(vehicle)
+    print("Vehicle health - Body:", props.bodyHealth, "Engine:", props.engineHealth)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const vehicle = GetVehiclePedIsUsing(PlayerPedId());
+    const props = lib.getVehicleProperties(vehicle);
+    console.log("Vehicle health - Body:", props.bodyHealth, "Engine:", props.engineHealth);
+    ```
+  </TabsContent>
+</Tabs>

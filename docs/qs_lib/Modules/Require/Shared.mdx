@@ -1,0 +1,207 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for module loading with qs_lib.
+---
+
+# Shared
+
+*This module is always loaded by default.*
+
+## require
+
+Loads a specified module, checking if it has already been loaded in the `loaded` table. If the module is cached, `require` returns the stored value from `loaded[modname]`.
+
+- Module names represent the file path relative to the resource.
+- The module must be a `.lua` file.
+- Use `.` to denote directory separators in the path.
+- Modules can be loaded from other resources using `@resource.modname`.
+
+```lua
+require 'modname'
+```
+
+> **Warning:** Client modules must be listed in the `file` section of the resource manifest.
+>
+> ```lua filename="fxmanifest.lua"
+> file 'modname.lua'
+> -- or
+> files {
+>   'modname.lua'
+> }
+> ```
+
+### Examples
+
+#### Example 1: Loading a Utility Module
+
+Loads a utility module from another resource and accesses its events.
+
+```lua
+-- File structure:
+-- resources/
+--   utils/
+--     helpers.lua
+--     data/
+--       events.lua
+--   myresource/
+--     server.lua
+
+-- utils/helpers.lua
+local utils = {
+    events = require 'data.events'
+}
+
+print('Loaded utils')
+
+return utils
+
+-- utils/data/events.lua
+return {
+    disconnect = 'onPlayerDropped'
+}
+
+-- myresource/server.lua
+local utils = require '@utils.helpers'
+print(utils.events.disconnect)
+```
+
+#### Example 2: Importing a Configuration Module
+
+Loads a configuration module from the current resource.
+
+```lua
+-- File structure:
+-- resources/
+--   myresource/
+--     server.lua
+--     config.lua
+
+-- config.lua
+return {
+    maxPlayers = 32,
+    serverName = "My Server"
+}
+
+-- server.lua
+local config = require 'config'
+print("Server Name:", config.serverName, "Max Players:", config.maxPlayers)
+```
+
+## lib.load
+
+Loads and executes a Lua file at the specified path without caching it for future use, unlike `require`.
+
+```lua
+lib.load(filePath, env)
+```
+
+- filePath: `string`
+  - Path to the Lua file, following the same rules as `require`.
+- env?: `table`
+  - Global environment table to use; defaults to `_ENV`.
+
+### Examples
+
+#### Example 1: Loading a Dynamic Script
+
+Loads a dynamic script for temporary use without caching.
+
+```lua
+-- File structure:
+-- resources/
+--   myresource/
+--     server.lua
+--     scripts/
+--       dynamic.lua
+
+-- scripts/dynamic.lua
+return {
+    action = "temporary action"
+}
+
+-- server.lua
+local script = lib.load('scripts.dynamic')
+print("Loaded script action:", script.action)
+```
+
+#### Example 2: Temporary Event Handler
+
+Loads an event handler for a one-time event without caching.
+
+```lua
+-- File structure:
+-- resources/
+--   myresource/
+--     server.lua
+--     events/
+--       handler.lua
+
+-- events/handler.lua
+return {
+    onEvent = function() print("Event triggered!") end
+}
+
+-- server.lua
+local handler = lib.load('events.handler')
+handler.onEvent()
+```
+
+## lib.loadJson
+
+Loads and decodes a JSON file at the specified path into a Lua table.
+
+```lua
+lib.loadJson(filePath)
+```
+
+- filePath: `string`
+  - Path to the JSON file, following the same rules as `require`.
+
+### Examples
+
+#### Example 1: Loading Player Settings
+
+Loads player settings from a JSON file.
+
+```lua
+-- File structure:
+-- resources/
+--   myresource/
+--     server.lua
+--     data/
+--       settings.json
+
+-- data/settings.json
+{
+    "volume": 75,
+    "language": "en"
+}
+
+-- server.lua
+local settings = lib.loadJson('data.settings')
+print("Loaded settings - Volume:", settings.volume, "Language:", settings.language)
+```
+
+#### Example 2: Loading Game Rules
+
+Loads game rules from a JSON file for runtime use.
+
+```lua
+-- File structure:
+-- resources/
+--   myresource/
+--     server.lua
+--     data/
+--       rules.json
+
+-- data/rules.json
+{
+    "maxSpeed": 120,
+    "allowPvP": true
+}
+
+-- server.lua
+local rules = lib.loadJson('data.rules')
+print("Loaded rules - Max Speed:", rules.maxSpeed, "PvP Enabled:", rules.allowPvP)
+```

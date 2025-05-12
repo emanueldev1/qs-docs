@@ -1,0 +1,267 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for table utilities with qs_lib.
+---
+
+# Shared
+
+## lib.table
+
+Provides additional functionality to complement the standard Lua table library.
+
+## lib.table.deepclone
+
+Creates a deep copy of a table, ensuring no references to the original table remain.
+
+```lua
+lib.table.deepclone(originalTable)
+```
+
+- originalTable: `table`
+
+**Returns:**
+
+- clonedTable: `table`
+
+### Examples
+
+#### Example 1: Cloning a Player Data Table
+
+Deep clones a player's data to modify it without affecting the original.
+
+```lua
+local playerData = { id = 123, inventory = { "sword", "shield" } }
+local clonedData = lib.table.deepclone(playerData)
+clonedData.inventory[1] = "bow"
+print("Original inventory:", table.concat(playerData.inventory, ", "))
+print("Cloned inventory:", table.concat(clonedData.inventory, ", "))
+```
+
+#### Example 2: Copying Game Settings
+
+Clones game settings to create a backup before applying changes.
+
+```lua
+local settings = { volume = 75, difficulty = "normal", options = { hud = true } }
+local settingsBackup = lib.table.deepclone(settings)
+settings.options.hud = false
+print("Original HUD setting:", settingsBackup.options.hud)
+print("Modified HUD setting:", settings.options.hud)
+```
+
+## lib.table.isFrozen
+
+Checks if a table is read-only.
+
+```lua
+lib.table.isFrozen(targetTable)
+```
+
+- targetTable: `table`
+
+**Returns:**
+
+- isFrozen: `boolean`
+
+### Examples
+
+#### Example 1: Verifying a Frozen Config
+
+Checks if a configuration table is frozen before proceeding.
+
+```lua
+local config = { maxPlayers = 32, enabled = true }
+local frozenConfig = lib.table.freeze(config)
+if lib.table.isFrozen(frozenConfig) then
+    print("Configuration is safely frozen.")
+else
+    print("Configuration is not frozen!")
+end
+```
+
+#### Example 2: Checking a Mutable Table
+
+Verifies that a newly created table is not frozen.
+
+```lua
+local data = { score = 100, level = 5 }
+if lib.table.isFrozen(data) then
+    print("Data table is frozen.")
+else
+    print("Data table is mutable and can be modified.")
+    data.score = 150
+    print("Updated score:", data.score)
+end
+```
+
+## lib.table.matches
+
+Evaluates if two tables are identical by comparing both their keys and values recursively.
+
+```lua
+lib.table.matches(firstTable, secondTable)
+```
+
+- firstTable: `table`
+- secondTable: `table`
+
+**Returns:**
+
+- matches: `boolean`
+
+### Examples
+
+#### Example 1: Comparing Player Stats
+
+Compares two tables of player stats to check if they are identical.
+
+```lua
+local stats1 = { health = 100, mana = 50 }
+local stats2 = { health = 100, mana = 50 }
+if lib.table.matches(stats1, stats2) then
+    print("Player stats are identical!")
+else
+    print("Player stats differ.")
+end
+```
+
+#### Example 2: Validating Configuration Settings
+
+Checks if two configuration tables match to ensure consistency.
+
+```lua
+local config1 = { maxPlayers = 32, enabled = true }
+local config2 = { maxPlayers = 32, enabled = false }
+if lib.table.matches(config1, config2) then
+    print("Configurations match!")
+else
+    print("Configurations do not match.")
+end
+```
+
+## lib.table.merge
+
+Combines two tables into one. For duplicate keys, numerical values are summed if `addNumbers` is true; otherwise, `secondTable`'s value takes precedence.
+
+```lua
+lib.table.merge(firstTable, secondTable, addNumbers)
+```
+
+- firstTable: `table`
+- secondTable: `table`
+- addNumbers: `boolean`
+  - If true, adds numerical values for duplicate keys; if false, uses `secondTable`'s value.
+
+**Returns:**
+
+- firstTable: `table`
+
+### Examples
+
+#### Example 1: Merging Player Inventories
+
+Merges two inventory tables, summing quantities for duplicate items.
+
+```lua
+local inventory1 = { apples = 5, swords = 1 }
+local inventory2 = { apples = 3, shields = 2 }
+local merged = lib.table.merge(inventory1, inventory2, true)
+print("Merged inventory - Apples:", merged.apples, "Swords:", merged.swords, "Shields:", merged.shields)
+```
+
+#### Example 2: Updating Player Stats
+
+Merges two stats tables, overwriting values without adding numbers.
+
+```lua
+local stats1 = { health = 100, mana = 50 }
+local stats2 = { mana = 75, stamina = 30 }
+local updatedStats = lib.table.merge(stats1, stats2, false)
+print("Updated stats - Health:", updatedStats.health, "Mana:", updatedStats.mana, "Stamina:", updatedStats.stamina)
+```
+
+## lib.table.contains
+
+Determines whether a table includes a specified value. Designed for simple values and unnested tables.
+
+```lua
+lib.table.contains(targetTable, searchValue)
+```
+
+- targetTable: `table`
+- searchValue: `any`
+
+**Returns:**
+
+- isContained: `boolean`
+
+### Examples
+
+#### Example 1: Checking for a Player ID
+
+Verifies if a player ID exists in a list of active players.
+
+```lua
+local activePlayers = { 101, 102, 103, 104 }
+local playerId = 102
+if lib.table.contains(activePlayers, playerId) then
+    print("Player", playerId, "is active!")
+else
+    print("Player", playerId, "is not active.")
+end
+```
+
+#### Example 2: Validating an Item in Inventory
+
+Checks if a specific item is present in a player's inventory.
+
+```lua
+local inventory = { "apple", "sword", "shield" }
+local item = "potion"
+if lib.table.contains(inventory, item) then
+    print("Item", item, "is in inventory!")
+else
+    print("Item", item, "is not in inventory.")
+end
+```
+
+## lib.table.freeze
+
+Sets a table as read-only to prevent modifications. Nested tables within remain mutable unless also frozen.
+
+```lua
+lib.table.freeze(targetTable)
+```
+
+- targetTable: `table`
+
+**Returns:**
+
+- frozenTable: `table`
+
+### Examples
+
+#### Example 1: Freezing Game Constants
+
+Freezes a table of game constants to prevent accidental changes.
+
+```lua
+local constants = { gravity = 9.81, maxSpeed = 120 }
+local frozenConstants = lib.table.freeze(constants)
+-- Attempting to modify will fail
+frozenConstants.gravity = 10 -- This will silently fail or error
+print("Gravity remains:", frozenConstants.gravity)
+```
+
+#### Example 2: Protecting Event Data
+
+Freezes event data to ensure it isn't altered during processing.
+
+```lua
+local eventData = { type = "race_start", time = 1634567890 }
+local frozenEvent = lib.table.freeze(eventData)
+-- Attempting to modify will fail
+frozenEvent.time = 1634567900 -- This will silently fail or error
+print("Event time remains:", frozenEvent.time)
+```

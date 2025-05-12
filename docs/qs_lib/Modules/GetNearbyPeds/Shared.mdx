@@ -1,0 +1,65 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getNearbyPeds
+
+Obtains the handles and coordinates of all peds within a specified range of a given position.
+
+```lua
+lib.getNearbyPeds(location, searchRange)
+```
+
+- location: `vector3`
+  - The position to search around.
+- searchRange?: `number`
+  - The maximum distance to search within.
+  - Default: `2.0`
+
+**Returns:**
+
+- peds: `{ ped: number, coords: vector3 }[]`
+
+## Examples
+
+### Example 1: Warning Nearby Hostile Peds
+
+Finds all hostile peds within 10.0 units of the player's position and triggers a warning behavior.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local nearbyPeds = lib.getNearbyPeds(playerPos, 10.0)
+
+for _, ped in ipairs(nearbyPeds) do
+    if IsPedHostile(ped.ped) then
+        TriggerWarningBehavior(ped.ped)
+        print("Warned hostile ped at:", ped.coords.x, ped.coords.y, ped.coords.z)
+    end
+end
+if #nearbyPeds == 0 then
+    print("No peds found nearby.")
+end
+```
+
+### Example 2: Healing Nearby Friendly Peds
+
+Locates all friendly peds within the default range (2.0 units) from a specific location and heals them.
+
+```lua
+local healPoint = vector3(250.0, 350.0, 45.0)
+local nearbyPeds = lib.getNearbyPeds(healPoint)
+
+for _, ped in ipairs(nearbyPeds) do
+    if IsPedFriendly(ped.ped) then
+        HealPed(ped.ped, 100)
+        print("Healed friendly ped at:", ped.coords.x, ped.coords.y, ped.coords.z)
+    end
+end
+if #nearbyPeds == 0 then
+    print("No friendly peds found nearby.")
+end
+```

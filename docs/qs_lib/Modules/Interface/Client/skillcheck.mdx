@@ -1,0 +1,168 @@
+---
+title: Skill Check
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Skill Check
+
+## lib.skillCheck
+
+Initiates a skill check with a specified difficulty level.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.skillCheck(levels, keys)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.skillCheck(levels, keys);
+    ```
+  </TabsContent>
+</Tabs>
+
+- levels: `'easy'` | `'medium'` | `'hard'` | `table`
+  - Predefined difficulty levels:
+    - `'easy'`: `{ areaSize: 50, speedMultiplier: 1 }`
+    - `'medium'`: `{ areaSize: 40, speedMultiplier: 1.5 }`
+    - `'hard'`: `{ areaSize: 25, speedMultiplier: 1.75 }`
+  - Custom difficulty can be defined using a table:
+    - areaSize: `number`
+      - Size of the success zone in degrees.
+    - speedMultiplier: `number`
+      - Speed multiplier for the indicator.
+- keys?: `string[]`
+  - Randomly selects a key from the provided list for each skill check.
+  - Defaults to `'e'` if not specified.
+
+## lib.skillCheckActive
+
+Checks if a skill check is currently in progress.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.skillCheckActive()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.skillCheckActive();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.cancelSkillCheck
+
+Terminates the active skill check.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.cancelSkillCheck()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.cancelSkillCheck();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Example 1: Lockpicking Challenge
+
+Runs a skill check sequence for lockpicking with increasing difficulty.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local success = lib.skillCheck({'easy', 'medium', 'hard'}, {'q', 'e', 'r'})
+
+    if success then
+        print("Lockpicking successful!")
+    else
+        print("Lockpicking failed.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const success = await lib.skillCheck(['easy', 'medium', 'hard'], ['q', 'e', 'r']);
+
+    if (success) {
+      console.log("Lockpicking successful!");
+    } else {
+      console.log("Lockpicking failed.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+### Example 2: Hacking Sequence
+
+Performs a custom skill check for hacking with tailored difficulty settings.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local success = lib.skillCheck(
+        {'medium', {areaSize = 30, speedMultiplier = 2}, 'hard'},
+        {'f', 'g', 'h'}
+    )
+
+    if success then
+        print("Hacking completed successfully!")
+    else
+        print("Hacking failed.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const success = await lib.skillCheck(
+      ['medium', { areaSize: 30, speedMultiplier: 2 }, 'hard'],
+      ['f', 'g', 'h']
+    );
+
+    if (success) {
+      console.log("Hacking completed successfully!");
+    } else {
+      console.log("Hacking failed.");
+    }
+    ```
+  </TabsContent>
+</Tabs>

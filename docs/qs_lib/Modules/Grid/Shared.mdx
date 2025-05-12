@@ -1,0 +1,134 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+A framework that partitions the map into smaller 2D cells, enabling the addition, removal, and retrieval of entries within cells.
+
+## GridEntry Class
+
+A structure defining a grid entry with the following attributes.
+
+- position: `vector`
+- length?: `number`
+- width?: `number`
+- radius?: `number`
+
+## lib.grid.getCellPosition
+
+Determines the cell position for a given point on the map.
+
+```lua
+lib.grid.getCellPosition(location)
+```
+
+- location: `vector`
+
+**Returns:**
+
+- x: `number`
+- y: `number`
+
+## lib.grid.getCell
+
+Fetches all entries within the cell that contains the specified point.
+
+```lua
+lib.grid.getCell(location)
+```
+
+- location: `vector`
+
+**Returns:**
+
+- entries: `GridEntry[]`
+
+## lib.grid.getNearbyEntries
+
+Retrieves all entries near the specified point, with an optional filtering condition.
+
+```lua
+lib.grid.getNearbyEntries(location, condition)
+```
+
+- location: `vector`
+- condition: `function(entry: GridEntry): boolean`
+
+**Returns:**
+
+- entries: `Array<GridEntry>`
+
+## lib.grid.addEntry
+
+Inserts a new entry into the grid.
+
+```lua
+lib.grid.addEntry(record)
+```
+
+- record: `GridEntry`
+
+## lib.grid.removeEntry
+
+Deletes a previously added entry from the grid.
+
+```lua
+lib.grid.removeEntry(record)
+```
+
+- record: `GridEntry`
+
+**Returns:**
+
+- success: `boolean`
+
+## Examples
+
+### Example 1: Managing Enemy Spawns in a Grid Cell
+
+Adds an enemy spawn point to a grid cell, retrieves nearby enemies, and removes the spawn point when done.
+
+```lua
+local enemySpawn = { position = vector3(100.0, 200.0, 30.0), radius = 5.0 }
+lib.grid.addEntry(enemySpawn)
+
+-- Get nearby enemies within the cell
+local cellEnemies = lib.grid.getCell(enemySpawn.position)
+for _, enemy in ipairs(cellEnemies) do
+    print("Enemy spawn at:", enemy.position.x, enemy.position.y, enemy.position.z)
+end
+
+-- Remove the spawn point
+local removed = lib.grid.removeEntry(enemySpawn)
+if removed then
+    print("Enemy spawn point removed successfully.")
+else
+    print("Failed to remove enemy spawn point.")
+end
+```
+
+### Example 2: Tracking Resource Nodes in Nearby Cells
+
+Adds a resource node to the grid, retrieves nearby nodes with a filter for a specific type, and removes the node after use.
+
+```lua
+local resourceNode = { position = vector3(300.0, 400.0, 50.0), radius = 3.0, type = "ore" }
+lib.grid.addEntry(resourceNode)
+
+-- Get nearby ore nodes
+local nearbyNodes = lib.grid.getNearbyEntries(resourceNode.position, function(entry)
+    return entry.type == "ore"
+end)
+for _, node in ipairs(nearbyNodes) do
+    print("Found ore node at:", node.position.x, node.position.y, node.position.z)
+end
+
+-- Remove the resource node
+local success = lib.grid.removeEntry(resourceNode)
+if success then
+    print("Resource node removed successfully.")
+end
+```

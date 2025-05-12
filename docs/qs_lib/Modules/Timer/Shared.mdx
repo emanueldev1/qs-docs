@@ -1,0 +1,305 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for timer utilities with qs_lib.
+---
+
+# Shared
+
+## Timer
+
+Offers a flexible timer system with support for asynchronous operation, pause/resume capabilities, and callbacks upon completion.
+
+### lib.timer
+
+Creates a timer that executes a callback after a specified duration.
+
+```lua
+lib.timer(duration, callback, runAsync)
+```
+
+- duration: `number`
+- callback: `function`
+- runAsync?: `boolean`
+  - If `true`, the timer runs asynchronously without blocking the calling thread.
+
+**Returns:**
+
+- timer: `OxTimer`
+
+#### Examples
+
+##### Example 1: Basic Timer with Callback
+
+Sets a 5-second timer that prints a message upon completion.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end)
+```
+
+##### Example 2: Asynchronous Timer for Delayed Action
+
+Creates an asynchronous 3-second timer to trigger a delayed game event.
+
+```lua
+local timer = lib.timer(3000, function()
+    print("Game event triggered after delay!")
+end, true)
+```
+
+### lib.timer.getTimeLeft
+
+Retrieves the remaining time on the timer in the specified format, rounded to two decimal places.
+
+```lua
+timer:getTimeLeft(format)
+```
+
+- format?: `'ms'` | `'s'` | `'m'` | `'h'`
+  - If omitted, returns a table with all formats.
+
+**Returns:**
+
+- time: `number` | `{ms: number, s: number, m: number, h: number}`
+
+#### Examples
+
+##### Example 1: Checking Remaining Time in Seconds
+
+Gets the remaining time in seconds for a timer.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+print("Time left in seconds:", timer:getTimeLeft('s')) -- e.g., 5.00 seconds
+```
+
+##### Example 2: Retrieving All Time Formats
+
+Fetches the remaining time in all available formats.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+local timeLeft = timer:getTimeLeft()
+print("Time left - ms:", timeLeft.ms, "s:", timeLeft.s, "m:", timeLeft.m, "h:", timeLeft.h)
+```
+
+### lib.timer.isPaused
+
+Checks if the timer is currently paused after a previous `timer:pause()` call.
+
+```lua
+timer:isPaused()
+```
+
+**Returns:**
+
+- isPaused: `boolean`
+
+#### Examples
+
+##### Example 1: Verifying Timer Pause State
+
+Confirms the pause state of a timer after pausing it.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+print("Is paused initially:", timer:isPaused()) -- false
+
+timer:pause()
+
+print("Is paused after pause:", timer:isPaused()) -- true
+```
+
+##### Example 2: Conditional Logic Based on Pause State
+
+Uses the pause state to trigger a message.
+
+```lua
+local timer = lib.timer(8000, function()
+    print("Timer ended")
+end, true)
+
+timer:pause()
+
+if timer:isPaused() then
+    print("Timer is paused, please resume to continue.")
+end
+```
+
+### lib.timer.play
+
+Resumes a timer that was paused using `timer:pause()`.
+
+```lua
+timer:play()
+```
+
+#### Examples
+
+##### Example 1: Resuming a Paused Timer
+
+Pauses and then resumes a timer, affecting its total duration.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+timer:pause()
+
+Citizen.Wait(1000)
+
+timer:play()
+-- Timer finishes in 6 seconds due to the 1-second pause
+```
+
+##### Example 2: Conditional Resume After Player Action
+
+Resumes a timer only after a player performs an action.
+
+```lua
+local timer = lib.timer(6000, function()
+    print("Timer ended")
+end, true)
+
+timer:pause()
+
+print("Waiting for player to press E to resume...")
+while not IsControlJustPressed(0, 38) do -- E key
+    Citizen.Wait(0)
+end
+
+timer:play()
+print("Timer resumed!")
+```
+
+### lib.timer.restart
+
+Resets and restarts the timer from the beginning.
+
+```lua
+timer:restart()
+```
+
+#### Examples
+
+##### Example 1: Creating a Looping Timer
+
+Sets up a timer that continuously restarts itself.
+
+```lua
+local timer
+
+timer = lib.timer(5000, function()
+    print("Timer ended")
+    timer:restart()
+end, true)
+```
+
+##### Example 2: Restarting After an Event
+
+Restarts a timer when a specific event occurs.
+
+```lua
+local timer = lib.timer(4000, function()
+    print("Timer ended")
+end, true)
+
+Citizen.Wait(2000)
+
+print("Event occurred, restarting timer...")
+timer:restart()
+```
+
+### lib.timer.pause
+
+Pauses an active timer until `timer:play()` or `timer:forceEnd()` is called.
+
+```lua
+timer:pause()
+```
+
+#### Examples
+
+##### Example 1: Pausing a Timer Temporarily
+
+Pauses a timer to delay its completion.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+timer:pause()
+```
+
+##### Example 2: Pausing During a Game Pause
+
+Pauses a timer when the game is paused and waits for resumption.
+
+```lua
+local timer = lib.timer(7000, function()
+    print("Timer ended")
+end, true)
+
+print("Game paused, pausing timer...")
+timer:pause()
+
+Citizen.Wait(3000) -- Simulate game pause duration
+print("Game resumed, timer will be resumed later.")
+```
+
+### lib.timer.forceEnd
+
+Immediately terminates the timer and optionally triggers the `onEnd` callback.
+
+```lua
+timer:forceEnd(triggerCallback)
+```
+
+- triggerCallback: `boolean`
+
+#### Examples
+
+##### Example 1: Ending a Timer Without Callback
+
+Forces a timer to end early without triggering the callback.
+
+```lua
+local timer = lib.timer(5000, function()
+    print("Timer ended")
+end, true)
+
+timer:pause()
+
+Citizen.Wait(1000)
+
+timer:forceEnd(false)
+-- Timer ends after 1 second, callback does not run
+```
+
+##### Example 2: Forcing End with Callback
+
+Forces a timer to end early and triggers the callback.
+
+```lua
+local timer = lib.timer(6000, function()
+    print("Timer ended early with callback!")
+end, true)
+
+Citizen.Wait(2000)
+
+timer:forceEnd(true)
+-- Timer ends after 2 seconds, callback runs
+```

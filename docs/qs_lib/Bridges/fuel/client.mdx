@@ -1,0 +1,92 @@
+---
+title: Fuel Bridge (Client)
+sidebar_position: 12
+description: Documentation for client-side fuel management with qs_lib.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Fuel Bridge (Client)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Default Compatibility</AlertTitle>
+  <AlertDescription>
+    The functions listed below are compatible by default with the following fuel systems: cdn-fuel, LegacyFuel, ox_fuel, ps-fuel, Renewed-Fuel, ti_fuel, and x-fuel. These functions represent the complete set of client-side fuel operations provided by this bridge. Note that some functions, such as <code>lib.fuel.getFuel</code>, may not be fully supported in all fuel systems. In such cases, the function may provide micro-compatibility (e.g., returning a default value) or return <code>nil</code>.
+  </AlertDescription>
+</Alert>
+
+The Fuel Bridge provides functions to manage vehicle fuel levels on the client side, such as setting and retrieving fuel levels.
+
+## lib.fuel.setFuel
+
+Sets the fuel level for a vehicle.
+
+```lua
+lib.fuel.setFuel(veh, val)
+```
+
+- veh: `number` | `string`
+  - The vehicle identifier (e.g., vehicle handle or ID).
+- val: `number`
+  - The fuel level to set (e.g., percentage or absolute value, such as `75` for 75%).
+
+**Returns:**
+
+- success: `boolean` | `nil`
+  - `true` if the fuel level was set successfully, `false` or `nil` otherwise.
+
+### Example: Setting Vehicle Fuel
+
+Sets the fuel level of the player's current vehicle to 75%.
+
+```lua title="Client: Setting Vehicle Fuel"
+RegisterCommand('setfuel', function(source, args, rawCommand)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    if vehicle ~= 0 then
+        local success = lib.fuel.setFuel(vehicle, 75)
+        if success then
+            print("Successfully set fuel level to 75% for vehicle:", vehicle)
+        else
+            print("Failed to set fuel level for vehicle:", vehicle)
+        end
+    else
+        print("You are not in a vehicle.")
+    end
+end, false)
+```
+
+## lib.fuel.getFuel
+
+Retrieves the fuel level of a vehicle.
+
+```lua
+lib.fuel.getFuel(veh)
+```
+
+- veh: `number` | `string`
+  - The vehicle identifier (e.g., vehicle handle or ID).
+
+**Returns:**
+
+- fuelLevel: `number` | `nil`
+  - The current fuel level of the vehicle (e.g., `75` for 75%), or `nil` if not available.
+
+### Example: Checking Vehicle Fuel
+
+Fetches and logs the fuel level of the player's current vehicle.
+
+```lua title="Client: Checking Vehicle Fuel"
+RegisterCommand('getfuel', function(source, args, rawCommand)
+    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+    if vehicle ~= 0 then
+        local fuelLevel = lib.fuel.getFuel(vehicle)
+        if fuelLevel then
+            print("Current fuel level for vehicle", vehicle, ":", fuelLevel, "%")
+        else
+            print("Failed to retrieve fuel level for vehicle:", vehicle)
+        end
+    else
+        print("You are not in a vehicle.")
+    end
+end, false)
+```

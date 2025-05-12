@@ -1,0 +1,440 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for math utilities with qs_lib.
+---
+
+# Shared
+
+## lib.math
+
+Enhances the standard Lua math library with additional utility functions.
+
+```lua
+math = lib.math
+```
+
+### math.toscalars
+
+Converts a string into a set of scalar values.
+
+```lua
+math.toscalars(inputStr, minVal, maxVal, shouldRound)
+```
+
+- inputStr: `string`
+- minVal?: `number`
+- maxVal?: `number`
+- shouldRound?: `boolean`
+
+**Returns:**
+
+- ...: `number`
+
+#### Examples
+
+##### Example 1: Extracting Coordinates
+
+Extracts scalar values from a string of coordinates with a specified range.
+
+```lua
+local x, y, z = math.toscalars("10 20 30", 0, 100, true)
+print("Coordinates:", x, y, z) -- Coordinates: 10 20 30
+```
+
+##### Example 2: Parsing Health Values
+
+Parses a string of health values, rounding them within a range.
+
+```lua
+local health, stamina = math.toscalars("75.5 50.8", 0, 100, true)
+print("Health:", health, "Stamina:", stamina) -- Health: 76 Stamina: 51
+```
+
+### math.tovector
+
+Transforms a string or table into a vector, returning a number if only one value is found.
+
+```lua
+math.tovector(data, minVal, maxVal, shouldRound)
+```
+
+- data: `string` | `table`
+- minVal?: `number`
+- maxVal?: `number`
+- shouldRound?: `boolean`
+
+**Returns:**
+
+- value: `number` | `vector2` | `vector3` | `vector4`
+
+#### Examples
+
+##### Example 1: Converting Position String to Vector
+
+Converts a string of position data into a vector3.
+
+```lua
+local pos = math.tovector("100 200 30", 0, 500, false)
+print("Position:", pos.x, pos.y, pos.z) -- Position: 100 200 30
+```
+
+##### Example 2: Transforming Table to Vector2
+
+Transforms a table of values into a vector2, clamping within a range.
+
+```lua
+local vec = math.tovector({50.7, 75.3}, 0, 100, true)
+print("Vector2:", vec.x, vec.y) -- Vector2: 51 75
+```
+
+### math.normaltorotation
+
+Converts a surface normal into a vector3 rotation.
+
+```lua
+math.normaltorotation(normal)
+```
+
+- normal: `vector3`
+
+**Returns:**
+
+- value: `vector3`
+
+#### Examples
+
+##### Example 1: Aligning Object to Surface
+
+Calculates the rotation for an object based on a surface normal.
+
+```lua
+local normal = vec3(0, 0, 1) -- Flat surface facing up
+local rotation = math.normaltorotation(normal)
+print("Rotation:", rotation.x, rotation.y, rotation.z)
+```
+
+##### Example 2: Adjusting Vehicle Orientation
+
+Determines the rotation for a vehicle on a sloped surface.
+
+```lua
+local slopeNormal = vec3(0.5, 0, 0.866) -- Sloped surface
+local vehicleRot = math.normaltorotation(slopeNormal)
+print("Vehicle Rotation:", vehicleRot.x, vehicleRot.y, vehicleRot.z)
+```
+
+### math.torgba
+
+Converts a string or table into RGBA values, rounding them within 0-255.
+
+```lua
+math.torgba(data)
+```
+
+- data: `string` | `table`
+
+**Returns:**
+
+- value: `number` | `vector2` | `vector3` | `vector4`
+
+#### Examples
+
+##### Example 1: Converting Color String to RGBA
+
+Converts a color string into RGBA values.
+
+```lua
+local rgba = math.torgba("255 128 0 200")
+print("RGBA:", rgba.r, rgba.g, rgba.b, rgba.a) -- RGBA: 255 128 0 200
+```
+
+##### Example 2: Parsing Table to RGBA
+
+Parses a table of color values into an RGBA vector.
+
+```lua
+local color = math.torgba({200, 150, 50, 255})
+print("Color:", color.r, color.g, color.b, color.a) -- Color: 200 150 50 255
+```
+
+### math.hextorgb
+
+Converts a hexadecimal color string into RGB integers.
+
+```lua
+math.hextorgb(hex)
+```
+
+- hex: `string`
+  - A hexadecimal value, e.g., `'eb4034'`.
+
+**Returns:**
+
+- r: `number`
+- g: `number`
+- b: `number`
+
+#### Examples
+
+##### Example 1: Converting Hex to RGB for UI
+
+Converts a hex color for use in a UI element.
+
+```lua
+local r, g, b = math.hextorgb('ff4500')
+print("RGB:", r, g, b) -- RGB: 255 69 0
+```
+
+##### Example 2: Adjusting Lighting Color
+
+Extracts RGB values from a hex code for lighting adjustments.
+
+```lua
+local r, g, b = math.hextorgb('00ff7f')
+print("Lighting RGB:", r, g, b) -- Lighting RGB: 0 255 127
+```
+
+### math.tohex
+
+Formats a number or string as a hexadecimal string.
+
+```lua
+math.tohex(value, uppercase)
+```
+
+- value: `number` | `string`
+- uppercase?: `boolean`
+
+**Returns:**
+
+- hex: `string`
+
+#### Examples
+
+##### Example 1: Converting Number to Hex
+
+Converts a number to a lowercase hexadecimal string.
+
+```lua
+local hex = math.tohex(255, false)
+print("Hex:", hex) -- Hex: ff
+```
+
+##### Example 2: Formatting Color to Uppercase Hex
+
+Formats a color value as an uppercase hexadecimal string.
+
+```lua
+local hex = math.tohex(16711680, true) -- RGB: 255, 0, 0
+print("Color Hex:", hex) -- Color Hex: FF0000
+```
+
+### math.groupdigits
+
+Formats a number into grouped digits with a separator.
+
+```lua
+math.groupdigits(num, sep)
+```
+
+- num: `number`
+- sep?: `string`
+  - Default: `,`
+
+**Returns:**
+
+- groupedDigits: `string`
+
+#### Examples
+
+##### Example 1: Formatting Currency
+
+Formats a currency value with commas as separators.
+
+```lua
+local amount = math.groupdigits(1234567)
+print("Currency:", amount) -- Currency: 1,234,567
+```
+
+##### Example 2: Grouping Score with Custom Separator
+
+Groups a score value using a custom separator.
+
+```lua
+local score = math.groupdigits(9876543, ".")
+print("Score:", score) -- Score: 9.876.543
+```
+
+### math.clamp
+
+Restricts a number to a specified range.
+
+```lua
+math.clamp(num, minVal, maxVal)
+```
+
+- num: `number`
+- minVal: `number`
+- maxVal: `number`
+
+**Returns:**
+
+- number: `number`
+
+#### Examples
+
+##### Example 1: Clamping Player Health
+
+Ensures a player's health stays within valid bounds.
+
+```lua
+local health = math.clamp(150, 0, 100)
+print("Health:", health) -- Health: 100
+```
+
+##### Example 2: Limiting Speed Value
+
+Keeps a vehicle's speed within a safe range.
+
+```lua
+local speed = math.clamp(120, 0, 80)
+print("Speed:", speed) -- Speed: 80
+```
+
+### math.round
+
+Rounds a number to a whole number or specified decimal places.
+
+```lua
+math.round(num, decimalPlaces)
+```
+
+- num: `number` | `string`
+- decimalPlaces?: `number` | `string`
+
+**Returns:**
+
+- roundedValue: `number`
+
+#### Examples
+
+##### Example 1: Rounding Player Score
+
+Rounds a player's score to the nearest whole number.
+
+```lua
+local score = math.round(123.456)
+print("Rounded Score:", score) -- Rounded Score: 123
+```
+
+##### Example 2: Rounding Distance to Two Decimals
+
+Rounds a distance value to two decimal places.
+
+```lua
+local distance = math.round(56.789, 2)
+print("Distance:", distance) -- Distance: 56.79
+```
+
+### math.interp
+
+Computes an interpolated value between a start and end value based on a factor.
+
+```lua
+math.interp(startVal, endVal, interpFactor)
+```
+
+- generic `T`: `number` | `vector2` | `vector3` | `vector4`
+- startVal: `T`
+- endVal: `T`
+- interpFactor: `number`
+  - Interpolation factor between 0 and 1.
+
+**Returns:**
+
+- result: `T`
+
+#### Examples
+
+##### Example 1: Interpolating Player Position
+
+Interpolates between two positions for smooth movement.
+
+```lua
+local startPos = vec3(0, 0, 0)
+local endPos = vec3(100, 100, 0)
+local interpolated = math.interp(startPos, endPos, 0.5)
+print("Interpolated Position:", interpolated.x, interpolated.y, interpolated.z) -- Interpolated Position: 50 50 0
+```
+
+##### Example 2: Fading Color Intensity
+
+Interpolates between two color intensities for a fading effect.
+
+```lua
+local startColor = 0
+local endColor = 255
+local faded = math.interp(startColor, endColor, 0.3)
+print("Faded Intensity:", faded) -- Faded Intensity: 76.5
+```
+
+### math.lerp
+
+Performs linear interpolation between two values over a duration, returning an iterator function that updates per game frame.
+
+```lua
+math.lerp(startVal, endVal, durationMs)
+```
+
+- generic `T`: `number` | `table` | `vector2` | `vector3` | `vector4`
+- startVal: `T`
+  - Starting value for interpolation.
+- endVal: `T`
+  - Ending value for interpolation.
+- durationMs: `number`
+  - Duration in milliseconds for the interpolation.
+
+**Returns:**
+
+- iteratorFunction: `fun(): T, number`
+
+#### Examples
+
+##### Example 1: Smooth Position Transition
+
+Smoothly moves a player from one position to another over 2 seconds.
+
+```lua
+local startPos = vec3(0, 0, 0)
+local endPos = vec3(50, 50, 0)
+local lerp = math.lerp(startPos, endPos, 2000)
+
+Citizen.CreateThread(function()
+    while true do
+        local pos, t = lerp()
+        print("Current Position:", pos.x, pos.y, pos.z)
+        if t >= 1 then break end
+        Citizen.Wait(0)
+    end
+end)
+```
+
+##### Example 2: Fading Transparency Over Time
+
+Fades an object's transparency from 0 to 255 over 1 second.
+
+```lua
+local startAlpha = 0
+local endAlpha = 255
+local lerp = math.lerp(startAlpha, endAlpha, 1000)
+
+Citizen.CreateThread(function()
+    while true do
+        local alpha, t = lerp()
+        print("Current Alpha:", alpha)
+        if t >= 1 then break end
+        Citizen.Wait(0)
+    end
+end)
+```

@@ -1,0 +1,571 @@
+---
+title: Inventory Bridge (Server)
+sidebar_position: 11
+description: Documentation for server-side inventory management with qs_lib.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Inventory Bridge (Server)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Default Compatibility</AlertTitle>
+  <AlertDescription>
+    The functions listed below are compatible by default with the following inventory systems: qs-inventory, ak47_inventory, codem-inventory, origen_inventory, ox_inventory, qb-inventory, and tgiann-inventory. These functions represent the complete set of server-side inventory operations provided by this bridge. Note that some functions, such as <code>lib.inventory.getWeaponList</code>, may not be fully supported in all inventory systems. In such cases, the function may provide micro-compatibility (e.g., returning a subset of data) or fall back to returning the general item list from <code>lib.inventory.getItemList()</code>.
+  </AlertDescription>
+</Alert>
+
+The Inventory Bridge provides functions to manage inventory operations on the server side, such as retrieving inventory data, adding/removing items, checking item quantities, and managing stashes.
+
+## lib.inventory.get
+
+Retrieves the inventory for a specific player or stash by ID.
+
+```lua
+lib.inventory.get(id)
+```
+
+- id: `number`
+  - The player ID or stash ID (e.g., 1).
+
+**Returns:**
+
+- inventory: `table`
+  - A table containing the inventory items (e.g., `{ { name = "water", amount = 5, slot = 1 }, { name = "bread", amount = 2, slot = 2 } }`).
+
+### Example: Retrieving Player Inventory
+
+Fetches and logs a player's inventory items.
+
+```lua title="Server: Retrieving Player Inventory"
+RegisterCommand('getinv', function(source, args, rawCommand)
+    local playerId = tonumber(args[1]) or source
+    local inventory = lib.inventory.get(playerId)
+    for _, item in ipairs(inventory) do
+        print("Item:", item.name, "Amount:", item.amount, "Slot:", item.slot)
+    end
+end, true)
+```
+
+## lib.inventory.search
+
+This function is not available on the server side. Use `lib.inventory.hasItem` instead to check for items in an inventory or stash.
+
+## lib.inventory.getItemList
+
+Retrieves the complete list of items available in the inventory system, typically a master list of item definitions.
+
+```lua
+lib.inventory.getItemList()
+```
+
+**Returns:**
+
+- items: `table`
+  - A table containing the list of all items (e.g., `{ { name = "water", label = "Bottle of Water", weight = 500 }, { name = "bread", label = "Bread", weight = 300 } }`).
+
+### Example: Listing All Items
+
+Fetches and logs all items in the inventory system.
+
+```lua title="Server: Listing All Items"
+RegisterCommand('listitems', function(source, args, rawCommand)
+    local items = lib.inventory.getItemList()
+    for itemName, data in pairs(items) do
+        print("Item:", data.name, "Label:", data.label, "Weight:", data.weight)
+    end
+end, true)
+```
+
+## lib.inventory.getWeaponList
+
+Retrieves the list of all weapons available in the inventory system, typically a master list of weapon definitions.
+
+```lua
+lib.inventory.getWeaponList()
+```
+
+**Returns:**
+
+- weapons: `table`
+  - A table containing the list of all weapons (e.g., `{ { name = "WEAPON_PISTOL", label = "Pistol", weight = 1000 }, { name = "WEAPON_KNIFE", label = "Knife", weight = 500 } }`).
+
+### Example: Listing All Weapons
+
+Fetches and logs all weapons in the inventory system.
+
+```lua title="Server: Listing All Weapons"
+RegisterCommand('listweapons', function(source, args, rawCommand)
+    local weapons = lib.inventory.getWeaponList()
+    for weaponName, data in pairs(weapons) do
+        print("Weapon:", data.name, "Label:", data.label, "Weight:", data.weight)
+    end
+end, true)
+```
+
+## lib.inventory.getCurrentWeapon
+
+This function is not available on the server side. Use the client-side `lib.inventory.getCurrentWeapon` to retrieve the equipped weapon.
+
+## lib.inventory.registerStash
+
+Registers a new stash with the inventory system, allowing items to be stored in a separate inventory.
+
+```lua
+lib.inventory.registerStash(source, stashId, data)
+```
+
+- source: `number` | `nil`
+  - The player source ID (optional, defaults to 0).
+- stashId: `string`
+  - The unique identifier for the stash (e.g., "stash_001").
+- data: `table` | `nil`
+  - Optional table containing stash configuration:
+    - maxSlots: `number` - The maximum number of slots in the stash (default: 20).
+    - maxWeight: `number` - The maximum weight capacity of the stash (default: 100000).
+    - label: `string` - The display label for the stash (default: `stashId`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the stash was registered successfully, `false` otherwise.
+
+### Example: Registering a Basic Stash
+
+Registers a stash with default settings.
+
+```lua title="Server: Registering a Basic Stash"
+RegisterCommand('regstash', function(source, args, rawCommand)
+    local stashId = args[1] or "stash_001"
+    local success = lib.inventory.registerStash(source, stashId)
+    if success then
+        print("Successfully registered stash:", stashId)
+    else
+        print("Failed to register stash:", stashId)
+    end
+end, true)
+```
+
+## lib.inventory.addItem
+
+Adds an item to a player's inventory.
+
+```lua
+lib.inventory.addItem(source, itemName, itemCount, itemSlot, itemMetadata)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- itemName: `string`
+  - The name of the item to add (e.g., "water").
+- itemCount: `number`
+  - The quantity of the item to add (e.g., `5`).
+- itemSlot: `number` | `nil`
+  - The slot to place the item in (optional).
+- itemMetadata: `table` | `nil`
+  - Metadata for the item (optional, e.g., `{ quality = 100 }`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was added successfully, `false` otherwise.
+
+### Example: Adding an Item to Inventory
+
+Adds 5 units of "water" to a player's inventory.
+
+```lua title="Server: Adding an Item to Inventory"
+RegisterCommand('additem', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local itemCount = tonumber(args[2]) or 5
+    local success = lib.inventory.addItem(source, itemName, itemCount)
+    if success then
+        print("Successfully added", itemCount, itemName, "to player", source)
+    else
+        print("Failed to add", itemName, "to player", source)
+    end
+end, true)
+```
+
+## lib.inventory.removeItem
+
+Removes an item from a player's inventory.
+
+```lua
+lib.inventory.removeItem(source, itemName, itemCount, itemSlot, itemMetadata)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- itemName: `string`
+  - The name of the item to remove (e.g., "water").
+- itemCount: `number`
+  - The quantity of the item to remove (e.g., `5`).
+- itemSlot: `number` | `nil`
+  - The slot to remove the item from (optional).
+- itemMetadata: `table` | `nil`
+  - Metadata for the item (optional, e.g., `{ quality = 100 }`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was removed successfully, `false` otherwise.
+
+### Example: Removing an Item from Inventory
+
+Removes 5 units of "water" from a player's inventory.
+
+```lua title="Server: Removing an Item from Inventory"
+RegisterCommand('removeitem', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local itemCount = tonumber(args[2]) or 5
+    local success = lib.inventory.removeItem(source, itemName, itemCount)
+    if success then
+        print("Successfully removed", itemCount, itemName, "from player", source)
+    else
+        print("Failed to remove", itemName, "from player", source)
+    end
+end, true)
+```
+
+## lib.inventory.canCarryItem
+
+Checks if a player can carry a specified item and quantity.
+
+```lua
+lib.inventory.canCarryItem(source, itemName, itemCount)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- itemName: `string`
+  - The name of the item (e.g., "water").
+- itemCount: `number`
+  - The quantity of the item (e.g., `5`).
+
+**Returns:**
+
+- canCarry: `boolean`
+  - `true` if the player can carry the item, `false` otherwise.
+
+### Example: Checking Carry Capacity
+
+Checks if a player can carry 10 units of "bread".
+
+```lua title="Server: Checking Carry Capacity"
+RegisterCommand('checkcarry', function(source, args, rawCommand)
+    local itemName = args[1] or "bread"
+    local itemCount = tonumber(args[2]) or 10
+    local canCarry = lib.inventory.canCarryItem(source, itemName, itemCount)
+    if canCarry then
+        print("Player", source, "can carry", itemCount, itemName)
+    else
+        print("Player", source, "cannot carry", itemCount, itemName)
+    end
+end, true)
+```
+
+## lib.inventory.getItemTotalAmmount
+
+Retrieves the total amount of a specific item in a player's inventory.
+
+```lua
+lib.inventory.getItemTotalAmmount(source, itemName)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- itemName: `string`
+  - The name of the item (e.g., "water").
+
+**Returns:**
+
+- amount: `number`
+  - The total amount of the item (e.g., `15`).
+
+### Example: Checking Total Item Amount
+
+Fetches the total amount of "water" in a player's inventory.
+
+```lua title="Server: Checking Total Item Amount"
+RegisterCommand('totalitem', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local amount = lib.inventory.getItemTotalAmmount(source, itemName)
+    print("Player", source, "has", amount, itemName, "in inventory.")
+end, true)
+```
+
+## lib.inventory.getItemLabel
+
+Retrieves the label (display name) of a specific item.
+
+```lua
+lib.inventory.getItemLabel(item)
+```
+
+- item: `string`
+  - The name of the item (e.g., "water").
+
+**Returns:**
+
+- label: `string`
+  - The label of the item (e.g., "Bottle of Water").
+
+### Example: Getting an Item Label
+
+Fetches the label of "water" and logs it.
+
+```lua title="Server: Getting an Item Label"
+RegisterCommand('getitemlabel', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local label = lib.inventory.getItemLabel(itemName)
+    print("Label for", itemName, ":", label)
+end, true)
+```
+
+## lib.inventory.hasItem
+
+Checks if a specific item exists in an inventory or stash with optional conditions.
+
+```lua
+lib.inventory.hasItem(invId, item, count, md, slot)
+```
+
+- invId: `number` | `string`
+  - The player ID or stash ID (e.g., `1` or `"stash_001"`).
+- item: `string`
+  - The name of the item to check (e.g., "water").
+- count: `number` | `nil`
+  - The minimum quantity required (optional).
+- md: `table` | `nil`
+  - The metadata to match (optional, e.g., `{ quality = 100 }`).
+- slot: `number` | `nil`
+  - The slot to check (optional).
+
+**Returns:**
+
+- result: `number` | `boolean`
+  - The item count if found and matches conditions (e.g., `5`), `false` otherwise.
+
+### Example: Checking for an Item
+
+Checks if a player has at least 5 units of "water" in their inventory.
+
+```lua title="Server: Checking for an Item"
+RegisterCommand('hasitem', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local minCount = tonumber(args[2]) or 5
+    local result = lib.inventory.hasItem(source, itemName, minCount)
+    if result then
+        print("Player", source, "has", result, itemName)
+    else
+        print("Player", source, "does not have", minCount, itemName)
+    end
+end, true)
+```
+
+## lib.inventory.createUsableItem
+
+Registers a usable item with a callback function that executes when the item is used.
+
+```lua
+lib.inventory.createUsableItem(itemName, callback)
+```
+
+- itemName: `string`
+  - The name of the item (e.g., "bread").
+- callback: `function`
+  - The callback function to execute when the item is used, receiving the player source and item data as arguments.
+
+### Example: Registering a Usable Item
+
+Registers a "bread" item that logs a message when used.
+
+```lua title="Server: Registering a Usable Item"
+lib.inventory.createUsableItem("bread", function(source, item)
+    print("Player", source, "used bread!")
+end)
+print("Registered bread as a usable item.")
+```
+
+## lib.inventory.setItemMetadata
+
+Sets metadata for an item in a specific slot of a player's inventory.
+
+```lua
+lib.inventory.setItemMetadata(source, itemSlot, itemMetadata)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- itemSlot: `number`
+  - The slot containing the item (e.g., `1`).
+- itemMetadata: `table`
+  - The metadata to set (e.g., `{ quality = 100 }`).
+
+### Example: Setting Item Metadata
+
+Sets metadata for an item in slot 1 of a player's inventory.
+
+```lua title="Server: Setting Item Metadata"
+RegisterCommand('setmetadata', function(source, args, rawCommand)
+    local slot = tonumber(args[1]) or 1
+    local metadata = { quality = 100 }
+    lib.inventory.setItemMetadata(source, slot, metadata)
+    print("Set metadata for item in slot", slot, "of player", source)
+end, true)
+```
+
+## lib.inventory.addItemToStash
+
+Adds an item to a stash.
+
+```lua
+lib.inventory.addItemToStash(stashId, itemName, itemAmount, itemSlot, itemMetadata, stashSlots, stashMaxWeight)
+```
+
+- stashId: `string`
+  - The stash ID (e.g., "stash_001").
+- itemName: `string`
+  - The name of the item to add (e.g., "water").
+- itemAmount: `number`
+  - The quantity of the item to add (e.g., `5`).
+- itemSlot: `number` | `nil`
+  - The slot to place the item in (optional).
+- itemMetadata: `table` | `nil`
+  - Metadata for the item (optional, e.g., `{ quality = 100 }`).
+- stashSlots: `number` | `nil`
+  - The maximum slots in the stash (optional).
+- stashMaxWeight: `number` | `nil`
+  - The maximum weight capacity of the stash (optional).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was added successfully, `false` otherwise.
+
+### Example: Adding an Item to a Stash
+
+Adds 5 units of "water" to a stash.
+
+```lua title="Server: Adding an Item to a Stash"
+RegisterCommand('addtostash', function(source, args, rawCommand)
+    local stashId = args[1] or "stash_001"
+    local itemName = args[2] or "water"
+    local itemAmount = tonumber(args[3]) or 5
+    local success = lib.inventory.addItemToStash(stashId, itemName, itemAmount)
+    if success then
+        print("Successfully added", itemAmount, itemName, "to stash", stashId)
+    else
+        print("Failed to add", itemName, "to stash", stashId)
+    end
+end, true)
+```
+
+## lib.inventory.removeItemFromStash
+
+Removes an item from a stash.
+
+```lua
+lib.inventory.removeItemFromStash(stashId, itemName, itemAmount, itemSlot, stashSlots, stashMaxWeight)
+```
+
+- stashId: `string`
+  - The stash ID (e.g., "stash_001").
+- itemName: `string`
+  - The name of the item to remove (e.g., "water").
+- itemAmount: `number`
+  - The quantity of the item to remove (e.g., `5`).
+- itemSlot: `number` | `nil`
+  - The slot to remove the item from (optional).
+- stashSlots: `number` | `nil`
+  - The maximum slots in the stash (optional).
+- stashMaxWeight: `number` | `nil`
+  - The maximum weight capacity of the stash (optional).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was removed successfully, `false` otherwise.
+
+### Example: Removing an Item from a Stash
+
+Removes 5 units of "water" from a stash.
+
+```lua title="Server: Removing an Item from a Stash"
+RegisterCommand('removefromstash', function(source, args, rawCommand)
+    local stashId = args[1] or "stash_001"
+    local itemName = args[2] or "water"
+    local itemAmount = tonumber(args[3]) or 5
+    local success = lib.inventory.removeItemFromStash(stashId, itemName, itemAmount)
+    if success then
+        print("Successfully removed", itemAmount, itemName, "from stash", stashId)
+    else
+        print("Failed to remove", itemName, "from stash", stashId)
+    end
+end, true)
+```
+
+## lib.inventory.getStashItems
+
+Retrieves the items in a stash.
+
+```lua
+lib.inventory.getStashItems(stashId)
+```
+
+- stashId: `string`
+  - The stash ID (e.g., "stash_001").
+
+**Returns:**
+
+- items: `table`
+  - A table containing the stash's items (e.g., `{ { name = "water", amount = 5, slot = 1 }, { name = "bread", amount = 2, slot = 2 } }`).
+
+### Example: Retrieving Stash Items
+
+Fetches and logs the items in a stash.
+
+```lua title="Server: Retrieving Stash Items"
+RegisterCommand('getstashitems', function(source, args, rawCommand)
+    local stashId = args[1] or "stash_001"
+    local items = lib.inventory.getStashItems(stashId)
+    for _, item in ipairs(items) do
+        print("Item in stash", stashId, ":", item.name, "Amount:", item.amount, "Slot:", item.slot)
+    end
+end, true)
+```
+
+## lib.inventory.getItemBySlot
+
+Retrieves an item from a player's inventory by slot.
+
+```lua
+lib.inventory.getItemBySlot(source, slot)
+```
+
+- source: `number`
+  - The player source ID (e.g., `1`).
+- slot: `number`
+  - The slot to check (e.g., `1`).
+
+**Returns:**
+
+- item: `table` | `boolean`
+  - The item details if found (e.g., `{ name = "water", amount = 5, slot = 1 }`), `false` otherwise.
+
+### Example: Getting an Item by Slot
+
+Fetches and logs the item in slot 1 of a player's inventory.
+
+```lua title="Server: Getting an Item by Slot"
+RegisterCommand('getslotitem', function(source, args, rawCommand)
+    local slot = tonumber(args[1]) or 1
+    local item = lib.inventory.getItemBySlot(source, slot)
+    if item then
+        print("Item in slot", slot, ":", item.name, "Amount:", item.amount)
+    else
+        print("No item found in slot", slot, "for player", source)
+    end
+end, true)
+```

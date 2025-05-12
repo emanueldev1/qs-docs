@@ -1,0 +1,68 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for animation playback with qs_lib.
+---
+
+# Client
+
+## lib.playAnim
+
+Plays an animation on a ped with the specified parameters, handling the loading and unloading of the animation dictionary automatically. This function can serve as a direct replacement for `TaskPlayAnim`.
+
+```lua
+lib.playAnim(pedHandle, dict, anim, blendIn, blendOut, animDuration, flags, phaseStart, usePhase, controlOptions, skipCloneUpdate)
+```
+
+- pedHandle: `number`
+  - The ped entity to play the animation on.
+- dict: `string`
+  - The animation dictionary name.
+- anim: `string`
+  - The name of the animation within the dictionary.
+- blendIn?: `number`
+  - Speed at which the animation blends in.
+  - Default: `8.0`
+- blendOut?: `number`
+  - Speed at which the animation blends out.
+  - Default: `8.0`
+- animDuration?: `number`
+  - Duration in milliseconds for the animation; use `-1` to play until cancelled.
+  - Default: `-1`
+- flags?: `AnimationFlags`
+  - Animation flags to control playback behavior.
+  - Default: `0`
+- phaseStart?: `number`
+  - Starting point of the animation as a percentage (0.0 to 1.0).
+  - Default: `0.0`
+- usePhase?: `boolean`
+  - Determines if `phaseStart` is applied.
+  - Default: `false`
+- controlOptions?: `ControlFlags`
+  - Flags to control how the animation affects character movement.
+  - Default: `0`
+- skipCloneUpdate?: `boolean`
+  - If true, prevents other clients from seeing the animation on the ped.
+  - Default: `false`
+
+### Examples
+
+#### Example 1: Character Waving Animation
+
+Plays a waving animation on the player's ped with a loop flag.
+
+```lua
+local playerPed = PlayerPedId()
+lib.playAnim(playerPed, "friends@frj@ig_1", "wave_a", 8.0, 8.0, -1, 1, 0.0, false, 0, false)
+print("Playing wave animation!")
+```
+
+#### Example 2: Inspecting an Item
+
+Plays an inspection animation on the player's ped with custom blend speeds and phase start.
+
+```lua
+local playerPed = PlayerPedId()
+lib.playAnim(playerPed, "amb@world_human_inspect@male_a@base", "base", 4.0, 4.0, 3000, 0, 0.5, true, 0, false)
+print("Inspecting item...")
+```

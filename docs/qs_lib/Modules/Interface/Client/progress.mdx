@@ -1,0 +1,469 @@
+---
+title: Progress
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Progress
+
+## lib.progressBar
+
+Renders a linear progress bar on the screen.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.progressBar(settings)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.progressBar(settings);
+    ```
+  </TabsContent>
+</Tabs>
+
+- settings: `table` (`object`)
+  - duration: `number`
+  - label: `string`
+  - useWhileDead?: `boolean`
+  - allowRagdoll?: `boolean`
+  - allowSwimming?: `boolean`
+  - allowCuffed?: `boolean`
+  - allowFalling?: `boolean`
+  - canCancel?: `boolean`
+  - anim?: `table` (`object`)
+    - dict?: `string`
+      - Either `dict` or `scenario` must be specified.
+    - clip: `string`
+    - flag?: `number`
+      - Default: `49`
+    - blendIn?: `float`
+      - Default: `3.0`
+    - blendOut?: `float`
+      - Default: `1.0`
+    - duration?: `number`
+      - Default: `-1`
+    - playbackRate?: `number`
+      - Default: `0`
+    - lockX?: `boolean`
+    - lockY?: `boolean`
+    - lockZ?: `boolean`
+    - scenario?: `string`
+      - Either `dict` or `scenario` must be specified.
+    - playEnter?: `boolean`
+      - Default: `true`
+  - prop?: `table` (`object` or `array`)
+    - Multiple props can be defined as an array of tables.
+    - model: `hash`
+    - bone?: `number`
+      - Default: `60309`
+    - pos: `table`
+      - x: `number`
+      - y: `number`
+      - z: `number`
+    - rot: `table` (`object`)
+      - x: `number`
+      - y: `number`
+      - z: `number`
+    - rotOrder?: `number`
+      - [Yaw, pitch, roll application order.](https://docs.fivem.net/natives/?_0xAFBD61CC738D9EB9)
+      - Default: `0`
+  - disable?: `table` (`object`)
+    - move?: `boolean`
+    - car?: `boolean`
+    - combat?: `boolean`
+    - mouse?: `boolean`
+    - sprint?: `boolean`
+
+### Examples
+
+#### Example 1: Crafting an Item
+
+Shows a progress bar while crafting a wooden plank with an animation.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if lib.progressBar({
+        duration = 3000,
+        label = 'Crafting Wooden Plank',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            move = true
+        },
+        anim = {
+            dict = 'mini@repair',
+            clip = 'fixing_a_ped'
+        },
+        prop = {
+            model = `prop_tool_hammer`,
+            pos = vec3(0.1, 0.0, 0.0),
+            rot = vec3(0.0, 0.0, 0.0)
+        }
+    }) then
+        print("Crafting completed!")
+    else
+        print("Crafting cancelled.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    <Alert variant="info" className="mb-4">
+      <AlertTitle>Note</AlertTitle>
+      <AlertDescription>
+        This function is asynchronous, requiring a `.then` callback or an `async` function.
+      </AlertDescription>
+    </Alert>
+
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    if (await lib.progressBar({
+      duration: 3000,
+      label: 'Crafting Wooden Plank',
+      useWhileDead: false,
+      canCancel: true,
+      disable: {
+        move: true
+      },
+      anim: {
+        dict: 'mini@repair',
+        clip: 'fixing_a_ped'
+      },
+      prop: {
+        model: `prop_tool_hammer`,
+        pos: { x: 0.1, y: 0.0, z: 0.0 },
+        rot: { x: 0.0, y: 0.0, z: 0.0 }
+      }
+    })) {
+      console.log("Crafting completed!");
+    } else {
+      console.log("Crafting cancelled.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Repairing a Vehicle
+
+Displays a progress bar while repairing a vehicle with a specific animation.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if lib.progressBar({
+        duration = 4000,
+        label = 'Repairing Vehicle',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            combat = true
+        },
+        anim = {
+            scenario = 'WORLD_HUMAN_VEHICLE_MECHANIC'
+        },
+        prop = {
+            model = `prop_tool_wrench`,
+            pos = vec3(0.05, 0.0, 0.0),
+            rot = vec3(0.0, 0.0, 0.0)
+        }
+    }) then
+        print("Vehicle repair completed!")
+    else
+        print("Vehicle repair cancelled.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    if (await lib.progressBar({
+      duration: 4000,
+      label: 'Repairing Vehicle',
+      useWhileDead: false,
+      canCancel: true,
+      disable: {
+        combat: true
+      },
+      anim: {
+        scenario: 'WORLD_HUMAN_VEHICLE_MECHANIC'
+      },
+      prop: {
+        model: `prop_tool_wrench`,
+        pos: { x: 0.05, y: 0.0, z: 0.0 },
+        rot: { x: 0.0, y: 0.0, z: 0.0 }
+      }
+    })) {
+      console.log("Vehicle repair completed!");
+    } else {
+      console.log("Vehicle repair cancelled.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.progressCircle
+
+Functions like `lib.progressBar` but shows a circular progress indicator with a configurable position.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.progressCircle(settings)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.progressCircle(settings);
+    ```
+  </TabsContent>
+</Tabs>
+
+- settings: `table` (`object`)
+  - duration: `number`
+  - label?: `string`
+  - position?: `'middle'` | `'bottom'`
+    - Default: `'middle'`
+  - useWhileDead?: `boolean`
+  - allowRagdoll?: `boolean`
+  - allowSwimming?: `boolean`
+  - allowCuffed?: `boolean`
+  - allowFalling?: `boolean`
+  - canCancel?: `boolean`
+  - anim?: `table` (`object`)
+    - dict?: `string`
+      - Either `dict` or `scenario` must be specified.
+    - clip: `string`
+    - flag?: `number`
+      - Default: `49`
+    - blendIn?: `float`
+      - Default: `3.0`
+    - blendOut?: `float`
+      - Default: `1.0`
+    - duration?: `number`
+      - Default: `-1`
+    - playbackRate?: `number`
+      - Default: `0`
+    - lockX?: `boolean`
+    - lockY?: `boolean`
+    - lockZ?: `boolean`
+    - scenario?: `string`
+      - Either `dict` or `scenario` must be specified.
+    - playEnter?: `boolean`
+      - Default: `true`
+  - prop?: `table` (`object` or `array`)
+    - Multiple props can be defined as an array of tables.
+    - model: `hash`
+    - bone?: `number`
+      - Default: `60309`
+    - pos: `table`
+      - x: `number`
+      - y: `number`
+      - z: `number`
+    - rot: `table` (`object`)
+      - x: `number`
+      - y: `number`
+      - z: `number`
+    - rotOrder?: `number`
+      - [Yaw, pitch, roll application order.](https://docs.fivem.net/natives/?_0xAFBD61CC738D9EB9)
+      - Default: `0`
+  - disable?: `table` (`object`)
+    - move?: `boolean`
+    - car?: `boolean`
+    - combat?: `boolean`
+    - mouse?: `boolean`
+    - sprint?: `boolean`
+
+### Examples
+
+#### Example 1: Picking a Lock
+
+Shows a circular progress indicator while picking a lock with an animation.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if lib.progressCircle({
+        duration = 2500,
+        label = 'Picking Lock',
+        position = 'middle',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            sprint = true
+        },
+        anim = {
+            dict = 'missheistfbisetup1',
+            clip = 'hassle_intro_loop_f'
+        },
+        prop = {
+            model = `prop_lockpick`,
+            pos = vec3(0.02, 0.01, 0.0),
+            rot = vec3(0.0, 0.0, 90.0)
+        }
+    }) then
+        print("Lock picked successfully!")
+    else
+        print("Lock picking cancelled.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    if (await lib.progressCircle({
+      duration: 2500,
+      label: 'Picking Lock',
+      position: 'middle',
+      useWhileDead: false,
+      canCancel: true,
+      disable: {
+        sprint: true
+      },
+      anim: {
+        dict: 'missheistfbisetup1',
+        clip: 'hassle_intro_loop_f'
+      },
+      prop: {
+        model: `prop_lockpick`,
+        pos: { x: 0.02, y: 0.01, z: 0.0 },
+        rot: { x: 0.0, y: 0.0, z: 90.0 }
+      }
+    })) {
+      console.log("Lock picked successfully!");
+    } else {
+      console.log("Lock picking cancelled.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Hacking a Terminal
+
+Displays a circular progress indicator while hacking a terminal with a scenario animation.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if lib.progressCircle({
+        duration = 3500,
+        label = 'Hacking Terminal',
+        position = 'bottom',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            mouse = true
+        },
+        anim = {
+            scenario = 'WORLD_HUMAN_GUARD_STAND'
+        }
+    }) then
+        print("Terminal hacked successfully!")
+    else
+        print("Hacking cancelled.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    if (await lib.progressCircle({
+      duration: 3500,
+      label: 'Hacking Terminal',
+      position: 'bottom',
+      useWhileDead: false,
+      canCancel: true,
+      disable: {
+        mouse: true
+      },
+      anim: {
+        scenario: 'WORLD_HUMAN_GUARD_STAND'
+      }
+    })) {
+      console.log("Terminal hacked successfully!");
+    } else {
+      console.log("Hacking cancelled.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.progressActive
+
+Checks if a progress bar is currently visible.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.progressActive()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.progressActive();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.cancelProgress
+
+Cancels the active progress bar if it is cancellable.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.cancelProgress()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.cancelProgress();
+    ```
+  </TabsContent>
+</Tabs>

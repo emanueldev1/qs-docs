@@ -1,0 +1,67 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for client-side callback handling with qs_lib.
+---
+
+# Client
+
+## Register Client Callback
+
+### lib.callback.register
+
+Defines a handler to process requests from the server.
+
+```lua
+lib.callback.register(event, handler)
+```
+
+- event: `string`
+- handler: `function`
+
+```lua
+lib.callback.register('qs:getNearbyPlayers', function(distance)
+    local nearbyPlayers = lib.getNearbyPlayers(GetEntityCoords(cache.ped), distance, false)
+    return nearbyPlayers
+end)
+```
+
+## Trigger Server Callback
+
+### lib.callback
+
+Handles the response within a separate coroutine.
+
+```lua
+lib.callback(event, cooldown, callback, ...)
+```
+
+- event: `string`
+- cooldown: `number` or `false`
+  - Time until the callback can be triggered again
+- callback: `function`
+- ...: `any`
+
+```lua
+lib.callback('qs_player:getEnergyLevel', false, function(level)
+    print('Energy level:', level)
+end, 'stamina', {category = 'primary'})
+```
+
+### lib.callback.await
+
+Pauses the current coroutine until the server responds.
+
+```lua
+lib.callback.await(event, cooldown, ...)
+```
+
+- event: `string`
+- cooldown: `number` or `false`
+  - Time until the callback can be triggered again
+- ...: `any`
+
+```lua
+local level = lib.callback.await('qs_player:getEnergyLevel', false, 'stamina', {category = 'primary'})
+print('Energy level:', level)
+```

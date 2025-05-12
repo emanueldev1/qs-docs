@@ -1,0 +1,63 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getClosestVehicle
+
+Obtains the handle and coordinates of the nearest vehicle to a specified position.
+
+```lua
+lib.getClosestVehicle(location, searchRange, includeOwnVehicle)
+```
+
+- location: `vector3`
+  - The position to search from.
+- searchRange?: `number`
+  - The maximum distance to search within.
+  - Default: `2.0`
+- includeOwnVehicle?: `boolean`
+  - Whether to include the player's current vehicle in the search. Ignored on the server.
+  - Default: `false`
+
+**Returns:**
+
+- vehicle?: `number`
+- coordinates?: `vector3`
+
+## Examples
+
+### Example 1: Finding a Nearby Vehicle to Repair
+
+Searches for the closest vehicle within 3.0 units of the player's position, excluding their own vehicle, and repairs it if found.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local vehicle, vehiclePos = lib.getClosestVehicle(playerPos, 3.0, false)
+
+if vehicle then
+    RepairVehicle(vehicle)
+    print("Repaired vehicle at:", vehiclePos.x, vehiclePos.y, vehiclePos.z)
+else
+    print("No vehicle found to repair nearby.")
+end
+```
+
+### Example 2: Locating a Nearby Vehicle to Steal
+
+Finds the closest vehicle within the default range (2.0 units) from a specific location, including the player's vehicle, and attempts to steal it if present.
+
+```lua
+local theftSpot = vector3(500.0, 600.0, 70.0)
+local vehicle, vehiclePos = lib.getClosestVehicle(theftSpot, nil, true)
+
+if vehicle then
+    StealVehicle(vehicle)
+    print("Attempting to steal vehicle at:", vehiclePos.x, vehiclePos.y, vehiclePos.z)
+else
+    print("No vehicle found to steal nearby.")
+end
+```

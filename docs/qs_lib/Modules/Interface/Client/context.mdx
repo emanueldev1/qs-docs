@@ -1,0 +1,403 @@
+---
+title: Context Menu
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Context Menu
+
+## lib.registerContext
+
+Defines a new context menu for later use.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerContext(menuData)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerContext(menuData);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuData: `table` (`object`)
+  - id: `string`
+    - A unique identifier for the menu, used to display it.
+  - title: `string`
+    - The menu's title, supports markdown formatting.
+  - menu?: `string`
+    - ID of a parent menu, adding a back arrow beside the title to navigate to it.
+  - canClose?: `boolean`
+    - If false, prevents the user from closing the menu without selecting a button.
+  - onExit?: `function`
+    - Executes when the user closes the menu using ESC.
+  - onBack?: `function`
+    - Executes when the user presses the back arrow to return to the parent menu.
+  - options: `table` (`object` or `array`)
+    - item: `key` (`string`) or `table` (`object`)
+      - title?: `string`
+        - Sets the button's title if not using keys, supports markdown.
+      - disabled?: `boolean`
+        - Disables the button, making it unclickable and grayed out.
+      - readOnly?: `boolean`
+        - Removes hover/active styles and disables onSelect.
+      - menu?: `string`
+        - ID of a menu to navigate to, displays an arrow.
+      - onSelect?: `function`
+        - Executes when the button is clicked.
+      - icon?: `string`
+        - FontAwesome icon or image URL (PNG/WebP) displayed on the left; FontAwesome recommended.
+      - iconColor?: `string`
+        - Sets the icon's color.
+      - iconAnimation?: `'spin'` `'spinPulse'` `'spinReverse'` `'pulse'` `'beat'` `'fade'` `'beatFade'` `'bounce'` `'shake'`
+      - progress?: `number`
+        - Adds a progress bar filled to this percentage.
+      - colorScheme?: `string`
+        - Defines the progress bar's color scheme (e.g., `blue`, `teal`).
+      - arrow?: `boolean`
+        - Displays an arrow on the right, useful for event-based menus; can be set to false to hide.
+      - description?: `string`
+        - Text shown below the button title when using keys, supports markdown.
+      - image?: `string`
+        - URL of an image to display in the button's metadata.
+      - metadata?: `string[]` or `object` or `array`
+        - Data displayed on hover.
+        - label: `string`
+        - value: `any`
+        - progress?: `number`
+        - colorScheme?: `string`
+      - event?: `string`
+        - Client event triggered by the button.
+      - serverEvent?: `string`
+        - Server event triggered by the button.
+      - args?: `any`
+        - Arguments passed to events or onSelect function.
+
+Multiple context menus can be defined in a single `lib.registerContext` call. Menus can be ordered as written or sorted alphabetically by using keys for buttons/metadata; otherwise, tables maintain the defined order.
+
+## lib.showContext
+
+Displays a previously registered context menu using its ID.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showContext(menuId)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showContext(menuId);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuId: `string`
+
+## lib.hideContext
+
+Closes any currently visible context menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.hideContext(runExit)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.hideContext(runExit);
+    ```
+  </TabsContent>
+</Tabs>
+
+- runExit: `boolean`
+  - Determines whether the menu's onExit function should execute.
+
+## lib.getOpenContextMenu
+
+Fetches the ID of the currently visible context menu, or `nil` if none is open.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.getOpenContextMenu()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.getOpenContextMenu();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Example 1: Vehicle Interaction Menu
+
+Registers a vehicle interaction menu with options to lock, unlock, or inspect the vehicle, and opens it via a command.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Recommendation</AlertTitle>
+  <AlertDescription>
+    Avoid re-registering static menus that don't rely on dynamic values.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerContext({
+      id = 'vehicle_menu',
+      title = 'Vehicle Options',
+      options = {
+        {
+          title = 'Lock Vehicle',
+          icon = 'lock',
+          onSelect = function()
+            print("Vehicle locked!")
+          end
+        },
+        {
+          title = 'Unlock Vehicle',
+          icon = 'unlock',
+          onSelect = function()
+            print("Vehicle unlocked!")
+          end
+        },
+        {
+          title = 'Inspect Vehicle',
+          description = 'View vehicle details',
+          icon = 'car',
+          metadata = {
+            { label = 'Fuel Level', value = '75%', progress = 75, colorScheme = 'teal' },
+            { label = 'Damage', value = 'Minor' }
+          },
+          onSelect = function()
+            print("Inspecting vehicle...")
+          end
+        }
+      }
+    })
+
+    RegisterCommand('vehiclemenu', function()
+      lib.showContext('vehicle_menu')
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerContext({
+      id: 'vehicle_menu',
+      title: 'Vehicle Options',
+      options: [
+        {
+          title: 'Lock Vehicle',
+          icon: 'lock',
+          onSelect: () => {
+            console.log("Vehicle locked!");
+          }
+        },
+        {
+          title: 'Unlock Vehicle',
+          icon: 'unlock',
+          onSelect: () => {
+            console.log("Vehicle unlocked!");
+          }
+        },
+        {
+          title: 'Inspect Vehicle',
+          description: 'View vehicle details',
+          icon: 'car',
+          metadata: [
+            { label: 'Fuel Level', value: '75%', progress: 75, colorScheme: 'teal' },
+            { label: 'Damage', value: 'Minor' }
+          ],
+          onSelect: () => {
+            console.log("Inspecting vehicle...");
+          }
+        }
+      ]
+    });
+
+    RegisterCommand('vehiclemenu', () => {
+      lib.showContext('vehicle_menu');
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+### Example 2: Inventory Menu with Submenu
+
+Registers an inventory menu with options to use or drop items, linking to a submenu for dropping, and opens it via a command.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    -- Main inventory menu
+    lib.registerContext({
+      id = 'inventory_menu',
+      title = 'Inventory Actions',
+      options = {
+        {
+          title = 'Use Item',
+          icon = 'hand-holding',
+          onSelect = function()
+            print("Using item...")
+          end
+        },
+        {
+          title = 'Drop Item',
+          description = 'Select an item to drop',
+          menu = 'drop_menu',
+          icon = 'trash'
+        }
+      }
+    })
+
+    -- Submenu for dropping items
+    lib.registerContext({
+      id = 'drop_menu',
+      title = 'Drop Item',
+      menu = 'inventory_menu',
+      onBack = function()
+        print("Returned to inventory menu!")
+      end,
+      options = {
+        {
+          title = 'Drop Water Bottle',
+          icon = 'bottle-water',
+          event = 'drop_item',
+          args = { item = 'water_bottle', quantity = 1 }
+        }
+      }
+    })
+
+    -- Event handler for dropping
+    RegisterNetEvent('drop_item', function(args)
+      lib.registerContext({
+        id = 'confirm_drop',
+        title = 'Confirm Drop',
+        menu = 'drop_menu',
+        options = {
+          {
+            title = 'Dropped ' .. args.quantity .. 'x ' .. args.item,
+            icon = 'check'
+          }
+        }
+      })
+
+      lib.showContext('confirm_drop')
+    end)
+
+    -- Command to open the menu
+    RegisterCommand('inventorymenu', function()
+      lib.showContext('inventory_menu')
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    // Main inventory menu
+    lib.registerContext({
+      id: 'inventory_menu',
+      title: 'Inventory Actions',
+      options: [
+        {
+          title: 'Use Item',
+          icon: 'hand-holding',
+          onSelect: () => {
+            console.log("Using item...");
+          }
+        },
+        {
+          title: 'Drop Item',
+          description: 'Select an item to drop',
+          menu: 'drop_menu',
+          icon: 'trash'
+        }
+      ]
+    });
+
+    // Submenu for dropping items
+    lib.registerContext({
+      id: 'drop_menu',
+      title: 'Drop Item',
+      menu: 'inventory_menu',
+      onBack: () => {
+        console.log("Returned to inventory menu!");
+      },
+      options: [
+        {
+          title: 'Drop Water Bottle',
+          icon: 'bottle-water',
+          event: 'drop_item',
+          args: { item: 'water_bottle', quantity: 1 }
+        }
+      ]
+    });
+
+    // Event handler for dropping
+    onNet('drop_item', (args) => {
+      lib.registerContext({
+        id: 'confirm_drop',
+        title: 'Confirm Drop',
+        menu: 'drop_menu',
+        options: [
+          {
+            title: `Dropped ${args.quantity}x ${args.item}`,
+            icon: 'check'
+          }
+        ]
+      });
+
+      lib.showContext('confirm_drop');
+    });
+
+    // Command to open the menu
+    RegisterCommand('inventorymenu', () => {
+      lib.showContext('inventory_menu');
+    });
+    ```
+  </TabsContent>
+</Tabs>

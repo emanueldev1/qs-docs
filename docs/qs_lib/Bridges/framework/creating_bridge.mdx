@@ -1,0 +1,73 @@
+---
+title: Creating a Bridge for your framework
+sidebar_position: 1
+description: Documentation for creating a bridge for your framework with qs_lib.
+---
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+
+If you are a framework developer and want to create a bridge for your framework, you can follow the steps below. This guide will help you set up a bridge that can be used with `qs_lib`.
+
+First of all you as framework developer can use all functions from `qs_lib` including the bridge functions for all other things like inventory, keys and more if you want to. (First you need to create a bridge for your framework if you want to use bridges with dependency of a framework.)
+
+you can create issues o github to say what new features of the bridges you think are missing and its usefull with examples or you can create a pull request with the new features you want to add. We will review it and if we think is good we will merge it.
+
+
+Lets start with the steps to create a bridge for your framework:
+
+1. **Create a new folder in the `qs_lib/bridge/framework/<your_framework_exact_name>` directory.** This folder will contain all the files related to your framework's bridge.
+2. **Create a new files named `client.lua`, `server.lua` and `shared.lua` in the folder you just created.** These files will contain the client-side, server-side, and shared functions for your framework's bridge, respectively.
+3. **Fill the files with the default template.** You need use the default template provided below to get started. This template includes the basic structure for the client-side, server-side, and shared functions, ensure all of it functions returns the same as the other ones to keep the same structure. You can add your own functions and logic as needed.
+
+<Tabs defaultValue="client" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="client">client.lua</TabsTrigger>
+    <TabsTrigger value="server">server.lua</TabsTrigger>
+    <TabsTrigger value="shared">shared.lua</TabsTrigger>
+  </TabsList>
+
+    <TabsContent value="client">
+        ```lua
+        return {
+            -- @deprecated
+            getItemLabel = function(item) -- this function is deprecated and will be removed in the future, use lib.inventory.getItemLabel instead (keep because esx older versions)
+                local items = lib.framework?.Shared?.Items
+                if not items then return false, 'NoItems' end
+                local item = items[item]
+                if not item then return false, 'NoItem' end
+                return item.label
+            end,
+        }
+
+        ```
+    </TabsContent>
+    <TabsContent value="server">
+        ```lua
+            return {
+                -- @deprecated
+                canUseItem = function(item) -- this function is deprecated and will be removed in the future, use lib.inventory.canUseItem instead (keep because esx older versions)
+                    return lib.framework.UsableItemsCallbacks[item] -- using the default lib preloaded shared object on the lib.framework
+                end,
+
+                -- @deprecated
+                registerUseableItem = function(item, cb) -- this function is deprecated and will be removed in the future, use lib.inventory.canUseItem instead (keep because esx older versions)
+                    return lib.framework.RegisterUsableItem(item, cb) -- using the default lib preloaded shared object on the lib.framework
+                end,
+
+                -- @deprecated
+                getItemLabel = function(item) -- this function is deprecated and will be removed in the future, use lib.inventory.canUseItem instead (keep because esx older versions)
+                    return lib.framework.GetItemLabel(item) -- using the default lib preloaded shared object on the lib.framework
+                end,
+            }
+        ```
+    </TabsContent>
+    <TabsContent value="shared">
+        ```lua
+        return {
+            getObject = function()
+                return exports['es_extended']:getSharedObject() -- mandatory use ONLY Your REAL framework get shared object function here. if you dont set this all aliases like lib.framework will not work and will return nil.
+            end
+        }
+        ```
+    </TabsContent>
+</Tabs>

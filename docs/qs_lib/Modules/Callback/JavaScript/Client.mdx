@@ -1,0 +1,57 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for client-side callback handling with qs_lib.
+---
+
+# Client
+
+## Register Client Callback
+
+### onServerCallback
+
+```js
+onServerCallback(event, handler)
+```
+
+- event: `string`
+- handler: `function(...params: any)`
+
+## Usage Example
+
+To fully understand this example, refer to the corresponding server-side example on the [server](./Server#usage-example) page.
+
+```js
+import { onServerCallback, triggerServerCallback } from '@emanueldev1/qs_lib/client'
+```
+
+```js
+onServerCallback('player:stats', (health, stamina) => {
+  console.log('Received stats:', health, stamina);
+  return {
+    clientData: 'Stats processed by client',
+  };
+});
+```
+
+```js
+setTimeout(async () => {
+  const playerId = 42;
+  const response = await triggerServerCallback('player:fetchStats', 2, playerId);
+  if (!response) return;
+  console.log('Server response:', response);
+}, 200);
+```
+
+## Trigger Server Callback
+
+### triggerServerCallback
+
+```js
+triggerServerCallback(event, cooldown, ...params)
+```
+
+- event: `string`
+- cooldown: `number` or `null`
+  - Time in seconds before the callback can be triggered again
+- ...params: `any`

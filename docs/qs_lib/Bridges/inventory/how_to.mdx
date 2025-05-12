@@ -1,0 +1,327 @@
+---
+title: How to Create an Inventory Bridge
+sidebar_position: 17
+description: Guide for implementing the Inventory Bridge for FiveM inventory systems.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# How to Create an Inventory Bridge
+
+The Inventory Bridge provides a standardized interface for managing inventory-related operations in FiveM, compatible with inventory systems like qs-inventory, ak47_inventory, codem-inventory, origen_inventory, ox_inventory, qb-inventory, and tgiann-inventory. This guide explains how to implement the base templates (`bridge/inventory/<inventory_name(scriptname)>/client.lua` and `bridge/inventory/<inventory_name(scriptname)>/server.lua`) to integrate with your specific inventory system. Each function in the templates must be customized to interact with your inventory system's API, ensuring the specified return formats and types are followed.
+
+## Overview
+
+The Inventory Bridge abstracts inventory operations, allowing scripts to work seamlessly across different inventory systems. The base templates (`bridge/inventory/<inventory_name(scriptname)>/client.lua` and `bridge/inventory/<inventory_name(scriptname)>/server.lua`) provide placeholder functions that you need to implement by replacing the default logic with calls to your inventory system's API. Your task is to fill in each function to fetch or modify inventory data according to your system's structure, ensuring the return values match the expected formats.
+
+## Prerequisites
+
+- Ensure your inventory system (e.g., qs-inventory, ox_inventory, qb-inventory) is properly set up and compatible with your framework.
+- Familiarize yourself with your inventory system's API (e.g., how to access items, manage stashes, or check inventory states).
+- Verify that your environment supports the necessary exports or functions to interact with your inventory system.
+
+<Tabs defaultValue="client" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="client">Client</TabsTrigger>
+    <TabsTrigger value="server">Server</TabsTrigger>
+  </TabsList>
+  <TabsContent value="client">
+    ## Implementing the Client-Side Inventory Bridge
+
+    The client-side Inventory Bridge (`bridge/inventory/<inventory_name(scriptname)>/client.lua`) provides functions to manage inventory operations on the client, such as retrieving items, checking UI state, and managing stashes. The template includes functions like `lib.inventory.get`, `lib.inventory.getItemList`, `lib.inventory.registerStash`, and others, which you need to implement.
+
+    ### General Steps
+
+    - **Interact with the Inventory System**: Use your inventory system's client-side API to fetch or modify data. This might involve calling exports (e.g., `exports['qs-inventory']:GetItemList()` for qs-inventory) or framework-specific functions.
+    - **Extract Required Information**: For each function, extract the relevant data from the inventory system. For example, to implement `lib.inventory.get`, you might call a function to retrieve the player's inventory items.
+    - **Handle Missing Data**: If the requested data is unavailable, return the default value specified in the template (e.g., `{}` for `lib.inventory.get`, `false` for `lib.inventory.isOpen`).
+    - **Return Expected Formats**: Ensure that each function returns the specified type and format. For example, `lib.inventory.getItemList` must return a table of items, even if empty.
+    - **Framework-Specific Adjustments**: Adjust the implementation based on your inventory system's structure and API. For example, qs-inventory might use exports, while ox_inventory might require direct function calls or event triggers.
+
+    ### Template Placeholder
+
+    Below is the placeholder where you can add your implementation. Insert the base template code and fill in each function with your inventory system-specific logic.
+
+    ```lua title="inventory/client.lua"
+--- Inventory management library (Template)
+--- This module provides a template for integrating custom inventory systems.
+--- Replace the placeholder logic with your own implementation to interface with your inventory system.
+--- @module inventory
+
+local Inventory = {}
+
+--- Retrieves the list of items from the inventory system.
+--- @return table A table containing the list of all items.
+function Inventory.getItemList()
+   -- Replace with your custom logic to fetch the item list.
+   -- Example: return YourInventorySystem:GetItems()
+   return {}
+end
+
+--- Retrieves the list of weapons from the inventory system.
+--- @return table A table containing the list of all weapons.
+function Inventory.getWeaponList()
+   -- Replace with your custom logic to fetch the weapon list.
+   -- Example: return YourInventorySystem:GetWeapons()
+   return {}
+end
+
+--- Checks if the inventory UI is currently open.
+--- @return boolean True if the inventory is open, false otherwise.
+function Inventory.isOpen()
+   -- Replace with your custom logic to check inventory state.
+   -- Example: return YourInventorySystem:IsInventoryOpen()
+   return false
+end
+
+--- Enables or disables the inventory system.
+--- @param state boolean True to disable the inventory, false to enable it.
+--- @return boolean|nil True if the state was set successfully, false or nil otherwise.
+function Inventory.setDisabled(state)
+   -- Replace with your custom logic to enable/disable the inventory.
+   -- Example: return YourInventorySystem:SetInventoryState(state)
+end
+
+--- Retrieves the user's inventory data.
+--- @return table A table containing the user's inventory items.
+function Inventory.get()
+   -- Replace with your custom logic to fetch the user's inventory.
+   -- Example: return YourInventorySystem:GetUserInventory()
+   return {}
+end
+
+--- Registers a stash with the inventory system.
+--- @param stashId string The unique identifier for the stash.
+--- @param data table|nil Optional table containing stash configuration (maxSlots, maxWeight).
+--- @field data.maxSlots number The maximum number of slots in the stash (default: 20).
+--- @field data.maxWeight number The maximum weight capacity of the stash (default: 100000).
+--- @return boolean|nil True if the stash was registered successfully, false or nil otherwise.
+function Inventory.registerStash(stashId, data)
+   if not data then data = {} end
+   if not data.maxSlots then data.maxSlots = 20 end
+   if not data.maxWeight then data.maxWeight = 100000 end
+   -- Replace with your custom logic to register a stash.
+   -- Example: return YourInventorySystem:RegisterStash(stashId, data.maxSlots, data.maxWeight)
+end
+
+--- Retrieves the currently equipped weapon.
+--- @return table|nil A table containing the current weapon's details, or nil if no weapon is equipped.
+function Inventory.getCurrentWeapon()
+   -- Replace with your custom logic to fetch the current weapon.
+   -- Example: return YourInventorySystem:GetEquippedWeapon()
+   return {}
+end
+
+--- Searches for an item in the inventory by name.
+--- @param itemName string The name of the item to search for.
+--- @return table A table containing the search results (items found).
+function Inventory.search(itemName)
+   -- Replace with your custom logic to search for an item.
+   -- Example: return YourInventorySystem:SearchItem(itemName)
+   return {}
+end
+
+--- Checks if the inventory is blocked (e.g., during specific actions).
+--- @return boolean True if the inventory is blocked, false otherwise.
+function Inventory.isBlocked()
+   -- Replace with your custom logic to check if the inventory is blocked.
+   -- Example: return YourInventorySystem:IsInventoryBlocked()
+   return false
+end
+
+return Inventory
+
+    ```
+
+    ### Implementation Notes
+
+    - **Inventory System API**: Use your inventory system's client-side API to interact with inventory data. For example, to implement `lib.inventory.getItemList`, you might call an export like `exports['qs-inventory']:GetItemList()` for qs-inventory.
+    - **Default Values**: Ensure each function returns the specified default value if data is unavailable (e.g., `{}` for `lib.inventory.get`, `false` for `lib.inventory.isBlocked`).
+    - **Client-Side Focus**: Functions like `lib.inventory.getCurrentWeapon` and `lib.inventory.isOpen` are client-specific and may require native FiveM functions (e.g., `GetSelectedPedWeapon`) or inventory-specific UI state checks.
+    - **System-Specific Adjustments**: Adjust the data paths and methods based on your inventory system's structure. For example, qs-inventory might store items in a specific export, while ox_inventory might require event-based interactions.
+  </TabsContent>
+  <TabsContent value="server">
+    ## Implementing the Server-Side Inventory Bridge
+
+    The server-side Inventory Bridge (`inventory/server.lua`) provides functions to manage inventory operations on the server, such as adding/removing items, managing stashes, and checking item quantities. The template includes functions like `lib.inventory.get`, `lib.inventory.addItem`, `lib.inventory.registerStash`, and others, which you need to implement.
+
+    ### General Steps
+
+    - **Interact with the Inventory System**: Use your inventory system's server-side API to fetch or modify data. This might involve calling exports (e.g., `exports['qs-inventory']:GetUserInventory()` for qs-inventory) or framework-specific functions.
+    - **Access Player or Stash Data**: For each function, retrieve the relevant inventory data (e.g., player's inventory, stash contents). For example, to implement `lib.inventory.get`, you might fetch the inventory for a player or stash by ID.
+    - **Perform Actions**: For functions like `lib.inventory.addItem` or `lib.inventory.removeItemFromStash`, use the inventory system's API to modify inventory data.
+    - **Handle Missing Data**: If the requested data is unavailable, return the default value specified in the template (e.g., `{}` for `lib.inventory.get`, `false` for `lib.inventory.addItem`).
+    - **Return Expected Formats**: Ensure that each function returns the specified type and format. For example, `lib.inventory.getStashItems` must return a table of items, even if empty.
+
+    ### Template Placeholder
+
+    Below is the placeholder where you can add your implementation. Insert the base template code and fill in each function with your inventory system-specific logic.
+
+    ```lua title="inventory/server.lua"
+--- Inventory management library
+--- This module provides functions to manage items in player inventories and stashes across different inventory systems.
+--- Specifically designed for integration with the your-inventory system.
+--- @module inventory
+
+local Inventory = {}
+
+--- Retrieves the complete list of items available in the inventory system.
+--- @return table A table containing the list of all items.
+function Inventory.getItemList()
+   return {}
+end
+
+--- Retrieves the list of weapons available in the inventory system.
+--- @return table A table containing the list of all weapons.
+function Inventory.getWeaponList()
+   return {}
+end
+
+--- Retrieves the inventory for a specific player or stash by ID.
+--- @param id number|string The player ID or stash ID.
+--- @return table A table containing the inventory items.
+function Inventory.get(id)
+   return {}
+end
+
+--- Adds an item to a player's inventory.
+--- @param source number The player source ID.
+--- @param itemName string The name of the item to add.
+--- @param itemCount number The quantity of the item to add.
+--- @param itemSlot number|nil The slot to place the item in (optional).
+--- @param itemMetadata table|nil Metadata for the item (optional).
+--- @return boolean True if the item was added successfully, false otherwise.
+function Inventory.addItem(source, itemName, itemCount, itemSlot, itemMetadata)
+   return true
+end
+
+--- Removes an item from a player's inventory.
+--- @param source number The player source ID.
+--- @param itemName string The name of the item to remove.
+--- @param itemCount number The quantity of the item to remove.
+--- @param itemSlot number|nil The slot to remove the item from (optional).
+--- @param itemMetadata table|nil Metadata for the item (optional).
+--- @return boolean True if the item was removed successfully, false otherwise.
+function Inventory.removeItem(source, itemName, itemCount, itemSlot, itemMetadata)
+   return true
+end
+
+--- Checks if a player can carry a specified item and quantity.
+--- @param source number The player source ID.
+--- @param itemName string The name of the item.
+--- @param itemCount number The quantity of the item.
+--- @return boolean True if the player can carry the item, false otherwise.
+function Inventory.canCarryItem(source, itemName, itemCount)
+   return true
+end
+
+--- Retrieves the total amount of a specific item in a player's inventory.
+--- @param source number The player source ID.
+--- @param itemName string The name of the item.
+--- @return number The total amount of the item.
+function Inventory.getItemTotalAmmount(source, itemName)
+   return 0
+end
+
+--- Retrieves the label (display name) of a specific item.
+--- @param item string The name of the item.
+--- @return string The label of the item.
+function Inventory.getItemLabel(item)
+   return ""
+end
+
+--- Checks if a specific item exists in an inventory or stash with optional conditions.
+--- @param invId number|string The player ID or stash ID.
+--- @param item string The name of the item to check.
+--- @param count number|nil The minimum quantity required (optional).
+--- @param md table|nil The metadata to match (optional).
+--- @param slot number|nil The slot to check (optional).
+--- @return number|boolean The item count if found and matches conditions, false otherwise.
+function Inventory.hasItem(invId, item, count, md, slot)
+   return false
+end
+
+--- Registers a usable item with a callback function.
+--- @param itemName string The name of the item.
+--- @param callback function The callback function to execute when the item is used.
+function Inventory.createUsableItem(itemName, callback)
+   -- put your custom logic here
+end
+
+--- Sets metadata for an item in a specific slot of a player's inventory.
+--- @param source number The player source ID.
+--- @param itemSlot number The slot containing the item.
+--- @param itemMetadata table The metadata to set.
+function Inventory.setItemMetadata(source, itemSlot, itemMetadata)
+   -- put your custom logic here
+end
+
+--- Registers a new stash with specified parameters.
+--- @param source number|nil The player source ID (optional, defaults to 0).
+--- @param stashId string The unique identifier for the stash.
+--- @param data table|nil Optional table containing stash configuration (maxSlots, maxWeight).
+--- @field data.maxSlots number The maximum number of slots in the stash (default: 20).
+--- @field data.maxWeight number The maximum weight capacity of the stash (default: 100000).
+--- @return boolean True if the stash was registered successfully, false otherwise.
+function Inventory.registerStash(source, stashId, data)
+   if not source then source = 0 end
+   if not data then data = {} end
+   if not data.maxSlots then data.maxSlots = 20 end
+   if not data.maxWeight then data.maxWeight = 100000 end
+   if not data.label then data.label = stashId end
+   -- Register the stash with the inventory system
+   return true
+end
+
+--- Adds an item to a stash.
+--- @param stashId string The stash ID.
+--- @param itemName string The name of the item to add.
+--- @param itemAmount number The quantity of the item to add.
+--- @param itemSlot number|nil The slot to place the item in (optional).
+--- @param itemMetadata table|nil Metadata for the item (optional).
+--- @param stashSlots number|nil The maximum slots in the stash (optional).
+--- @param stashMaxWeight number|nil The maximum weight capacity of the stash (optional).
+--- @return boolean True if the item was added successfully, false otherwise.
+function Inventory.addItemToStash(stashId, itemName, itemAmount, itemSlot, itemMetadata, stashSlots, stashMaxWeight)
+   return true
+end
+
+--- Removes an item from a stash.
+--- @param stashId string The stash ID.
+--- @param itemName string The name of the item to remove.
+--- @param itemAmount number The quantity of the item to remove.
+--- @param itemSlot number|nil The slot to remove the item from (optional).
+--- @param stashSlots number|nil The maximum slots in the stash (optional).
+--- @param stashMaxWeight number|nil The maximum weight capacity of the stash (optional).
+--- @return boolean True if the item was removed successfully, false otherwise.
+function Inventory.removeItemFromStash(stashId, itemName, itemAmount, itemSlot, stashSlots, stashMaxWeight)
+   return true
+end
+
+--- Retrieves the items in a stash.
+--- @param stashId string The stash ID.
+--- @return table A table containing the stash's items.
+function Inventory.getStashItems(stashId)
+   return {}
+end
+
+--- Retrieves an item from a player's inventory by slot.
+--- @param source number The player source ID.
+--- @param slot number The slot to check.
+--- @return table|boolean The item details if found, false otherwise.
+function Inventory.getItemBySlot(source, slot)
+   return false
+end
+
+return Inventory
+
+    ```
+
+    ### Implementation Notes
+
+    - **Inventory System API**: Use your inventory system's server-side API to interact with inventory data. For example, to implement `lib.inventory.addItem`, you might call an export like `exports['qs-inventory']:AddItem()` for qs-inventory.
+    - **Default Values**: Return the specified default value if the operation fails or data is unavailable (e.g., `false` for `lib.inventory.addItem`, `{}` for `lib.inventory.getStashItems`).
+    - **Server-Side Focus**: Functions like `lib.inventory.jail` or `lib.inventory.ban` are not present, as they are specific to player management. Focus on inventory-related operations like item management and stash handling.
+    - **System-Specific Adjustments**: Adjust the implementation based on your inventory system's API and structure. For example, qs-inventory might use exports, while ox_inventory might require server-side event triggers or direct function calls.
+  </TabsContent>
+</Tabs>

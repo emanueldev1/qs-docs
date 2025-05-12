@@ -1,0 +1,86 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for DUI management with qs_lib.
+---
+
+# Client
+
+A unified system for creating DUIs, allowing URL changes, messaging, and cleanup.
+
+## lib.dui:new
+
+Initializes a new Dui instance.
+
+```lua
+lib.dui:new(config)
+```
+
+- config: `table`
+  - url: `string`
+  - width: `number`
+  - height: `number`
+  - debug?: `boolean`
+
+**Returns:**
+
+- dui: `Dui`
+  - url: `string`
+  - duiObject: `number`
+  - duiHandle: `string`
+  - runtimeTxd: `number`
+  - txdObject: `number`
+  - dictName: `string`
+  - txtName: `string`
+  - setUrl: `function`(url: `string`)
+  - sendMessage: `function`(data: `table`)
+  - remove: `function`
+
+## Examples
+
+### Example 1: Displaying a Character Profile
+
+Creates a DUI for a character profile viewer, updates its URL, sends a message to show the profile, and removes it when done.
+
+```lua
+local profileDui = lib.dui:new({
+    url = ("nui://%s/profile/viewer.html"):format(cache.resource),
+    width = 1280,
+    height = 720,
+    debug = true
+})
+
+-- Update to a specific profile
+profileDui:setUrl("https://game-profiles.com/character/123")
+
+-- Show the profile
+profileDui:sendMessage({
+    action = "showProfile",
+    visible = true
+})
+
+-- Clean up
+profileDui:remove()
+```
+
+### Example 2: Setting Up a Chat Interface
+
+Sets up a DUI for a chat interface, sends a message to load messages, and removes it after use.
+
+```lua
+local chatDui = lib.dui:new({
+    url = ("nui://%s/chat/index.html"):format(cache.resource),
+    width = 800,
+    height = 600,
+    debug = false
+})
+
+-- Load chat messages
+chatDui:sendMessage({
+    action = "loadMessages",
+    messages = { "Hello!", "How are you?" }
+})
+
+-- Remove when done
+chatDui:remove()
+```

@@ -5,366 +5,466 @@
  */
 
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 /* You can override the default Infima variables here. */
 :root {
-  /* Preserve Docusaurus variables */
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+    /* Preserve Docusaurus variables */
+    /* Light Mode Palette inspired by the qs_lib logo */
+    --ifm-color-primary: #00c4e4; /* Main cyan-blue color from the logo */
+    --ifm-color-primary-dark: #00b0cc; /* Slightly darker shade */
+    --ifm-color-primary-darker: #009bc7; /* Darker shade, still vibrant */
+    --ifm-color-primary-darkest: #007a9e; /* Darkest shade for contrast */
+    --ifm-color-primary-light: #33d1ee; /* Lighter shade */
+    --ifm-color-primary-lighter: #66e0f5; /* Even lighter */
+    --ifm-color-primary-lightest: #99efff; /* Lightest shade for highlights */
+    --ifm-code-font-size: 95%;
+    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
-  --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #09090b;
-  --card: #ffffff;
-  --card-foreground: #09090b;
-  --popover: #ffffff;
-  --popover-foreground: #09090b;
-  --primary: #18181b;
-  --primary-foreground: #fafafa;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717b;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  --destructive: #e7000b;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #9f9fa9;
-  --chart-1: #f54a00;
-  --chart-2: #009689;
-  --chart-3: #104e64;
-  --chart-4: #ffba00;
-  --chart-5: #fd9a00;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #09090b;
-  --sidebar-primary: #18181b;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f4f4f5;
-  --sidebar-accent-foreground: #18181b;
-  --sidebar-border: #e4e4e7;
-  --sidebar-ring: #9f9fa9;
+    --radius: 0.625rem;
+    --background: #ffffff;
+    --foreground: #09090b;
+    --card: #ffffff;
+    --card-foreground: #09090b;
+    --popover: #ffffff;
+    --popover-foreground: #09090b;
+    --primary: #18181b;
+    --primary-foreground: #fafafa;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717b;
+    --accent: #f4f4f5;
+    --accent-foreground: #18181b;
+    --destructive: #e7000b;
+    --border: #e4e4e7;
+    --input: #e4e4e7;
+    --ring: #9f9fa9;
+    --chart-1: #f54a00;
+    --chart-2: #009689;
+    --chart-3: #104e64;
+    --chart-4: #ffba00;
+    --chart-5: #fd9a00;
+    --sidebar: #fafafa;
+    --sidebar-foreground: #09090b;
+    --sidebar-primary: #18181b;
+    --sidebar-primary-foreground: #fafafa;
+    --sidebar-accent: #f4f4f5;
+    --sidebar-accent-foreground: #18181b;
+    --sidebar-border: #e4e4e7;
+    --sidebar-ring: #9f9fa9;
 
-  /* New variables for background colors */
-  background-color: var(--background);
-  color: var(--foreground);
+    /* New variables for background colors */
+    background-color: var(--background);
+    color: var(--foreground);
+
+    /* NEW CSS */
+    --brand-ember: oklch(66.5% 0.1804 47.04); /* orange-300 */
+    --brand-ember-foreground: oklch(75.77% 0.159 55.91); /* orange-400 */
+    --background-ember: oklch(97.65% 0.001 17.18);
+
+    --brand-fire: oklch(57.41% 0.2344 29.12); /* red-500 */
+    --brand-fire-foreground: oklch(70.89% 0.1571 45.44); /* custom orange */
+    --background-fire: oklch(97.5% 0.0033 17.21);
+
+    --brand-ultraviolet: oklch(44.22% 0.2702 276.38); /* violet-400 */
+    --brand-ultraviolet-foreground: oklch(51.03% 0.2303 276.94); /* indigo-600 */
+    --background-ultraviolet: oklch(97.53% 0.0045 254.98);
+
+    --brand-ice: oklch(57.79% 0.1928 257.87); /* slate-200 */
+    --brand-ice-foreground: oklch(75.37% 0.1389 232.59); /* sky-400 */
+    --background-ice: oklch(97.53% 0.0045 254.98);
+
+    --brand-titanium: oklch(52.97% 0.017 285.8); /* zinc-300 */
+    --brand-titanium-foreground: oklch(63.88% 0.0126 286.04); /* zinc-500 */
+    --background-titanium: oklch(97.63% 0.001 286.38);
+
+    --brand-emerald: oklch(65.31% 0.1436 161.43); /* emerald-600 */
+    --brand-emerald-foreground: oklch(80.97% 0.1579 162.13); /* emerald-300 */
+    --background-emerald: oklch(97.53% 0.0045 254.98);
+
+    --brand-holo: oklch(55.78% 0.2524 302.36); /* purple-600 */
+    --brand-holo-foreground: oklch(78.17% 0.1653 68.67); /* amber-300 */
+    --background-holo: oklch(97.78% 0.0021 67.8);
+
+    --brand-electro: oklch(56.56% 0.212102 265.2452); /* blue-700 */
+    --brand-electro-foreground: oklch(82.72% 0.1426 178.93); /* teal-300 */
+    --background-electro: oklch(98.07% 0.0055 185.3);
+
+    --radius-small: 0.25rem;
+    --radius-default: 0.5rem;
+    --radius-large: 1rem;
+    --radius-xl: 2rem;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme="dark"] {
-  /* Preserve Docusaurus dark mode variables */
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+    /* Dark Mode Palette inspired by the qs_lib logo */
+    --ifm-color-primary: #00c4e4; /* Main cyan-blue, vibrant for dark mode */
+    --ifm-color-primary-dark: #00b0cc; /* Slightly darker, still bright */
+    --ifm-color-primary-darker: #009bc7; /* Deeper blue for contrast */
+    --ifm-color-primary-darkest: #007a9e; /* Darkest shade, muted for depth */
+    --ifm-color-primary-light: #33d1ee; /* Lighter cyan for hover states */
+    --ifm-color-primary-lighter: #66e0f5; /* Pale cyan, stands out on dark backgrounds */
+    --ifm-color-primary-lightest: #99efff; /* Lightest cyan, almost white for highlights */
+    --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3); /* Preserved as requested */
 
-  /* shadcn dark mode variables - updated */
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #18181b;
-  --card-foreground: #fafafa;
-  --popover: #18181b;
-  --popover-foreground: #fafafa;
-  --primary: #e4e4e7;
-  --primary-foreground: #18181b;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #9f9fa9;
-  --accent: #27272a;
-  --accent-foreground: #fafafa;
-  --destructive: #ff6467;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #70707b;
-  --chart-1: #1447e6;
-  --chart-2: #00bc7d;
-  --chart-3: #fd9a00;
-  --chart-4: #ad46ff;
-  --chart-5: #ff2056;
-  --sidebar: #18181b;
-  --sidebar-foreground: #fafafa;
-  --sidebar-primary: #1447e6;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #27272a;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #71717b;
+    /* shadcn dark mode variables - updated */
+    --background: #09090b;
+    --foreground: #fafafa;
+    --card: #18181b;
+    --card-foreground: #fafafa;
+    --popover: #18181b;
+    --popover-foreground: #fafafa;
+    --primary: #e4e4e7;
+    --primary-foreground: #18181b;
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+    --muted: #27272a;
+    --muted-foreground: #9f9fa9;
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
+    --destructive: #ff6467;
+    --border: rgba(255, 255, 255, 0.1);
+    --input: rgba(255, 255, 255, 0.15);
+    --ring: #70707b;
+    --chart-1: #1447e6;
+    --chart-2: #00bc7d;
+    --chart-3: #fd9a00;
+    --chart-4: #ad46ff;
+    --chart-5: #ff2056;
+    --sidebar: #18181b;
+    --sidebar-foreground: #fafafa;
+    --sidebar-primary: #1447e6;
+    --sidebar-primary-foreground: #fafafa;
+    --sidebar-accent: #27272a;
+    --sidebar-accent-foreground: #fafafa;
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: #71717b;
+
+    /* NEW CSS */
+    --brand-ember: oklch(83.6% 0.1177 66.87); /* orange-300 */
+    --brand-ember-foreground: oklch(75.77% 0.159 55.91); /* orange-400 */
+    --background-ember: oklch(14.05% 0.0044 285.82);
+
+    --brand-fire: oklch(79.08% 0.12605 46.9238); /* custom orange */
+    --brand-fire-foreground: oklch(63.68% 0.2078 25.33); /* red-500 */
+    --background-fire: oklch(14.05% 0.0044 285.82);
+
+    --brand-ultraviolet: oklch(70.93% 0.1589 293.52); /* violet-400 */
+    --brand-ultraviolet-foreground: oklch(51.03% 0.2303 276.94); /* indigo-600 */
+    --background-ultraviolet: oklch(14.05% 0.0044 285.82);
+
+    --brand-ice: oklch(92.9% 0.0126 255.53); /* slate-200 */
+    --brand-ice-foreground: oklch(75.37% 0.1389 232.59); /* sky-400 */
+    --background-ice: oklch(14.05% 0.0044 285.82);
+
+    --brand-titanium: oklch(87.09% 0.0055 286.29); /* zinc-300 */
+    --brand-titanium-foreground: oklch(55.19% 0.0137 285.94); /* zinc-500 */
+    --background-titanium: oklch(14.05% 0.0044 285.82);
+
+    --brand-emerald: oklch(84.53% 0.1298 164.99); /* emerald-300 */
+    --brand-emerald-foreground: oklch(69.58% 0.1491 162.46); /* emerald-600 */
+    --background-emerald: oklch(14.05% 0.0044 285.82);
+
+    --brand-holo: oklch(87.87% 0.1534 91.54); /* amber-300 */
+    --brand-holo-foreground: oklch(55.78% 0.2524 302.36); /* purple-600 */
+    --background-holo: oklch(14.05% 0.0044 285.82);
+
+    --brand-electro: oklch(85.48% 0.1251 181.11); /* teal-300 */
+    --brand-electro-foreground: oklch(48.78% 0.217 264.39); /* blue-700 */
+    --background-electro: oklch(14.05% 0.0044 285.82);
 }
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+@theme {
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-quasar: var(--background);
+
+    /* NEW CSS */
+    --color-brand-ember: var(--brand-ember);
+    --color-brand-ember-foreground: var(--brand-ember-foreground);
+    --color-background-ember: var(--background-ember);
+    --color-brand-fire: var(--brand-fire);
+    --color-brand-fire-foreground: var(--brand-fire-foreground);
+    --color-background-fire: var(--background-fire);
+    --color-brand-ultraviolet: var(--brand-ultraviolet);
+    --color-brand-ultraviolet-foreground: var(--brand-ultraviolet-foreground);
+    --color-background-ultraviolet: var(--background-ultraviolet);
+    --color-brand-ice: var(--brand-ice);
+    --color-brand-ice-foreground: var(--brand-ice-foreground);
+    --color-background-ice: var(--background-ice);
+    --color-brand-titanium: var(--brand-titanium);
+    --color-brand-titanium-foreground: var(--brand-titanium-foreground);
+    --color-background-titanium: var(--background-titanium);
+    --color-brand-emerald: var(--brand-emerald);
+    --color-brand-emerald-foreground: var(--brand-emerald-foreground);
+    --color-background-emerald: var(--background-emerald);
+    --color-brand-holo: var(--brand-holo);
+    --color-brand-holo-foreground: var(--brand-holo-foreground);
+    --color-background-holo: var(--background-holo);
+    --color-brand-electro: var(--brand-electro);
+    --color-brand-electro-foreground: var(--brand-electro-foreground);
+    --color-background-electro: var(--background-electro);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-transparent text-foreground;
-  }
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-transparent text-foreground;
+    }
 }
-
 
 /* Ensure the entire document has the background color */
 html,
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+    background-color: var(--background);
+    color: var(--foreground);
 }
 
 /* Restore Docusaurus markdown styles */
 .markdown h1 {
-  color: var(--ifm-heading-color);
-  font-family: var(--ifm-heading-font-family);
-  font-weight: var(--ifm-heading-font-weight);
-  line-height: var(--ifm-heading-line-height);
-  margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
-  font-size: var(--ifm-h1-font-size);
+    color: var(--ifm-heading-color);
+    font-family: var(--ifm-heading-font-family);
+    font-weight: var(--ifm-heading-font-weight);
+    line-height: var(--ifm-heading-line-height);
+    margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
+    font-size: var(--ifm-h1-font-size);
 }
 
 .markdown h2 {
-  color: var(--ifm-heading-color);
-  font-family: var(--ifm-heading-font-family);
-  font-weight: var(--ifm-heading-font-weight);
-  line-height: var(--ifm-heading-line-height);
-  margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
-  font-size: var(--ifm-h2-font-size);
+    color: var(--ifm-heading-color);
+    font-family: var(--ifm-heading-font-family);
+    font-weight: var(--ifm-heading-font-weight);
+    line-height: var(--ifm-heading-line-height);
+    margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
+    font-size: var(--ifm-h2-font-size);
 }
 
 .markdown h3 {
-  color: var(--ifm-heading-color);
-  font-family: var(--ifm-heading-font-family);
-  font-weight: var(--ifm-heading-font-weight);
-  line-height: var(--ifm-heading-line-height);
-  margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
-  font-size: var(--ifm-h3-font-size);
+    color: var(--ifm-heading-color);
+    font-family: var(--ifm-heading-font-family);
+    font-weight: var(--ifm-heading-font-weight);
+    line-height: var(--ifm-heading-line-height);
+    margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
+    font-size: var(--ifm-h3-font-size);
 }
 
 .markdown h4 {
-  color: var(--ifm-heading-color);
-  font-family: var(--ifm-heading-font-family);
-  font-weight: var(--ifm-heading-font-weight);
-  line-height: var(--ifm-heading-line-height);
-  margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
-  font-size: var(--ifm-h4-font-size);
+    color: var(--ifm-heading-color);
+    font-family: var(--ifm-heading-font-family);
+    font-weight: var(--ifm-heading-font-weight);
+    line-height: var(--ifm-heading-line-height);
+    margin: var(--ifm-heading-margin-top) 0 var(--ifm-heading-margin-bottom) 0;
+    font-size: var(--ifm-h4-font-size);
 }
 
 .markdown ul,
 .markdown ol {
-  margin: 0 0 var(--ifm-list-margin);
-  padding-left: var(--ifm-list-left-padding);
+    margin: 0 0 var(--ifm-list-margin);
+    padding-left: var(--ifm-list-left-padding);
 }
 
 .markdown ul {
-  list-style: disc;
+    list-style: disc;
 }
 
 .markdown ul ul {
-  list-style: circle;
+    list-style: circle;
 }
 
 .markdown ul ul ul {
-  list-style: square;
+    list-style: square;
 }
 
 .markdown ol {
-  list-style: decimal;
+    list-style: decimal;
 }
 
 .markdown li {
-  margin: var(--ifm-list-item-margin);
+    margin: var(--ifm-list-item-margin);
 }
 
 .markdown p {
-  margin: var(--ifm-paragraph-margin-bottom) 0;
+    margin: var(--ifm-paragraph-margin-bottom) 0;
 }
 
 .markdown a {
-  color: var(--ifm-link-color);
-  text-decoration: var(--ifm-link-decoration);
+    color: var(--ifm-link-color);
+    text-decoration: var(--ifm-link-decoration);
 }
 
 .markdown a:hover {
-  color: var(--ifm-link-hover-color);
-  text-decoration: var(--ifm-link-hover-decoration);
+    color: var(--ifm-link-hover-color);
+    text-decoration: var(--ifm-link-hover-decoration);
 }
 
 /* Apply shadcn base styles */
 .border-border {
-  @apply border-[var(--border)];
+    @apply border-[var(--border)];
 }
 
 /* Ensure shadcn components use the correct font */
 :not(.markdown) {
-  font-family: theme("fontFamily.sans");
+    font-family: theme("fontFamily.sans");
 }
 
 /* Apply shadcn styles to Docusaurus components */
 .navbar {
-  background-color: var(--background);
-  border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
 }
 
 .navbar__brand,
 .navbar__link,
 .navbar__toggle,
 .navbar-sidebar__brand {
-  color: var(--foreground);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
+    color: var(--foreground);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .navbar__toggle:hover,
 .navbar__link:hover {
-  color: var(--ifm-color-primary);
-  background-color: transparent;
+    color: var(--ifm-color-primary);
+    background-color: transparent;
 }
 
 /* Style cards and other content containers */
 .card {
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--card-foreground);
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--card-foreground);
 }
 
 /* Style the theme toggle */
 .navbar__items--right > div[class*="toggle"] {
-  background-color: transparent;
-  color: var(--muted-foreground);
+    background-color: transparent;
+    color: var(--muted-foreground);
 }
 
 /* Style the search bar */
 .navbar__search-input {
-  background-color: var(--input);
-  color: var(--foreground);
-  border-color: var(--border);
+    background-color: var(--input);
+    color: var(--foreground);
+    border-color: var(--border);
 }
 
 /* Style the dropdown menus */
 .dropdown__menu {
-  background-color: var(--popover);
-  color: var(--popover-foreground);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
 .dropdown__link {
-  color: var(--foreground);
+    color: var(--foreground);
 }
 
 .dropdown__link:hover {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
+    background-color: var(--accent);
+    color: var(--accent-foreground);
 }
 
 /* Add focus styles for inputs */
 .navbar__search-input:focus,
 input:focus {
-  outline: none;
-  border-color: var(--ring);
-  box-shadow: 0 0 0 2px var(--ring) / 0.3;
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: 0 0 0 2px var(--ring) / 0.3;
 }
 
 /* Style the footer */
 .footer {
-  background-color: var(--muted);
-  color: var(--muted-foreground);
-  border-top: 1px solid var(--border);
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    border-top: 1px solid var(--border);
 }
 
 .footer--dark {
-  background-color: var(--background);
-  color: var(--foreground);
+    background-color: var(--background);
+    color: var(--foreground);
 }
 
 .footer__title {
-  color: var(--foreground);
+    color: var(--foreground);
 }
 
 .footer__link-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--muted-foreground);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--muted-foreground);
 }
 
 .footer__link-item:hover {
-  color: var(--ifm-color-primary);
-  background-color: transparent;
-  text-decoration: none;
+    color: var(--ifm-color-primary);
+    background-color: transparent;
+    text-decoration: none;
 }
 
 .footer__copyright {
-  color: var(--muted-foreground);
+    color: var(--muted-foreground);
 }
 
 /* Fix breadcrumb alignment */
 .breadcrumbs {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .breadcrumbs__item {
-  display: inline-flex;
-  align-items: center;
+    display: inline-flex;
+    align-items: center;
 }
 
 .breadcrumbs__link {
-  display: inline-flex;
-  align-items: center;
+    display: inline-flex;
+    align-items: center;
 }
 
 .breadcrumbHomeIcon_YNFT {
-  margin-top: 1px;
-  vertical-align: middle;
+    margin-top: 1px;
+    vertical-align: middle;
 }

@@ -1,0 +1,101 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for distance checking with qs_lib.
+---
+
+# Client
+
+## Points
+
+A streamlined system for proximity detection, offering callbacks for entering, exiting, and staying within range of specified coordinates.
+
+```js
+Point(settings)
+```
+
+- settings: `object`
+  - coords: `number[]`
+  - distance: `number`
+  - onEnter?: `function`
+  - onExit?: `function`
+  - nearby?: `function`
+  - args?: `any`
+
+**Returns:**
+
+- point: `Point`
+
+## Examples
+
+### Example 1: Notification Trigger Near Marker
+
+Displays a marker at a central location, showing a prompt when nearby to trigger a notification.
+
+```js
+import { Point, cache } from '@emanueldev1/qs_lib/client';
+
+function nearby() {
+  // @ts-ignore
+  DrawMarker(2, this.coords.x, this.coords.y, this.coords.z, 0, 0, 0, 0, 180, 0, 1, 1, 1, 200, 20, 20, 50, false, true, 2, false, null, null, false);
+
+  if (this.currentDistance && this.currentDistance < 1 && IsControlJustReleased(0, 38)) {
+    console.log('Inside marker', this.id);
+    console.log(this.args?.dunak);
+  }
+}
+
+const point = new Point({
+  coords: GetEntityCoords(cache.ped, false),
+  distance: 5,
+  nearby: nearby,
+  args: {
+    dunak: 'nerd'
+  }
+});
+
+point.onEnter = () => {
+  console.log('Entered range of point', point.id);
+};
+
+point.onExit = () => {
+  console.log('Left range of point', point.id);
+};
+```
+
+### Example 2: Restricted Area with Warning
+
+Sets up a restricted area that warns the player when they approach and triggers an alert if they get too close.
+
+```js
+import { Point, cache } from '@emanueldev1/qs_lib/client';
+
+function nearby() {
+  // @ts-ignore
+  DrawMarker(1, this.coords.x, this.coords.y, this.coords.z, 0, 0, 0, 0, 0, 0, 3, 3, 1, 255, 0, 0, 100, false, true, 2, false, null, null, false);
+
+  if (this.currentDistance < 4) {
+    console.log("Warning! You are too close to", this.args.zoneName);
+  }
+
+  if (this.currentDistance < 2 && IsControlJustReleased(0, 47)) { // G key
+    console.log("Alert triggered at", this.args.zoneName, "by player!");
+  }
+}
+
+const restrictedArea = new Point({
+  coords: [500.0, 600.0, 20.0],
+  distance: 10,
+  args: { zoneName: "Military Base" }
+});
+
+restrictedArea.onEnter = () => {
+  console.log("Approaching restricted area:", restrictedArea.args.zoneName);
+};
+
+restrictedArea.onExit = () => {
+  console.log("Left restricted area:", restrictedArea.args.zoneName);
+};
+
+restrictedArea.nearby = nearby;
+```

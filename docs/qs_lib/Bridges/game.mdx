@@ -1,0 +1,51 @@
+---
+title: Game
+sidebar_position: 1
+description: Documentation for game-related bridge functions with qs_lib.
+---
+
+# Game Bridge
+
+## lib.game.syncTime
+
+Synchronizes the game time using the configured time bridge. If the bridge is unavailable, an error is logged, and the function returns `nil`.
+
+```lua
+lib.game.syncTime(state)
+```
+
+- state: `any`
+  - The state to pass to the time synchronization function.
+
+**Returns:**
+
+- result: `any` | `nil`
+  - The result of the time synchronization if successful; otherwise, `nil` if the bridge is unavailable.
+
+### Examples
+
+#### Example 1: Synchronizing Time with a State
+
+Attempts to synchronize the game time with a specific state value.
+
+```lua
+local result = lib.game.syncTime({ hour = 12, minute = 30 })
+if result then
+    print("Time synchronized successfully:", result)
+else
+    print("Failed to synchronize time.")
+end
+```
+
+#### Example 2: Handling a Missing Bridge
+
+Tries to sync time with a state, expecting a potential error if the bridge is not found.
+
+```lua
+local result = lib.game.syncTime(true)
+if result then
+    print("Time synchronization result:", result)
+else
+    print("Time bridge not found; synchronization failed.")
+end
+```

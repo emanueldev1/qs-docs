@@ -1,0 +1,229 @@
+---
+title: TextUI
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# TextUI
+
+## lib.showTextUI
+
+Displays the TextUI window on the screen.
+
+<Alert variant="warning" className="mb-4">
+  <AlertTitle>Warning</AlertTitle>
+  <AlertDescription>
+    Do not call this function every frame; it is meant to be used as a toggle.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showTextUI(message, config)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showTextUI(message, config);
+    ```
+  </TabsContent>
+</Tabs>
+
+- message: `string`
+- config?: `table` (`object`)
+  - position?: `'right-center'` | `'left-center'` | `'top-center'` | `'bottom-center'`
+    - Default: `'right-center'`
+  - icon?: `string` | `table` (`array`)
+  - iconColor?: `string`
+  - iconAnimation?: `'spin'` | `'spinPulse'` | `'spinReverse'` | `'pulse'` | `'beat'` | `'fade'` | `'beatFade'` | `'bounce'` | `'shake'`
+  - style?: React.CSSProperties
+  - alignIcon?: `'top'` | `'center'`
+    - Default: `'center'`
+
+## lib.hideTextUI
+
+Closes the currently displayed TextUI window.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.hideTextUI()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.hideTextUI();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.isTextUIOpen
+
+Checks if the TextUI is currently visible, returning the displayed text as a second value.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local isVisible, currentText = lib.isTextUIOpen()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const [isVisible, currentText] = lib.isTextUIOpen();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Basic Examples
+
+#### Example 1: Interacting with a Door
+
+Displays a TextUI prompt to interact with a door using the default position.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showTextUI('[E] - Open Door')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showTextUI('[E] - Open Door');
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Accessing a Vendor
+
+Shows a TextUI prompt to access a vendor's inventory.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showTextUI('[F] - Access Vendor')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showTextUI('[F] - Access Vendor');
+    ```
+  </TabsContent>
+</Tabs>
+
+### Custom Styling Examples
+
+#### Example 1: ATM Interaction with Custom Style
+
+Displays a styled TextUI prompt for ATM interaction with a custom position and icon.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showTextUI('[E] - Use ATM', {
+        position = 'bottom-center',
+        icon = 'money-check-dollar',
+        style = {
+            borderRadius = 5,
+            backgroundColor = '#1E90FF',
+            color = '#FFFFFF'
+        }
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showTextUI('[E] - Use ATM', {
+      position: 'bottom-center',
+      icon: 'money-check-dollar',
+      style: {
+        borderRadius: 5,
+        backgroundColor: '#1E90FF',
+        color: '#FFFFFF'
+      }
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Quest Objective with Styled Icon
+
+Shows a TextUI for a quest objective with an animated icon and custom styling.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.showTextUI('[G] - Collect Item', {
+        position = 'left-center',
+        icon = 'box',
+        iconColor = '#FFD700',
+        iconAnimation = 'bounce',
+        style = {
+            borderRadius = 3,
+            backgroundColor = '#2F4F4F',
+            color = '#F0F8FF'
+        }
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.showTextUI('[G] - Collect Item', {
+      position: 'left-center',
+      icon: 'box',
+      iconColor: '#FFD700',
+      iconAnimation: 'bounce',
+      style: {
+        borderRadius: 3,
+        backgroundColor: '#2F4F4F',
+        color: '#F0F8FF'
+      }
+    });
+    ```
+  </TabsContent>
+</Tabs>

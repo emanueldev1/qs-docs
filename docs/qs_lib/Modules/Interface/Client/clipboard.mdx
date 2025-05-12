@@ -1,0 +1,78 @@
+---
+title: Clipboard
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Clipboard
+
+## lib.setClipboard
+
+Copies a specified string value to the player's clipboard.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Note</AlertTitle>
+  <AlertDescription>
+    This function will not work if an NUI component already has focus.
+  </AlertDescription>
+</Alert>
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Note</AlertTitle>
+  <AlertDescription>
+    Use `\t\n` for a new line in your string, as `\n` alone will not work.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.setClipboard(text)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.setClipboard(text);
+    ```
+  </TabsContent>
+</Tabs>
+
+- text: `string`
+
+## Examples
+
+### Example 1: Copying Player Coordinates
+
+Copies the player's current coordinates to the clipboard with formatted text.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local coords = GetEntityCoords(PlayerPedId())
+    local formatted = string.format("X: %.2f\t\nY: %.2f\t\nZ: %.2f", coords.x, coords.y, coords.z)
+    lib.setClipboard(formatted)
+    print("Coordinates copied to clipboard!")
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const coords = GetEntityCoords(PlayerPedId());
+    const formatted = `X: ${coords.x.toFixed(2)}\t\nY: ${coords.y.toFixed(2)}\t\nZ: ${coords.z.toFixed(2)}`;
+    lib.setClipboard(formatted);
+    console.log("Coordinates copied to clipboard!");
+    ```
+  </TabsContent>
+</Tabs>

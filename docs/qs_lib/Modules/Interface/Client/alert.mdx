@@ -1,0 +1,168 @@
+---
+title: Alert Dialog
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Alert Dialog
+
+A straightforward dialog system for showing messages to players, returning whether they confirmed or canceled the dialog.
+
+## lib.alertDialog
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    <Tabs defaultValue="client" className="mt-2">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="client">Client</TabsTrigger>
+        <TabsTrigger value="server">Server</TabsTrigger>
+      </TabsList>
+      <TabsContent value="client">
+        ```lua
+        lib.alertDialog(settings)
+        ```
+      </TabsContent>
+      <TabsContent value="server">
+        ```lua
+        TriggerClientEvent('qs_lib:alertDialog', source, settings)
+        ```
+      </TabsContent>
+    </Tabs>
+  </TabsContent>
+  <TabsContent value="js">
+    <Alert variant="info" className="mb-4">
+      <AlertTitle>Note</AlertTitle>
+      <AlertDescription>
+        This function is asynchronous, requiring a `.then` callback or an `async` function.
+      </AlertDescription>
+    </Alert>
+
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.alertDialog(settings);
+    ```
+  </TabsContent>
+</Tabs>
+
+- settings: `table` (`object`)
+  - title: `string`
+    - The dialog's headline.
+  - message: `string`
+    - The dialog's main text, supports markdown formatting.
+  - centered?: `boolean`
+    - Aligns the dialog to the center of the screen.
+  - cancelOption?: `boolean`
+    - Adds a cancel button (ESC remains available if not specified).
+  - size?: `'xs'` or `'sm'` or `'md'` or `'lg'` or `'xl'`
+  - overflow?: `boolean`
+  - buttonLabels?: `table`
+    - Customizes the text for cancel and confirm buttons.
+    - cancel?: `string`
+    - confirm?: `string`
+
+**Returns:** `'confirm'` if the confirm button is pressed; otherwise, returns `'cancel'` if the cancel button or ESC is used.
+
+## lib.closeAlertDialog
+
+Closes the currently active alert dialog and sets its return value to `nil`.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.closeAlertDialog()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.closeAlertDialog();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Example 1: Confirming a Mission Start
+
+Prompts the player to confirm starting a mission, with a centered dialog and cancel option.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local result = lib.alertDialog({
+        title = 'Start Mission',
+        message = 'Are you ready to begin the mission?  \n Proceed with caution!',
+        centered = true,
+        cancelOption = true
+    })
+
+    print("Player response:", result)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const result = await lib.alertDialog({
+      title: 'Start Mission',
+      message: 'Are you ready to begin the mission?  \n Proceed with caution!',
+      centered: true,
+      cancel: true,
+    });
+
+    console.log("Player response:", result);
+    ```
+  </TabsContent>
+</Tabs>
+
+### Example 2: Warning Before a Destructive Action
+
+Warns the player before deleting progress, with custom button labels and a small dialog size.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local result = lib.alertDialog({
+        title = 'Delete Progress',
+        message = 'This will erase all your progress!  \n Are you sure?',
+        size = 'sm',
+        buttonLabels = { cancel = 'No', confirm = 'Yes' }
+    })
+
+    print("Player decision:", result)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const result = await lib.alertDialog({
+      title: 'Delete Progress',
+      message: 'This will erase all your progress!  \n Are you sure?',
+      size: 'sm',
+      buttonLabels: { cancel: 'No', confirm: 'Yes' }
+    });
+
+    console.log("Player decision:", result);
+    ```
+  </TabsContent>
+</Tabs>

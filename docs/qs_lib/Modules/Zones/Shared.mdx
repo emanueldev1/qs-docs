@@ -1,0 +1,464 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for zone management with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Shared
+
+A faster alternative to PolyZone, leveraging `glm.polygon` for efficient zone management.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Server-Side Limitations</AlertTitle>
+  <AlertDescription>
+    Currently, zones on the server side have limited support. Features like <code>onEnter</code>, <code>onExit</code>, and <code>inside</code> are not functional.
+  </AlertDescription>
+</Alert>
+
+## Zone creation script
+
+You can use the built-in zone creation tool with the `/zone` command, specifying `poly`, `box`, or `sphere` as an argument. Controls will be displayed on the right side of the interface. Zones are saved to `qs_lib/created_zones.lua` in your chosen format.
+
+### Examples
+
+#### Example 1: Creating a Poly Zone with the Tool
+
+Uses the `/zone poly` command to create a polygonal zone and saves it as a function.
+
+<Tabs defaultValue="function" className="mt-4">
+  <TabsList className="grid w-full grid-cols-3">
+    <TabsTrigger value="function">function</TabsTrigger>
+    <TabsTrigger value="array">array</TabsTrigger>
+    <TabsTrigger value="qs_target">qs_target</TabsTrigger>
+  </TabsList>
+  <TabsContent value="function">
+    ```lua
+    local poly = lib.zones.poly({
+        name = "poly_zone_1",
+        points = {
+            vec(447.9, -998.8, 25.8),
+            vec(450.3, -998.2, 25.8),
+            vec(449.9, -995.5, 25.8),
+            vec(447.2, -995.6, 25.8),
+            vec(446.3, -997.9, 25.8),
+        },
+        thickness = 2,
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="array">
+    ```lua
+    {
+        name = "poly_zone_1",
+        points = {
+            vec(447.9, -998.8, 25.8),
+            vec(450.3, -998.2, 25.8),
+            vec(449.9, -995.5, 25.8),
+            vec(447.2, -995.6, 25.8),
+            vec(446.3, -997.9, 25.8),
+        },
+        thickness = 2,
+    },
+    ```
+  </TabsContent>
+  <TabsContent value="qs_target">
+    ```lua
+    exports.qs_target:addPolyZone({
+        name = "poly_zone_1",
+        points = {
+            vec(447.9, -998.8, 25.8),
+            vec(450.3, -998.2, 25.8),
+            vec(449.9, -995.5, 25.8),
+            vec(447.2, -995.6, 25.8),
+            vec(446.3, -997.9, 25.8),
+        },
+        thickness = 2,
+    })
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Creating a Sphere Zone with the Tool
+
+Uses the `/zone sphere` command to create a spherical zone and saves it as an array.
+
+<Tabs defaultValue="function" className="mt-4">
+  <TabsList className="grid w-full grid-cols-3">
+    <TabsTrigger value="function">function</TabsTrigger>
+    <TabsTrigger value="array">array</TabsTrigger>
+    <TabsTrigger value="qs_target">qs_target</TabsTrigger>
+  </TabsList>
+  <TabsContent value="function">
+    ```lua
+    local sphere = lib.zones.sphere({
+        name = "sphere_zone_1",
+        coords = vec3(442.5363, -1017.666, 28.65637),
+        radius = 1,
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="array">
+    ```lua
+    {
+        name = "sphere_zone_1",
+        coords = vec3(442.5363, -1017.666, 28.65637),
+        radius = 1,
+    },
+    ```
+  </TabsContent>
+  <TabsContent value="qs_target">
+    ```lua
+    exports.qs_target:addSphereZone({
+        name = "sphere_zone_1",
+        coords = vec3(442.5363, -1017.666, 28.65637),
+        radius = 1,
+    })
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.zones.sphere
+
+Creates a spherical zone with specified properties and callbacks.
+
+```lua
+lib.zones.sphere(zoneData)
+```
+
+- zoneData: `table`
+  - coords: `vector3`
+  - radius?: `number`
+    - Default: `2`
+  - onEnter?: `function(self: table)`
+  - onExit?: `function(self: table)`
+  - inside?: `function(self: table)`
+  - debug?: `boolean`
+
+### Examples
+
+#### Example 1: Creating a Healing Sphere Zone
+
+Sets up a spherical zone that heals the player when they are inside it.
+
+```lua
+function onEnter(self)
+    print("Entered healing zone:", self.id)
+end
+
+function onExit(self)
+    print("Exited healing zone:", self.id)
+end
+
+function inside(self)
+    print("Healing player in zone:", self.id)
+    SetEntityHealth(PlayerPedId(), GetEntityMaxHealth(PlayerPedId()))
+end
+
+local sphere = lib.zones.sphere({
+    coords = vec3(442.5363, -1017.666, 28.65637),
+    radius = 1,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+#### Example 2: Creating a Restricted Sphere Zone
+
+Defines a spherical zone that warns the player when they enter a restricted area.
+
+```lua
+function onEnter(self)
+    print("Warning: Entered restricted zone:", self.id)
+end
+
+function onExit(self)
+    print("Left restricted zone:", self.id)
+end
+
+function inside(self)
+    print("You are in a restricted zone:", self.id)
+end
+
+local restrictedSphere = lib.zones.sphere({
+    coords = vec3(500.0, 600.0, 20.0),
+    radius = 3,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+## lib.zones.box
+
+Creates a box-shaped zone with specified properties and callbacks.
+
+```lua
+lib.zones.box(zoneData)
+```
+
+- zoneData: `table`
+  - coords: `vector3`
+  - size?: `vector3`
+    - Default: `vec3(2, 2, 2)`
+  - rotation?: `number`
+    - Angle in degrees; defaults to `0`.
+  - onEnter?: `function(self: table)`
+  - onExit?: `function(self: table)`
+  - inside?: `function(self: table)`
+  - debug?: `boolean`
+
+### Examples
+
+#### Example 1: Creating a Safe Zone Box
+
+Sets up a box zone that marks a safe area for players.
+
+```lua
+function onEnter(self)
+    print("Entered safe zone:", self.id)
+end
+
+function onExit(self)
+    print("Exited safe zone:", self.id)
+end
+
+function inside(self)
+    print("You are in the safe zone:", self.id)
+end
+
+local box = lib.zones.box({
+    coords = vec3(442.5363, -1017.666, 28.65637),
+    size = vec3(1, 1, 1),
+    rotation = 45,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+#### Example 2: Creating a Drop-off Zone Box
+
+Defines a box zone for a drop-off point with a larger size.
+
+```lua
+function onEnter(self)
+    print("Entered drop-off zone:", self.id)
+end
+
+function onExit(self)
+    print("Exited drop-off zone:", self.id)
+end
+
+function inside(self)
+    print("You are in the drop-off zone:", self.id)
+end
+
+local dropoffBox = lib.zones.box({
+    coords = vec3(300.0, 400.0, 25.0),
+    size = vec3(3, 3, 2),
+    rotation = 0,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+## lib.zones.poly
+
+Creates a polygonal zone with specified properties and callbacks.
+
+```lua
+lib.zones.poly(zoneData)
+```
+
+- zoneData: `table`
+  - points: `vector3[]`
+    - An array of 3D points defining the polygon's shape.
+  - thickness?: `number`
+    - The height of the polygon; defaults to `4`.
+  - onEnter?: `function(self: table)`
+  - onExit?: `function(self: table)`
+  - inside?: `function(self: table)`
+  - debug?: `boolean`
+
+### Examples
+
+#### Example 1: Creating a Restricted Area Polygon
+
+Sets up a polygonal zone to define a restricted area with custom callbacks.
+
+```lua
+function onEnter(self)
+    print("Entered restricted area:", self.id)
+end
+
+function onExit(self)
+    print("Exited restricted area:", self.id)
+end
+
+function inside(self)
+    print("You are inside restricted area:", self.id)
+end
+
+local poly = lib.zones.poly({
+    points = {
+        vec(413.8, -1026.1, 29),
+        vec(411.6, -1023.1, 29),
+        vec(412.2, -1018.0, 29),
+        vec(417.2, -1016.3, 29),
+        vec(422.3, -1020.0, 29),
+        vec(426.8, -1015.9, 29),
+        vec(431.8, -1013.0, 29),
+        vec(437.3, -1018.4, 29),
+        vec(432.4, -1027.2, 29),
+        vec(424.7, -1023.5, 29),
+        vec(420.0, -1030.2, 29),
+        vec(409.8, -1028.4, 29),
+    },
+    thickness = 2,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+#### Example 2: Defining a VIP Lounge Polygon
+
+Creates a polygonal zone for a VIP lounge area with a larger thickness.
+
+```lua
+function onEnter(self)
+    print("Entered VIP lounge:", self.id)
+end
+
+function onExit(self)
+    print("Exited VIP lounge:", self.id)
+end
+
+function inside(self)
+    print("You are in the VIP lounge:", self.id)
+end
+
+local vipLounge = lib.zones.poly({
+    points = {
+        vec(500.0, 500.0, 30),
+        vec(505.0, 500.0, 30),
+        vec(505.0, 505.0, 30),
+        vec(500.0, 505.0, 30),
+    },
+    thickness = 5,
+    debug = true,
+    inside = inside,
+    onEnter = onEnter,
+    onExit = onExit
+})
+```
+
+## Methods
+
+### contains
+
+Tests if a point lies within the zone, returning a boolean.
+
+```lua
+zone:contains(point)
+```
+
+#### Examples
+
+##### Example 1: Checking Player Position in a Box Zone
+
+Verifies if the player's current position is inside a box zone.
+
+```lua
+local box = lib.zones.box({
+    coords = vec3(442.5363, -1017.666, 28.65637),
+    size = vec3(1, 1, 1),
+    rotation = 45
+})
+
+local playerPos = GetEntityCoords(PlayerPedId())
+if box:contains(playerPos) then
+    print("Player is inside the box zone!")
+else
+    print("Player is outside the box zone.")
+end
+```
+
+##### Example 2: Testing a Fixed Point in a Sphere Zone
+
+Checks if a fixed point is inside a spherical zone.
+
+```lua
+local sphere = lib.zones.sphere({
+    coords = vec3(442.5363, -1017.666, 28.65637),
+    radius = 1
+})
+
+local testPoint = vec3(442.5, -1017.5, 28.6)
+if sphere:contains(testPoint) then
+    print("Test point is inside the sphere zone!")
+else
+    print("Test point is outside the sphere zone.")
+end
+```
+
+### remove
+
+Removes a zone from active use, allowing it to be recreated later without clearing its data.
+
+```lua
+zone:remove()
+```
+
+#### Examples
+
+##### Example 1: Temporarily Removing a Poly Zone
+
+Removes a polygonal zone and recreates it after a delay.
+
+```lua
+local zone = lib.zones.poly({
+    points = {
+        vec(447.9, -998.8, 25.8),
+        vec(450.3, -998.2, 25.8),
+        vec(449.9, -995.5, 25.8),
+        vec(447.2, -995.6, 25.8),
+        vec(446.3, -997.9, 25.8),
+    },
+    thickness = 2
+})
+
+zone:remove()
+
+SetTimeout(500, function()
+    lib.zones.poly(zone)
+    print("Poly zone recreated after removal!")
+end)
+```
+
+##### Example 2: Removing a Sphere Zone on Event
+
+Removes a spherical zone when a specific event occurs.
+
+```lua
+local sphere = lib.zones.sphere({
+    coords = vec3(442.5363, -1017.666, 28.65637),
+    radius = 1
+})
+
+-- Simulate an event after 3 seconds
+SetTimeout(3000, function()
+    sphere:remove()
+    print("Sphere zone removed due to event!")
+end)
+```

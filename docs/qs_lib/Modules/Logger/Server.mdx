@@ -1,0 +1,128 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for logging with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Server
+
+## lib.logger
+
+Records a log entry with specified details.
+
+```lua
+lib.logger(sourceId, eventName, logMessage, ...)
+```
+
+- sourceId: `number` | `string`
+  - Typically a player ID, an identifier, or the origin of the event.
+- eventName: `string`
+  - A label for the log event, such as the triggering action or a description.
+- logMessage: `string`
+  - The main content of the log entry.
+- vararg: `string`
+  - Additional arguments to be used as tags for filtering and searching.
+
+### Examples
+
+#### Example 1: Logging a Player Transaction
+
+Logs a player's transaction details, including the amount and item purchased.
+
+```lua
+local transaction = { playerId = 123, amount = 500, item = "Health Kit" }
+lib.logger(123, "PlayerTransaction", json.encode(transaction), "Purchase", "Shop")
+```
+
+#### Example 2: Logging a Server Restart Event
+
+Records a server restart event with the reason for the restart.
+
+```lua
+local restartDetails = { reason = "Scheduled Maintenance", timestamp = os.time() }
+lib.logger(-1, "ServerRestart", json.encode(restartDetails), "Maintenance", "System")
+```
+
+## Datadog
+
+### Setup
+
+1. **Create a Datadog Account**  
+   Sign up for a Datadog account, which offers a 14-day free trial. Free accounts have limitations, but logs are retained for 14 days.
+
+2. **Generate an API Key**  
+   Create an API key in your Datadog organization settings to submit logs.
+
+3. **Configure Convars**  
+   Set your API key and Datadog site using the following convars in your `server.cfg`.
+
+   ```bash
+   set datadog:key "yourapikey"
+   set datadog:site "datadoghq.com"
+   ```
+
+## Grafana Loki
+
+Loki is a scalable, cost-effective log aggregation system designed for high availability and ease of operation, inspired by Prometheus.
+
+<Tabs defaultValue="cloud" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="cloud">Cloud</TabsTrigger>
+    <TabsTrigger value="self-hosted">Self-hosted</TabsTrigger>
+  </TabsList>
+  <TabsContent value="cloud">
+    - Offers a free tier with some restrictions.  
+    - Simple to manage and set up.  
+    - Mostly handled by Grafana.
+
+    ### Setup
+
+    1. **Create a Grafana Account**  
+       Sign up for a Grafana account.
+
+    2. **Access Your Account**  
+       Navigate to your account settings.
+
+    3. **Configure Loki**  
+       In the Loki section of your account panel, click "Details". Generate a password and save the API key, user, and URL.
+  </TabsContent>
+  <TabsContent value="self-hosted">
+    Requires Docker and familiarity with containers or Kubernetes. Follow a guide to set up a Grafana stack (minimum Grafana and Grafana Loki). After setup, configure authentication with a username and password. Self-hosted Loki instances typically require an external authentication layer (e.g., NGINX basic auth or Cloudflare Access).
+  </TabsContent>
+</Tabs>
+
+### Configuration
+
+Set the logging service, endpoint, and authentication details using the following convars in your `server.cfg`.
+
+```bash
+set qs:logger "loki"
+set loki:user "<insert your user>"
+set loki:password "<insert the api key or password>"
+set loki:endpoint "<insert loki url without http:// or https://>"
+```
+
+## Fivemanage
+
+Fivemanage is an all-in-one SaaS platform for game servers, providing easy-to-use logging features.
+
+### Setup
+
+1. **Create an Account**  
+   Sign up for a Fivemanage account.
+
+2. **Select a Plan**  
+   Ensure you have a Hobby or Pro plan, which includes a 14-day free trial if you do not already have a subscription.
+
+3. **Generate a Token**  
+   Create a new token of type `Logs` in your Fivemanage account.
+
+4. **Configure Convars**  
+   Add the following convars to your `server.cfg`.
+
+   ```bash
+   set qs:logger "fivemanage"
+   set fivemanage:key "YOUR_API_KEY"
+   ```

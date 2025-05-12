@@ -1,0 +1,164 @@
+---
+title: Qs Lib Docs
+sidebar_position: 1
+description: Documentation for the Qs Lib resource, including installation and usage instructions.
+---
+
+import ResourceLinks from '@/components/ui/resource-links';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+# Qs Lib
+
+A comprehensive library providing reusable code via modular imports and exports, optimized for seamless integration.
+
+<ResourceLinks repo="https://github.com/emanueldev1/qs_lib" />
+
+## Installation
+
+<Alert variant="info" className="mb-6">
+  <AlertTitle>Recommendation</AlertTitle>
+  <AlertDescription>
+    Review the <a href="../guides" className="underline hover:text-blue-900">Guides</a> for detailed setup instructions for Git, Node.js, and pnpm.
+  </AlertDescription>
+</Alert>
+
+### Steps
+
+1. **Obtain a release or build from source**  
+   Download a [release](https://github.com/emanueldev1/qs_lib/releases) or compile the source code manually.
+
+   ```bash
+   git clone https://github.com/emanueldev1/qs_lib.git
+   cd qs_lib/web
+   pnpm i
+   pnpm build
+   ```
+
+2. **Configuration**  
+   Set up the resource using [convars](https://docs.fivem.net/docs/scripting-reference/convars/). Adjust the primary color and shade to match your UI theme.
+
+   ```bash
+   setr qs:primaryColor teal
+   setr qs:primaryShade 7
+   setr qs:userLocales 1 # Allows locale selection with /qs_lib
+   ```
+
+   Assign ace permissions to the resource.
+
+   ```bash
+   add_ace resource.qs_lib command.add_ace allow
+   add_ace resource.qs_lib command.remove_ace allow
+   add_ace resource.qs_lib command.add_principal allow
+   add_ace resource.qs_lib command.remove_principal allow
+   ```
+
+## Usage
+
+### Lua
+
+Add `@qs_lib/init.lua` as a `shared_script` in your `fxmanifest.lua` to activate the library.
+
+```lua
+shared_scripts {
+    '@qs_lib/init.lua',
+}
+```
+
+If it’s the only shared script, simplify to:
+
+```lua
+shared_script '@qs_lib/init.lua'
+```
+
+Specify modules to import in `fxmanifest.lua` or load them dynamically.
+
+```lua
+qs_libs {
+    'locale',
+    'math',
+    'table',
+}
+```
+
+Importing qs_lib provides these globals:
+- `lib`: Dynamically imports qs_lib modules.
+- `require`: Loads modules from your script.
+- `cache`: Refer to [Cache Module](/docs/qs_lib/Modules/Cache/Shared).
+
+### JavaScript
+
+<Alert variant="info" className="mb-6">
+  <AlertTitle>Note</AlertTitle>
+  <AlertDescription>
+    The qs_lib npm package omits some Lua functions. Available functions are located in the `resource` folder.
+  </AlertDescription>
+</Alert>
+
+Get the npm package [here](https://npmjs.com/package/@emanueldev1/qs_lib).
+
+**Usage:**  
+Import the entire library for a scope (client/server/shared) or specific functions as needed.
+
+```js
+import lib from '@emanueldev1/qs_lib/server';
+```
+
+```js
+import { versionCheck } from '@emanueldev1/qs_lib/server';
+```
+
+Integrate qs_lib functions into your resource. Consult the documentation for comprehensive instructions.
+
+## Using Icons for Interface Functions
+
+Qs_lib leverages Font Awesome 6.0 for icons. A string icon defaults to the `solid` type. For other types (e.g., brand icons like Apple), use an array with the type (`fas`, `far`, `fab`) and name.
+
+### Lua
+
+```lua
+icon = {'fab', 'apple'}
+```
+
+### JavaScript
+
+```js
+icon: ['fab', 'apple'];
+```
+
+## Building the UI
+
+To customize UI elements, download the source code, make changes, and rebuild.
+
+<Alert variant="warning" className="mb-6">
+  <AlertTitle>Warning</AlertTitle>
+  <AlertDescription>
+    Do not de-bundle or un-minify release CSS/JS files for editing.
+  </AlertDescription>
+</Alert>
+
+**Requirements:**
+
+- [Node.js (LTS)](https://nodejs.org/)
+- pnpm
+
+**Installing Node.js:**
+
+- Install Node.js LTS, ensuring all features are included.
+- Verify with `node --version` in a terminal. Reinstall if no version is displayed.
+
+**Installing pnpm:**
+
+- With Node.js installed, run `npm install -g pnpm`.
+
+**Building the UI:**
+
+- Navigate to the `web` directory.
+- Run `pnpm i` to install dependencies.
+- Run `pnpm build` to compile.
+
+<Alert variant="success" className="mb-6">
+  <AlertTitle>Tip</AlertTitle>
+  <AlertDescription>
+    Use `pnpm start` for browser development with hot reloading. For in-game development, run `pnpm start:game` to write changes to disk and restart the resource.
+  </AlertDescription>
+</Alert>

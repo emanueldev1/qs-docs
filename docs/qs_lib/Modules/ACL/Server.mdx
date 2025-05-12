@@ -1,0 +1,134 @@
+---
+title: Server
+sidebar_position: 2
+description: Guide for managing server-side permissions with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Server
+
+A toolkit for managing permissions via the native ACL system, compatible with `qs_groups` and `lib.addCommand`.  
+For more details, explore the [Basic Aces & Principals Guide](https://forum.cfx.re/t/basic-aces-principals-overview-guide/90917).
+
+## lib.addPrincipal
+
+Attaches a child principal to a parent principal, enabling the child to inherit permissions from the parent.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.addPrincipal(child, parent)
+
+    lib.addPrincipal('player.5', 'group.staff')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server'
+
+    lib.addPrincipal(child, parent)
+
+    lib.addPrincipal('player.5', 'group.staff')
+    ```
+  </TabsContent>
+</Tabs>
+
+- child: `string`
+- parent: `string`
+
+## lib.removePrincipal
+
+Detaches a child principal from a parent principal, stopping the inheritance of permissions.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.removePrincipal(child, parent)
+
+    lib.removePrincipal('player.5', 'group.staff')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server'
+
+    lib.removePrincipal(child, parent)
+
+    lib.removePrincipal('player.5', 'group.staff')
+    ```
+  </TabsContent>
+</Tabs>
+
+- child: `string`
+- parent: `string`
+
+## lib.addAce
+
+Provides a permission (ace) to a principal. The third parameter defaults to 'allow'; set it to `false` to block access.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.addAce(principal, ace, allow)
+
+    lib.addAce('group.moderator', 'command.notify')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server'
+
+    lib.addAce(principal, ace, allow)
+
+    lib.addAce('group.moderator', 'command.notify')
+    ```
+  </TabsContent>
+</Tabs>
+
+- principal: `string`
+- ace: `string`
+- allow: `boolean`
+
+## lib.removeAce
+
+Withdraws a permission (ace) from a principal. The third parameter defaults to 'allow'; set it to `false` to remove a blocked permission.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.removeAce(principal, ace, allow)
+
+    lib.removeAce('group.moderator', 'command.notify')
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server'
+
+    lib.removeAce(principal, ace, allow)
+
+    lib.removeAce('group.moderator', 'command.notify')
+    ```
+  </TabsContent>
+</Tabs>
+
+- principal: `string`
+- ace: `string`
+- allow: `boolean`

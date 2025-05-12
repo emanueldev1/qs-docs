@@ -1,0 +1,81 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for client-side cache handling with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Client
+
+Manages client-side values and caching, complementing the [shared](../Shared) utilities.
+
+## lib.onCache
+
+Sets up a listener that activates whenever a cached value updates.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.onCache(key, handler)
+    ```
+
+    - key: `string`
+      - Options: `ped`, `vehicle`, `seat`, `weapon`, `mount` (RedM only)
+    - handler: `function(value: any, previous: any)`
+
+    ```lua
+    lib.onCache('weapon', function(value, previous)
+        print('Previous weapon:', cache.weapon)
+        print('Current weapon:', value)
+    end)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import { onCache } from '@emanueldev1/qs_lib/client';
+
+    onCache(key, callback);
+    ```
+
+    - key: `string`
+      - Options: `ped`, `vehicle`, `seat`, `weapon`, `mount` (RedM only)
+    - callback: `(value: any) => void`
+
+    ```js
+    import { cache, onCache } from '@emanueldev1/qs_lib/client';
+
+    onCache('weapon', (value) => {
+      console.log('Previous weapon:', cache.weapon);
+      console.log('Current weapon:', value);
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+## Default Values
+
+Available cache entries include:
+
+- ped: `number`
+  - Player's entity ID
+- playerId: `number`
+  - Player's local ID
+- serverId: `number`
+  - Player's server ID
+- weapon: `number` or `false`
+  - Hash of the current weapon
+- vehicle: `number` or `false`
+  - Entity ID of the vehicle
+- seat: `number` or `false`
+  - Index of the vehicle seat
+- coords: `vector3`
+  - Player's current coordinates
+  - Available only when using `zones` or `points`
+  - Not compatible with `lib.onCache`
+- mount: `number` or `false` (RedM only)
+  - Entity ID of the mount

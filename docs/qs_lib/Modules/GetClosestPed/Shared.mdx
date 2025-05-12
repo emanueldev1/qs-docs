@@ -1,0 +1,60 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getClosestPed
+
+Fetches the handle and coordinates of the nearest ped to a given position.
+
+```lua
+lib.getClosestPed(location, searchRange)
+```
+
+- location: `vector3`
+  - The position to search from.
+- searchRange?: `number`
+  - The maximum distance to search within.
+  - Default: `2.0`
+
+**Returns:**
+
+- ped?: `number`
+- position?: `vector3`
+
+## Examples
+
+### Example 1: Targeting a Nearby Enemy Ped
+
+Searches for the closest enemy ped within 5.0 units of the player's position and initiates an attack if found.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local enemyPed, enemyPos = lib.getClosestPed(playerPos, 5.0)
+
+if enemyPed then
+    AttackPed(enemyPed)
+    print("Targeting enemy ped at:", enemyPos.x, enemyPos.y, enemyPos.z)
+else
+    print("No enemy ped found within range.")
+end
+```
+
+### Example 2: Assisting a Nearby Friendly Ped
+
+Finds the closest friendly ped within the default range (2.0 units) from a specified location and provides assistance if present.
+
+```lua
+local helpPoint = vector3(150.0, 250.0, 40.0)
+local friendlyPed, friendlyPos = lib.getClosestPed(helpPoint)
+
+if friendlyPed then
+    AssistPed(friendlyPed)
+    print("Assisting friendly ped at:", friendlyPos.x, friendlyPos.y, friendlyPos.z)
+else
+    print("No friendly ped found nearby.")
+end
+```

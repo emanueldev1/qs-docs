@@ -1,0 +1,56 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for server-side callback handling with qs_lib.
+---
+
+# Server
+
+## Trigger Client Callback
+
+### triggerClientCallback
+
+```js
+triggerClientCallback(event, targetId, ...data)
+```
+
+- event: `string`
+- targetId: `number`
+- ...data: `any`
+
+## Register Server Callback
+
+### onClientCallback
+
+```js
+onClientCallback(event, handler)
+```
+
+- event: `string`
+- handler: `function(targetId: number, ...data: any)`
+
+## Usage Example
+
+To understand this example completely, check the related client-side example on the [client](./Client#usage-example) page.
+
+```js
+import { onClientCallback, triggerClientCallback } from '@emanueldev1/qs_lib/server';
+```
+
+```js
+onClientCallback('player:info', (playerId, name, level) => {
+  console.log('Received from client:', playerId, name, level);
+  return {
+    serverInfo: 'Processed by server',
+  };
+});
+```
+
+```js
+setTimeout(async () => {
+  const data = await triggerClientCallback('player:requestInfo', 2, 'Alice', 15);
+  if (!data) return;
+  console.log(data.serverInfo);
+  console.log('Client response:', data);
+}, 150);
+```

@@ -1,0 +1,94 @@
+---
+title: Client
+sidebar_position: 4
+description: Documentation for handling keybinds using qs_lib.
+---
+
+# Client
+
+Offers tools to define and control keybinds, enhancing user interaction flows.
+
+## CKeybind Structure
+
+A data structure outlining a keybind with these properties.
+
+- id: `string`
+- label: `string`
+- boundKey: `string`
+  - The key currently set by the user
+- enabled: `boolean`
+  - Specifies if the keybind is active
+- pressed: `boolean`
+  - Shows if the keybind is currently held down
+- keyId: `number`
+  - Unique identifier for in-game keybind reference
+- presetKey?: `string`
+  - Initial key for new users
+  - Note: Updating this won't affect existing users
+- presetInput?: `string`
+  - See [Input Mapper Ids](https://docs.fivem.net/docs/game-references/input-mapper-parameter-ids/) for more info
+- extraKey?: `string`
+  - An optional secondary keybind
+- extraInput?: `string`
+  - Optional input mapper for the secondary key, defaults to preset input
+- setState: `function(self: CKeybind, enable: boolean)`
+  - Method to turn the keybind on or off
+- getPressState: `function(self: CKeybind)`
+  - Method to check the keybind's pressed status
+- whenPressed?: `function(self: CKeybind)`
+  - Custom action executed on keybind press
+- whenReleased?: `function(self: CKeybind)`
+  - Custom action executed on keybind release
+
+## lib.addKeybind
+
+```lua
+lib.addKeybind(options)
+```
+
+The `options` parameter is a table with the following fields:
+
+| Field            | Type                          | Description                                      | Default       |
+|------------------|-------------------------------|--------------------------------------------------|---------------|
+| `id`             | `string`                      | Unique identifier for the keybind                | -             |
+| `label`          | `string`                      | Brief description of the keybind's purpose       | -             |
+| `presetKey`      | `string` (optional)           | Default key for new users                        | `None`        |
+| `presetInput`    | `string` (optional)           | Default input mapper                             | `keyboard`    |
+| `extraKey`       | `string` (optional)           | Secondary key for the keybind                    | -             |
+| `extraInput`     | `string` (optional)           | Input mapper for the secondary key               | -             |
+| `enabled`        | `boolean` (optional)          | Whether the keybind starts as active             | -             |
+| `whenPressed`    | `function(self: CKeybind)` (optional) | Action triggered on keybind press         | -             |
+| `whenReleased`   | `function(self: CKeybind)` (optional) | Action triggered on keybind release       | -             |
+
+```lua
+local keybind = lib.addKeybind({
+    id = 'openmenu',
+    label = 'Opens the main menu interface',
+    presetKey = 'M',
+    whenPressed = function(self)
+        print(('Key %s (%s) activated'):format(self.boundKey, self.id))
+    end,
+    whenReleased = function(self)
+        print(('Key %s (%s) let go'):format(self.boundKey, self.id))
+    end
+})
+```
+
+### Activating/Deactivating Keybinds
+
+Keybinds can be turned on or off using the setState method.
+
+```lua
+keybind:setState(false) -- turns off the keybind
+keybind:setState(true) -- turns on the keybind
+```
+
+### Checking Keybind Press Status
+
+Keybinds defined with `lib.addKeybind()` include a boolean indicating their press status.
+
+Retrieve this status using the following method:
+
+```lua
+local pressed = keybind:getPressState()
+```

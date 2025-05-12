@@ -1,0 +1,93 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for managing game controls with qs_lib.
+---
+
+# Client
+
+A streamlined system for monitoring and restricting [game controls](https://docs.fivem.net/docs/game-references/controls/#controls).
+
+## lib.disableControls
+
+Disables all tracked controls when called per frame.
+
+```lua
+lib.disableControls()
+```
+
+## lib.disableControls:Add
+
+Includes the given control(s) in the tracked list.  
+If a control is already tracked, its counter will increase.
+
+```lua
+lib.disableControls:Add(...)
+```
+
+- vararg: `number` or `number[]`
+  - Control(s) to add to the tracked list
+
+## lib.disableControls:Remove
+
+Excludes the specified control(s) from the tracked list.  
+If a control's counter is greater than one, it will decrease.
+
+```lua
+lib.disableControls:Remove(...)
+```
+
+- vararg: `number` or `number[]`
+  - Control(s) to remove from the tracked list
+
+## lib.disableControls:Clear
+
+Resets the counter(s) for the specified control(s).
+
+```lua
+lib.disableControls:Clear(...)
+```
+
+- vararg: `number` or `number[]`
+  - Control(s) to stop tracking
+
+## Examples
+
+### Example 1: Disabling Attack Controls During a Cutscene
+
+Temporarily disables the attack control (ID 24) during a cutscene and re-enables it afterward.
+
+```lua
+-- Disable attack control during a cutscene
+lib.disableControls:Add(24) -- Control ID 24: ATTACK
+
+Citizen.CreateThread(function()
+    while IsCutsceneActive() do
+        lib.disableControls()
+        Citizen.Wait(0)
+    end
+    lib.disableControls:Remove(24)
+end)
+```
+
+### Example 2: Managing Sprint Controls in a Race
+
+Disables the sprint control (ID 21) at the start of a race, clears it during a break, and adds it back for the final lap.
+
+```lua
+-- Disable sprint at race start
+lib.disableControls:Add(21) -- Control ID 21: SPRINT
+
+Citizen.CreateThread(function()
+    while IsRaceActive() do
+        lib.disableControls()
+        Citizen.Wait(0)
+
+        if IsRaceBreak() then
+            lib.disableControls:Clear(21) -- Allow sprint during break
+        elseif IsFinalLap() then
+            lib.disableControls:Add(21) -- Re-disable sprint for final lap
+        end
+    end
+end)
+```

@@ -1,0 +1,65 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getNearbyObjects
+
+Fetches the handles and coordinates of all objects within a specified range of a given position.
+
+```lua
+lib.getNearbyObjects(position, searchRange)
+```
+
+- position: `vector3`
+  - The location to search around.
+- searchRange?: `number`
+  - The maximum distance to search within.
+  - Default: `2.0`
+
+**Returns:**
+
+- objects: `{ object: number, coords: vector3 }[]`
+
+## Examples
+
+### Example 1: Moving Nearby Barrels
+
+Finds all props (like barrels) within 5.0 units of the player's position and moves them to a new location.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local nearbyProps = lib.getNearbyObjects(playerPos, 5.0)
+
+for _, prop in ipairs(nearbyProps) do
+    if GetEntityModel(prop.object) == GetHashKey("prop_barrel_01a") then
+        SetEntityCoords(prop.object, playerPos.x + 10, playerPos.y, playerPos.z)
+        print("Moved barrel to:", playerPos.x + 10, playerPos.y, playerPos.z)
+    end
+end
+if #nearbyProps == 0 then
+    print("No props found nearby.")
+end
+```
+
+### Example 2: Destroying Nearby Debris
+
+Locates all props (like debris) within the default range (2.0 units) from a specific location and destroys them.
+
+```lua
+local cleanupPoint = vector3(200.0, 300.0, 40.0)
+local nearbyDebris = lib.getNearbyObjects(cleanupPoint)
+
+for _, debris in ipairs(nearbyDebris) do
+    if GetEntityModel(debris.object) == GetHashKey("prop_rub_cardboardbox") then
+        DeleteEntity(debris.object)
+        print("Destroyed cardboard box at:", debris.coords.x, debris.coords.y, debris.coords.z)
+    end
+end
+if #nearbyDebris == 0 then
+    print("No debris found nearby.")
+end
+```

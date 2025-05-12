@@ -1,0 +1,65 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for waiting utilities with qs_lib.
+---
+
+# Shared
+
+## lib.waitFor
+
+Repeatedly invokes a function until it returns a non-nil value or times out, then returns the function's result.
+
+```lua
+lib.waitFor(callback, errorMsg, timeoutDuration)
+```
+
+- callback: `function`
+  - The function to call each frame.
+- errorMsg?: `string`
+  - The error message to display if the function times out.
+- timeoutDuration?: `number | false`
+  - The duration (in milliseconds) to run the function; defaults to 1000ms unless set to `false`.
+
+**Returns:**
+
+- result: `any`
+
+### Examples
+
+#### Example 1: Waiting for a Random Condition
+
+Waits for a random condition to return a value, with a timeout and custom error message.
+
+```lua
+local value = lib.waitFor(function()
+    if math.random(0, 1) == 1 then
+        return 'abc'
+    end
+end, "Failed to get a value in time!", 2000)
+
+if value then
+    print("Value received:", value)
+else
+    print("No value received within timeout.")
+end
+```
+
+#### Example 2: Waiting for a Player to Enter a Vehicle
+
+Waits for the player to enter a vehicle, with an indefinite timeout.
+
+```lua
+local vehicle = lib.waitFor(function()
+    local veh = GetVehiclePedIsIn(PlayerPedId(), false)
+    if veh ~= 0 then
+        return veh
+    end
+end, "Player did not enter a vehicle!", false)
+
+if vehicle then
+    print("Player entered vehicle with handle:", vehicle)
+else
+    print("Timeout occurred while waiting for vehicle entry.")
+end
+```

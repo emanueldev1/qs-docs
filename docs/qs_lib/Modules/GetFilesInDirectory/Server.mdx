@@ -1,0 +1,51 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for file management with qs_lib.
+---
+
+# Server
+
+## lib.getFilesInDirectory
+
+Retrieves a list of files in a specified directory within a resource, along with the total file count.
+
+```lua
+lib.getFilesInDirectory(directory, filter)
+```
+
+- directory: `string`
+  - The relative or absolute path to the directory to search.
+- filter: `string`
+  - A pattern to match when searching for files.
+
+**Returns:**
+
+- files: `string[]`
+- totalFiles: `number`
+
+## Examples
+
+### Example 1: Listing All Script Files
+
+Fetches all Lua script files in the `scripts` directory of the current resource and logs the results.
+
+```lua
+local scripts, scriptCount = lib.getFilesInDirectory('scripts', '%.lua$')
+print("Found", scriptCount, "script files:")
+for i, script in ipairs(scripts) do
+    print(i, script)
+end
+```
+
+### Example 2: Finding All Image Files
+
+Retrieves all PNG image files in the `assets/images` directory and logs the total count.
+
+```lua
+local images, imageCount = lib.getFilesInDirectory('assets/images', '%.png$')
+print("Total PNG images found:", imageCount)
+for i, image in ipairs(images) do
+    print("Image", i, ":", image)
+end
+```

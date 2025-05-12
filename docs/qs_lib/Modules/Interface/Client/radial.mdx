@@ -1,0 +1,448 @@
+---
+title: Radial Menu
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Radial Menu
+
+- The radial menu features a global menu, accessed by default with `z`, visible only when at least one item is present.
+- Add or remove items from the global menu using `lib.addRadialItem` and `lib.removeRadialItem`.
+- Use `lib.registerRadial` to define submenus, and link to them with the `menu` property on items.
+
+## lib.addRadialItem
+
+Adds an item or array of items to the global radial menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.addRadialItem(menuItems)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.addRadialItem(menuItems);
+    ```
+  </TabsContent>
+</Tabs>
+
+- menuItems: `table` (`object` or `array`)
+  - id: `string`
+    - Unique identifier for removing the item.
+  - icon: `string`
+    - Font Awesome icon or custom URI.
+  - iconWidth?: `number`
+  - iconHeight?: `number`
+    - Adjusts icon size for custom URIs.
+  - label: `string`
+    - Supports `\n` for new lines.
+  - menu?: `string`
+    - ID of a submenu to open.
+  - onSelect?: `function(currentMenu: string | nil, itemIndex: number)` | `string`
+    - Executes when the item is clicked.
+  - keepOpen?: `boolean`
+
+## lib.removeRadialItem
+
+Removes an item from the global menu by its ID.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.removeRadialItem(itemId)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.removeRadialItem(itemId);
+    ```
+  </TabsContent>
+</Tabs>
+
+- itemId: `string`
+
+## lib.clearRadialItems
+
+Clears all items from the radial menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.clearRadialItems()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.clearRadialItems();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.registerRadial
+
+Registers a submenu for the radial menu with predefined options.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerRadial(submenu)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerRadial(submenu);
+    ```
+  </TabsContent>
+</Tabs>
+
+- submenu: `table` (`object`)
+  - id: `string`
+    - Unique ID for the submenu, used with the `menu` property to open it.
+  - items: `array`
+    - icon: `string`
+    - label: `string`
+      - Supports `\n` for new lines.
+    - menu?: `string`
+      - ID of another menu to open.
+    - onSelect?: `function(currentMenu: string | nil, itemIndex: number)` | `string`
+      - Executes when the item is clicked.
+
+## lib.hideRadial
+
+Closes the radial menu if it is currently visible.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.hideRadial()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.hideRadial();
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.disableRadial
+
+Prevents players from opening the radial menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.disableRadial(enabled)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.disableRadial(enabled);
+    ```
+  </TabsContent>
+</Tabs>
+
+- enabled: `boolean`
+  - Determines whether the radial menu is disabled.
+
+## lib.getCurrentRadialId
+
+Retrieves the ID of the currently open radial menu.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local menuId = lib.getCurrentRadialId()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    let menuId = lib.getCurrentRadialId();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Recommendation</AlertTitle>
+  <AlertDescription>
+    Keep radial menu labels short, as long labels may appear cluttered due to the menu's compact design.
+  </AlertDescription>
+</Alert>
+
+### Example 1: Civilian Actions Menu with Submenu
+
+Adds a civilian actions menu to the global radial menu, with a submenu for communication options, and handles selections.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    exports('handleCivilianAction', function(menu, item)
+        print("Menu:", menu, "Item:", item)
+        if menu == 'communication_menu' and item == 1 then
+            print("Calling for help...")
+        end
+    end)
+
+    lib.registerRadial({
+      id = 'communication_menu',
+      items = {
+        {
+          label = 'Call Help',
+          icon = 'phone',
+          onSelect = 'handleCivilianAction'
+        },
+        {
+          label = 'Wave',
+          icon = 'hand'
+        },
+        {
+          label = 'Shout',
+          icon = 'bullhorn'
+        },
+        {
+          label = 'Signal',
+          icon = 'flag'
+        }
+      }
+    })
+
+    lib.addRadialItem({
+      {
+        id = 'civilian_actions',
+        label = 'Actions',
+        icon = 'user',
+        menu = 'communication_menu'
+      },
+      {
+        id = 'quick_access',
+        label = 'Quick',
+        icon = 'bolt',
+        onSelect = function()
+          print("Quick access triggered")
+        end
+      }
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    exports('handleCivilianAction', (menu, item) => {
+        console.log("Menu:", menu, "Item:", item);
+        if (menu === 'communication_menu' && item === 1) {
+            console.log("Calling for help...");
+        }
+    });
+
+    lib.registerRadial({
+      id: 'communication_menu',
+      items: [
+        {
+          label: 'Call Help',
+          icon: 'phone',
+          onSelect: 'handleCivilianAction'
+        },
+        {
+          label: 'Wave',
+          icon: 'hand'
+        },
+        {
+          label: 'Shout',
+          icon: 'bullhorn'
+        },
+        {
+          label: 'Signal',
+          icon: 'flag'
+        }
+      ]
+    });
+
+    lib.addRadialItem([
+      {
+        id: 'civilian_actions',
+        label: 'Actions',
+        icon: 'user',
+        menu: 'communication_menu'
+      },
+      {
+        id: 'quick_access',
+        label: 'Quick',
+        icon: 'bolt',
+        onSelect: () => {
+          console.log("Quick access triggered");
+        }
+      }
+    ]);
+    ```
+  </TabsContent>
+</Tabs>
+
+### Example 2: Mechanic Menu with Dynamic Garage Access
+
+Registers a mechanic menu and dynamically adds a garage access option when near a garage using the points system.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.registerRadial({
+      id = 'mechanic_menu',
+      items = {
+        {
+          label = 'Repair',
+          icon = 'wrench'
+        },
+        {
+          label = 'Tune',
+          icon = 'gear'
+        },
+        {
+          label = 'Paint',
+          icon = 'paint-roller',
+          onSelect = function()
+            print("Painting vehicle...")
+          end
+        }
+      }
+    })
+
+    lib.addRadialItem({
+      {
+        id = 'mechanic',
+        label = 'Mechanic',
+        icon = 'tools',
+        menu = 'mechanic_menu'
+      },
+      {
+        id = 'quick_fix',
+        label = 'Fix',
+        icon = 'screwdriver',
+        onSelect = function()
+          print("Quick fix applied")
+        end
+      }
+    })
+
+    local coords = GetEntityCoords(cache.ped)
+    local point = lib.points.new(coords, 4)
+
+    function point:onEnter()
+      lib.addRadialItem({
+        id = 'garage_option',
+        icon = 'car',
+        label = 'Enter',
+        onSelect = function()
+          print("Entering garage...")
+        }
+      })
+    end
+
+    function point:onExit()
+      lib.removeRadialItem('garage_option')
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    <Alert variant="info" className="mb-4">
+      <AlertTitle>Note</AlertTitle>
+      <AlertDescription>
+        The points system is not available in the npm package.
+      </AlertDescription>
+    </Alert>
+
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.registerRadial({
+      id: 'mechanic_menu',
+      items: [
+        {
+          label: 'Repair',
+          icon: 'wrench'
+        },
+        {
+          label: 'Tune',
+          icon: 'gear'
+        },
+        {
+          label: 'Paint',
+          icon: 'paint-roller',
+          onSelect: () => {
+            console.log("Painting vehicle...");
+          }
+        }
+      ]
+    });
+
+    lib.addRadialItem([
+      {
+        id: 'mechanic',
+        label: 'Mechanic',
+        icon: 'tools',
+        menu: 'mechanic_menu'
+      },
+      {
+        id: 'quick_fix',
+        label: 'Fix',
+        icon: 'screwdriver',
+        onSelect: () => {
+          console.log("Quick fix applied");
+        }
+      }
+    ]);
+    ```
+  </TabsContent>
+</Tabs>

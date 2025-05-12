@@ -1,0 +1,86 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for DUI management with qs_lib.
+---
+
+# Client
+
+A straightforward and unified approach for creating DUIs, enabling URL updates, messaging, and cleanup.
+
+```js
+Dui(settings)
+```
+
+- settings: `object`
+  - url: `string`
+  - width: `number`
+  - height: `number`
+  - debug?: `boolean`
+
+**Returns:**
+
+- dui: `Dui`
+  - url: `string`
+  - duiObject: `number`
+  - duiHandle: `string`
+  - runtimeTxd: `number`
+  - txdObject: `number`
+  - dictName: `string`
+  - txtName: `string`
+  - setUrl: `function`(url: `string`)
+  - sendMessage: `function`(data: `object`)
+  - remove: `function`
+
+## Examples
+
+### Example 1: Displaying an In-Game Map
+
+Creates a DUI for an in-game map viewer, updates its URL, sends a message to show it, and removes it when done.
+
+```js
+import { Dui, cache } from '@emanueldev1/qs_lib/client'
+
+const mapDui = new Dui({
+    url: `nui://${cache.resource}/map/viewer.html`,
+    width: 1280,
+    height: 720,
+    debug: true
+})
+
+// Update to a specific map
+mapDui.setUrl("https://game-maps.com/current-region")
+
+// Show the map
+mapDui.sendMessage({
+    action: "showMap",
+    enabled: true
+})
+
+// Clean up
+mapDui.remove()
+```
+
+### Example 2: Showing a Leaderboard
+
+Sets up a DUI for a leaderboard display, sends a message to update scores, and removes it after use.
+
+```js
+import { Dui, cache } from '@emanueldev1/qs_lib/client'
+
+const leaderboardDui = new Dui({
+    url: `nui://${cache.resource}/leaderboard/index.html`,
+    width: 800,
+    height: 600,
+    debug: false
+})
+
+// Send leaderboard data
+leaderboardDui.sendMessage({
+    action: "updateScores",
+    scores: { player1: 150, player2: 120 }
+})
+
+// Remove when no longer needed
+leaderboardDui.remove()
+```

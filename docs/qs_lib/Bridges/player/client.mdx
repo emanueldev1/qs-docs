@@ -1,0 +1,653 @@
+---
+title: Player Bridge (Client)
+sidebar_position: 14
+description: Documentation for client-side player management with qs_lib.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Player Bridge (Client)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Default Compatibility</AlertTitle>
+  <AlertDescription>
+    The functions listed below are compatible by default with the following frameworks: QBX-Core, QB-Core, and ESX. These functions represent the complete set of client-side player operations provided by this bridge. Note that some functions, such as <code>lib.player.getGang</code>, may not be fully supported in all frameworks. In such cases, the function may return default values if gang systems are not implemented.
+  </AlertDescription>
+</Alert>
+
+The Player Bridge provides functions to manage player-related data on the client side, such as retrieving identity, inventory, job, and status information.
+
+## lib.player.identifier
+
+Retrieves the player's unique identifier.
+
+```lua
+lib.player.identifier()
+```
+
+**Returns:**
+
+- identifier: `string` | `nil`
+  - The player's identifier (e.g., "license:abc123" or "citizenid123"), or `nil` if not available.
+
+### Example: Getting Player Identifier
+
+Fetches and logs the player's unique identifier.
+
+```lua title="Client: Getting Player Identifier"
+RegisterCommand('getid', function(source, args, rawCommand)
+    local identifier = lib.player.identifier()
+    if identifier then
+        print("Player identifier:", identifier)
+    else
+        print("Player identifier not available.")
+    end
+end, false)
+```
+
+## lib.player.name
+
+Retrieves the player's first and last name.
+
+```lua
+lib.player.name()
+```
+
+**Returns:**
+
+- firstName: `string` | `nil`
+  - The player's first name (e.g., "John"), or `nil` if not available.
+- lastName: `string` | `nil`
+  - The player's last name (e.g., "Doe"), or `nil` if not available.
+
+### Example: Getting Player Name
+
+Fetches and logs the player's first and last name.
+
+```lua title="Client: Getting Player Name"
+RegisterCommand('getname', function(source, args, rawCommand)
+    local firstName, lastName = lib.player.name()
+    if firstName and lastName then
+        print("Player name:", firstName, lastName)
+    else
+        print("Player name not available.")
+    end
+end, false)
+```
+
+## lib.player.getUsername
+
+Retrieves the player's username.
+
+```lua
+lib.player.getUsername()
+```
+
+**Returns:**
+
+- username: `string` | `nil`
+  - The player's username (e.g., "Knoblauchbrot"), or `nil` if not available.
+
+### Example: Getting Player Username
+
+Fetches and logs the player's username.
+
+```lua title="Client: Getting Player Username"
+RegisterCommand('getusername', function(source, args, rawCommand)
+    local username = lib.player.getUsername()
+    if username then
+        print("Player username:", username)
+    else
+        print("Player username not available.")
+    end
+end, false)
+```
+
+## lib.player.getBirth
+
+Retrieves the player's date of birth.
+
+```lua
+lib.player.getBirth()
+```
+
+**Returns:**
+
+- dob: `string` | `nil`
+  - The player's date of birth (e.g., "01/01/2000"), or `nil` if not available.
+
+### Example: Getting Player Date of Birth
+
+Fetches and logs the player's date of birth.
+
+```lua title="Client: Getting Player Date of Birth"
+RegisterCommand('getbirth', function(source, args, rawCommand)
+    local dob = lib.player.getBirth()
+    if dob then
+        print("Player date of birth:", dob)
+    else
+        print("Player date of birth not available.")
+    end
+end, false)
+```
+
+## lib.player.getHeight
+
+Retrieves the player's height.
+
+```lua
+lib.player.getHeight()
+```
+
+**Returns:**
+
+- height: `number` | `nil`
+  - The player's height in cm (e.g., 181), or `nil` if not available.
+
+### Example: Getting Player Height
+
+Fetches and logs the player's height.
+
+```lua title="Client: Getting Player Height"
+RegisterCommand('getheight', function(source, args, rawCommand)
+    local height = lib.player.getHeight()
+    if height then
+        print("Player height:", height, "cm")
+    else
+        print("Player height not available.")
+    end
+end, false)
+```
+
+## lib.player.getSex
+
+Retrieves the player's sex.
+
+```lua
+lib.player.getSex()
+```
+
+**Returns:**
+
+- sex: `number` | `nil`
+  - The player's sex (0 for male, 1 for female), or `nil` if not available.
+
+### Example: Getting Player Sex
+
+Fetches and logs the player's sex.
+
+```lua title="Client: Getting Player Sex"
+RegisterCommand('getsex', function(source, args, rawCommand)
+    local sex = lib.player.getSex()
+    if sex ~= nil then
+        print("Player sex:", sex == 0 and "Male" or "Female")
+    else
+        print("Player sex not available.")
+    end
+end, false)
+```
+
+## lib.player.getLicense
+
+Retrieves the player's license.
+
+```lua
+lib.player.getLicense()
+```
+
+**Returns:**
+
+- license: `string` | `nil`
+  - The player's license (e.g., "license:abc123"), or `nil` if not available.
+
+### Example: Getting Player License
+
+Fetches and logs the player's license.
+
+```lua title="Client: Getting Player License"
+RegisterCommand('getlicense', function(source, args, rawCommand)
+    local license = lib.player.getLicense()
+    if license then
+        print("Player license:", license)
+    else
+        print("Player license not available.")
+    end
+end, false)
+```
+
+## lib.player.getGroup
+
+Retrieves the player's permission group.
+
+```lua
+lib.player.getGroup()
+```
+
+**Returns:**
+
+- group: `string` | `nil`
+  - The player's group (e.g., "user", "admin"), or `nil` if not available.
+
+### Example: Getting Player Group
+
+Fetches and logs the player's permission group.
+
+```lua title="Client: Getting Player Group"
+RegisterCommand('getgroup', function(source, args, rawCommand)
+    local group = lib.player.getGroup()
+    if group then
+        print("Player group:", group)
+    else
+        print("Player group not available.")
+    end
+end, false)
+```
+
+## lib.player.isAdmin
+
+Checks if the player is an admin.
+
+```lua
+lib.player.isAdmin()
+```
+
+**Returns:**
+
+- isAdmin: `boolean`
+  - `true` if the player is an admin, `false` otherwise.
+
+### Example: Checking Admin Status
+
+Checks if the player is an admin and logs the result.
+
+```lua title="Client: Checking Admin Status"
+RegisterCommand('isadmin', function(source, args, rawCommand)
+    local isAdmin = lib.player.isAdmin()
+    print("Player is", isAdmin and "an admin" or "not an admin")
+end, false)
+```
+
+## lib.player.isDead
+
+Checks if the player is dead.
+
+```lua
+lib.player.isDead()
+```
+
+**Returns:**
+
+- isDead: `boolean`
+  - `true` if the player is dead, `false` otherwise.
+
+### Example: Checking Death Status
+
+Checks if the player is dead and logs the result.
+
+```lua title="Client: Checking Death Status"
+RegisterCommand('isdead', function(source, args, rawCommand)
+    local isDead = lib.player.isDead()
+    print("Player is", isDead and "dead" or "alive")
+end, false)
+```
+
+## lib.player.getWeight
+
+Retrieves the current weight of the player's inventory.
+
+```lua
+lib.player.getWeight()
+```
+
+**Returns:**
+
+- weight: `number`
+  - The current inventory weight (e.g., 12), or 0 if not available.
+
+### Example: Getting Inventory Weight
+
+Fetches and logs the current weight of the player's inventory.
+
+```lua title="Client: Getting Inventory Weight"
+RegisterCommand('getweight', function(source, args, rawCommand)
+    local weight = lib.player.getWeight()
+    print("Current inventory weight:", weight)
+end, false)
+```
+
+## lib.player.getMaxWeight
+
+Retrieves the maximum weight of the player's inventory.
+
+```lua
+lib.player.getMaxWeight()
+```
+
+**Returns:**
+
+- maxWeight: `number`
+  - The maximum inventory weight (e.g., 24), or 0 if not available.
+
+### Example: Getting Maximum Inventory Weight
+
+Fetches and logs the maximum weight of the player's inventory.
+
+```lua title="Client: Getting Maximum Inventory Weight"
+RegisterCommand('getmaxweight', function(source, args, rawCommand)
+    local maxWeight = lib.player.getMaxWeight()
+    print("Maximum inventory weight:", maxWeight)
+end, false)
+```
+
+## lib.player.getPed
+
+Retrieves the player's ped ID.
+
+```lua
+lib.player.getPed()
+```
+
+**Returns:**
+
+- pedId: `number`
+  - The player's ped ID (e.g., 123), or 0 if not available.
+
+### Example: Getting Player Ped ID
+
+Fetches and logs the player's ped ID.
+
+```lua title="Client: Getting Player Ped ID"
+RegisterCommand('getped', function(source, args, rawCommand)
+    local pedId = lib.player.getPed()
+    print("Player ped ID:", pedId)
+end, false)
+```
+
+## lib.player.getPlayerId
+
+Retrieves the player's ID.
+
+```lua
+lib.player.getPlayerId()
+```
+
+**Returns:**
+
+- playerId: `number`
+  - The player's ID (e.g., 1), or 0 if not available.
+
+### Example: Getting Player ID
+
+Fetches and logs the player's ID.
+
+```lua title="Client: Getting Player ID"
+RegisterCommand('getplayerid', function(source, args, rawCommand)
+    local playerId = lib.player.getPlayerId()
+    print("Player ID:", playerId)
+end, false)
+```
+
+## lib.player.getSource
+
+Retrieves the player's server source ID.
+
+```lua
+lib.player.getSource()
+```
+
+**Returns:**
+
+- sourceId: `number`
+  - The player's source ID (e.g., 1), or 0 if not available.
+
+### Example: Getting Player Source ID
+
+Fetches and logs the player's server source ID.
+
+```lua title="Client: Getting Player Source ID"
+RegisterCommand('getsource', function(source, args, rawCommand)
+    local sourceId = lib.player.getSource()
+    print("Player source ID:", sourceId)
+end, false)
+```
+
+## lib.player.getPlayerData
+
+Retrieves the player's data or a specific key from it.
+
+```lua
+lib.player.getPlayerData(_key)
+```
+
+- _key: `string` | `nil`
+  - Optional key to retrieve specific data (e.g., "job").
+
+**Returns:**
+
+- data: `table` | `any`
+  - The player's data or the value of the specified key (e.g., `{ job = { name = "police" }, money = { cash = 100 } }` or `{ name = "police" }` for `_key = "job"`), or `nil` if not available.
+
+### Example: Getting Player Data
+
+Fetches and logs the player's job data.
+
+```lua title="Client: Getting Player Data"
+RegisterCommand('getjobdata', function(source, args, rawCommand)
+    local jobData = lib.player.getPlayerData("job")
+    if jobData then
+        print("Player job:", jobData.name, "Grade:", jobData.grade)
+    else
+        print("Player job data not available.")
+    end
+end, false)
+```
+
+## lib.player.getMetadata
+
+Retrieves player metadata or a specific key from it.
+
+```lua
+lib.player.getMetadata(_key)
+```
+
+- _key: `string` | `nil`
+  - Optional key to retrieve specific metadata (e.g., "hunger").
+
+**Returns:**
+
+- metadata: `table` | `any`
+  - The player's metadata or the value of the specified key (e.g., `{ hunger = 100, thirst = 50 }` or `100` for `_key = "hunger"`), or `nil` if not available.
+
+### Example: Getting Player Metadata
+
+Fetches and logs the player's hunger level.
+
+```lua title="Client: Getting Player Metadata"
+RegisterCommand('gethunger', function(source, args, rawCommand)
+    local hunger = lib.player.getMetadata("hunger")
+    if hunger then
+        print("Player hunger level:", hunger)
+    else
+        print("Player hunger metadata not available.")
+    end
+end, false)
+```
+
+## lib.player.getInventory
+
+Retrieves the player's inventory.
+
+```lua
+lib.player.getInventory()
+```
+
+**Returns:**
+
+- inventory: `table`
+  - The player's inventory items (e.g., `{ { name = "water", count = 2 }, { name = "bread", count = 1 } }`), or an empty table if not available.
+
+### Example: Getting Player Inventory
+
+Fetches and logs the player's inventory items.
+
+```lua title="Client: Getting Player Inventory"
+RegisterCommand('getplayerinv', function(source, args, rawCommand)
+    local inventory = lib.player.getInventory()
+    for _, item in ipairs(inventory) do
+        print("Item:", item.name, "Count:", item.count)
+    end
+end, false)
+```
+
+## lib.player.getMoney
+
+Retrieves the player's money for a specific account.
+
+```lua
+lib.player.getMoney(_account)
+```
+
+- _account: `string`
+  - The account name (e.g., "bank", "cash").
+
+**Returns:**
+
+- amount: `number`
+  - The amount of money in the specified account (e.g., 500), or 0 if not found.
+
+### Example: Getting Player Money
+
+Fetches and logs the player's cash balance.
+
+```lua title="Client: Getting Player Money"
+RegisterCommand('getmoney', function(source, args, rawCommand)
+    local cash = lib.player.getMoney("cash")
+    print("Player cash balance:", cash)
+end, false)
+```
+
+## lib.player.getJob
+
+Retrieves the player's job information.
+
+```lua
+lib.player.getJob()
+```
+
+**Returns:**
+
+- job: `table`
+  - A table containing job details (e.g., `{ name = "police", type = "leo", label = "Police Officer", grade = 2, gradeLabel = "Sergeant", isBoss = false, bankAuth = true, duty = true }`).
+
+### Example: Getting Player Job
+
+Fetches and logs the player's job information.
+
+```lua title="Client: Getting Player Job"
+RegisterCommand('getjob', function(source, args, rawCommand)
+    local job = lib.player.getJob()
+    print("Player job:", job.name, "Grade:", job.gradeLabel, "On Duty:", job.duty and "Yes" or "No")
+end, false)
+```
+
+## lib.player.notify
+
+Shows a notification to the player.
+
+```lua
+lib.player.notify(message, type, duration)
+```
+
+- message: `string`
+  - The notification message (e.g., "You received $100!").
+- type: `string` | `nil`
+  - The notification type (e.g., "success", "error", "info").
+- duration: `number` | `nil`
+  - Duration in milliseconds (optional, e.g., 5000).
+
+### Example: Sending a Notification
+
+Sends a success notification to the player.
+
+```lua title="Client: Sending a Notification"
+RegisterCommand('notify', function(source, args, rawCommand)
+    lib.player.notify("You received $100!", "success", 5000)
+end, false)
+```
+
+## lib.player.getCoords
+
+Retrieves the player's current coordinates.
+
+```lua
+lib.player.getCoords()
+```
+
+**Returns:**
+
+- coords: `table`
+  - A table with x, y, z coordinates (e.g., `{ x = 100.0, y = 200.0, z = 30.0 }`).
+
+### Example: Getting Player Coordinates
+
+Fetches and logs the player's current coordinates.
+
+```lua title="Client: Getting Player Coordinates"
+RegisterCommand('getcoords', function(source, args, rawCommand)
+    local coords = lib.player.getCoords()
+    print("Player coordinates - X:", coords.x, "Y:", coords.y, "Z:", coords.z)
+end, false)
+```
+
+## lib.player.getGang
+
+Retrieves the player's gang information (if applicable).
+
+```lua
+lib.player.getGang()
+```
+
+**Returns:**
+
+- gang: `table`
+  - A table containing gang details (e.g., `{ name = "ballas", label = "Ballas Gang", grade = 1, gradeLabel = "Member", isBoss = false }`).
+
+### Example: Getting Player Gang
+
+Fetches and logs the player's gang information.
+
+```lua title="Client: Getting Player Gang"
+RegisterCommand('getgang', function(source, args, rawCommand)
+    local gang = lib.player.getGang()
+    print("Player gang:", gang.name, "Grade:", gang.gradeLabel, "Is Boss:", gang.isBoss and "Yes" or "No")
+end, false)
+```
+
+## lib.player.hasItem
+
+Checks if the player has a specific item in their inventory.
+
+```lua
+lib.player.hasItem(item, amount)
+```
+
+- item: `string`
+  - The item name (e.g., "water").
+- amount: `number` | `nil`
+  - The minimum amount required (default: 1).
+
+**Returns:**
+
+- hasItem: `boolean`
+  - `true` if the player has the item and amount, `false` otherwise.
+
+### Example: Checking for an Item
+
+Checks if the player has at least 2 units of "water".
+
+```lua title="Client: Checking for an Item"
+RegisterCommand('hasitem', function(source, args, rawCommand)
+    local hasItem = lib.player.hasItem("water", 2)
+    print("Player", hasItem and "has" or "does not have", "at least 2 water items.")
+end, false)
+```

@@ -1,0 +1,281 @@
+---
+title: Inventory Bridge (Client)
+sidebar_position: 10
+description: Documentation for client-side inventory management with qs_lib.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Inventory Bridge (Client)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Default Compatibility</AlertTitle>
+  <AlertDescription>
+    The functions listed below are compatible by default with the following inventory systems: qs-inventory, ak47_inventory, codem-inventory, origen_inventory, ox_inventory, qb-inventory, and tgiann-inventory. These functions represent the complete set of client-side inventory operations provided by this bridge. Note that some functions, such as <code>lib.inventory.getWeaponList</code>, may not be fully supported in all inventory systems. In such cases, the function may provide micro-compatibility (e.g., returning a subset of data) or fall back to returning the general item list from <code>lib.inventory.getItemList()</code>.
+  </AlertDescription>
+</Alert>
+
+The Inventory Bridge provides functions to manage inventory operations on the client side, such as retrieving inventory data, searching for items, checking the inventory UI state, and registering stashes.
+
+## lib.inventory.get
+
+Retrieves the current user's inventory, typically containing a list of items the player possesses.
+
+```lua
+lib.inventory.get()
+```
+
+**Returns:**
+
+- inventory: `table`
+  - A table containing the user's inventory items (e.g., `{ { name = "water", amount = 5, slot = 1 }, { name = "bread", amount = 2, slot = 2 } }`).
+
+### Example: Displaying Player Inventory
+
+Fetches and logs the player's inventory items.
+
+```lua title="Client: Displaying Player Inventory"
+RegisterCommand('showinv', function(source, args, rawCommand)
+    local inventory = lib.inventory.get()
+    for _, item in ipairs(inventory) do
+        print("Item:", item.name, "Amount:", item.amount, "Slot:", item.slot)
+    end
+end, false)
+```
+
+## lib.inventory.search
+
+Searches the inventory for a specific item by name, returning a table of matching items.
+
+```lua
+lib.inventory.search(itemName)
+```
+
+- itemName: `string`
+  - The name of the item to search for (e.g., "water").
+
+**Returns:**
+
+- results: `table`
+  - A table containing the search results (e.g., `{ { name = "water", amount = 5, slot = 1 } }`).
+
+### Example: Searching for an Item
+
+Searches for "water" in the player's inventory and logs the results.
+
+```lua title="Client: Searching for an Item"
+RegisterCommand('searchitem', function(source, args, rawCommand)
+    local itemName = args[1] or "water"
+    local results = lib.inventory.search(itemName)
+    if #results > 0 then
+        for _, item in ipairs(results) do
+            print("Found", item.name, "in slot", item.slot, "with amount", item.amount)
+        end
+    else
+        print("No items named", itemName, "found in inventory.")
+    end
+end, false)
+```
+
+## lib.inventory.getItemList
+
+Retrieves the complete list of items available in the inventory system, typically a master list of item definitions.
+
+```lua
+lib.inventory.getItemList()
+```
+
+**Returns:**
+
+- items: `table`
+  - A table containing the list of all items (e.g., `{ { name = "water", label = "Bottle of Water", weight = 500 }, { name = "bread", label = "Bread", weight = 300 } }`).
+
+### Example: Listing All Items
+
+Fetches and logs all items in the inventory system.
+
+```lua title="Client: Listing All Items"
+RegisterCommand('listitems', function(source, args, rawCommand)
+    local items = lib.inventory.getItemList()
+    for itemName, data in pairs(items) do
+        print("Item:", data.name, "Label:", data.label, "Weight:", data.weight)
+    end
+end, false)
+```
+
+## lib.inventory.getWeaponList
+
+Retrieves the list of all weapons available in the inventory system, typically a master list of weapon definitions.
+
+```lua
+lib.inventory.getWeaponList()
+```
+
+**Returns:**
+
+- weapons: `table`
+  - A table containing the list of all weapons (e.g., `{ { name = "WEAPON_PISTOL", label = "Pistol", weight = 1000 }, { name = "WEAPON_KNIFE", label = "Knife", weight = 500 } }`).
+
+### Example: Listing All Weapons
+
+Fetches and logs all weapons in the inventory system.
+
+```lua title="Client: Listing All Weapons"
+RegisterCommand('listweapons', function(source, args, rawCommand)
+    local weapons = lib.inventory.getWeaponList()
+    for weaponName, data in pairs(weapons) do
+        print("Weapon:", data.name, "Label:", data.label, "Weight:", data.weight)
+    end
+end, false)
+```
+
+## lib.inventory.getCurrentWeapon
+
+Retrieves the currently equipped weapon from the inventory system, returning its details.
+
+```lua
+lib.inventory.getCurrentWeapon()
+```
+
+**Returns:**
+
+- weapon: `table` | `nil`
+  - A table containing the current weapon's details (e.g., `{ name = "WEAPON_PISTOL", label = "Pistol", ammo = 50 }`), or `nil` if no weapon is equipped.
+
+### Example: Checking Equipped Weapon
+
+Fetches the currently equipped weapon and logs its details.
+
+```lua title="Client: Checking Equipped Weapon"
+RegisterCommand('currentweapon', function(source, args, rawCommand)
+    local weapon = lib.inventory.getCurrentWeapon()
+    if weapon then
+        print("Equipped weapon:", weapon.name, "Label:", weapon.label, "Ammo:", weapon.ammo)
+    else
+        print("No weapon currently equipped.")
+    end
+end, false)
+```
+
+## lib.inventory.registerStash
+
+Registers a new stash with the inventory system, allowing the player to store items in a separate inventory.
+
+```lua
+lib.inventory.registerStash(stashId, data)
+```
+
+- stashId: `string`
+  - The unique identifier for the stash (e.g., "stash_001").
+- data: `table` | `nil`
+  - Optional table containing stash configuration:
+    - maxSlots: `number` - The maximum number of slots in the stash (default: 20).
+    - maxWeight: `number` - The maximum weight capacity of the stash (default: 100000).
+
+**Returns:**
+
+- success: `boolean` | `nil`
+  - `true` if the stash was registered successfully, `false` or `nil` otherwise.
+
+### Example: Registering a Basic Stash
+
+Registers a stash with default settings.
+
+```lua title="Client: Registering a Basic Stash"
+RegisterCommand('regstash', function(source, args, rawCommand)
+    local stashId = args[1] or "stash_001"
+    local success = lib.inventory.registerStash(stashId)
+    if success then
+        print("Successfully registered stash:", stashId)
+    else
+        print("Failed to register stash:", stashId)
+    end
+end, false)
+```
+
+## lib.inventory.isOpen
+
+Checks if the inventory UI is currently open.
+
+```lua
+lib.inventory.isOpen()
+```
+
+**Returns:**
+
+- isOpen: `boolean`
+  - `true` if the inventory UI is open, `false` otherwise.
+
+### Example: Checking Inventory UI State
+
+Checks if the inventory UI is open and logs the result.
+
+```lua title="Client: Checking Inventory UI State"
+RegisterCommand('checkinvopen', function(source, args, rawCommand)
+    local isOpen = lib.inventory.isOpen()
+    if isOpen then
+        print("Inventory UI is currently open.")
+    else
+        print("Inventory UI is currently closed.")
+    end
+end, false)
+```
+
+## lib.inventory.isBlocked
+
+Checks if the inventory is currently blocked, such as during specific actions (e.g., while in a vehicle or during a scripted event).
+
+```lua
+lib.inventory.isBlocked()
+```
+
+**Returns:**
+
+- isBlocked: `boolean`
+  - `true` if the inventory is blocked, `false` otherwise.
+
+### Example: Checking Inventory Block State
+
+Checks if the inventory is blocked and logs the result.
+
+```lua title="Client: Checking Inventory Block State"
+RegisterCommand('checkinvblock', function(source, args, rawCommand)
+    local isBlocked = lib.inventory.isBlocked()
+    if isBlocked then
+        print("Inventory is currently blocked.")
+    else
+        print("Inventory is not blocked.")
+    end
+end, false)
+```
+
+## lib.inventory.setDisabled
+
+Enables or disables the inventory system, preventing or allowing interaction with the inventory UI.
+
+```lua
+lib.inventory.setDisabled(state)
+```
+
+- state: `boolean`
+  - `true` to disable the inventory (prevent interaction), `false` to enable it.
+
+**Returns:**
+
+- success: `boolean` | `nil`
+  - `true` if the state was set successfully, `false` or `nil` otherwise.
+
+### Example: Disabling the Inventory
+
+Disables the inventory system to prevent interaction.
+
+```lua title="Client: Disabling the Inventory"
+RegisterCommand('disableinv', function(source, args, rawCommand)
+    local success = lib.inventory.setDisabled(true)
+    if success then
+        print("Inventory has been disabled.")
+    else
+        print("Failed to disable inventory.")
+    end
+end, false)
+```

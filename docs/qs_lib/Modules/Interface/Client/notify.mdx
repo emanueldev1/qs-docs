@@ -1,0 +1,258 @@
+---
+title: Notifications
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Notifications
+
+## lib.notify
+
+Displays customizable notifications with various styling options.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    <Tabs defaultValue="client" className="mt-2">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="client">Client</TabsTrigger>
+        <TabsTrigger value="server">Server</TabsTrigger>
+      </TabsList>
+      <TabsContent value="client">
+        ```lua
+        lib.notify(config)
+        ```
+      </TabsContent>
+      <TabsContent value="server">
+        ```lua
+        TriggerClientEvent('qs_lib:notify', source, config)
+        ```
+      </TabsContent>
+    </Tabs>
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.notify(config);
+    ```
+  </TabsContent>
+</Tabs>
+
+- config: `table` (`object`)
+  - id?: `string`
+    - Ensures the notification is unique and shown only once if triggered repeatedly.
+  - title?: `string`
+    - Required if description is not provided.
+  - description?: `string`
+    - Required if title is not provided; supports markdown.
+  - duration?: `number`
+    - Default: `3000` (milliseconds).
+  - showDuration?: `boolean`
+    - Default: `true`.
+  - position?: `'top'` | `'top-right'` | `'top-left'` | `'bottom'` | `'bottom-right'` | `'bottom-left'` | `'center-right'` | `'center-left'`
+    - Default: `'top-right'`.
+  - type?: `'inform'` | `'error'` | `'success'` | `'warning'`
+    - Default: `'inform'`.
+  - style?: `table` (`object`)
+    - React CSS styling format.
+  - icon?: `string`
+    - Font Awesome 6 icon name.
+  - iconColor?: `string`
+    - CSS-compatible color value.
+  - iconAnimation?: `'spin'` | `'spinPulse'` | `'spinReverse'` | `'pulse'` | `'beat'` | `'fade'` | `'beatFade'` | `'bounce'` | `'shake'`
+  - alignIcon?: `'top'` | `'center'`
+    - Default: `'center'`.
+  - sound?: `table` (`object`)
+    - bank?: `string`
+      - Audio bank containing the soundset.
+    - set: `string`
+      - Soundset the sound belongs to.
+    - name: `string`
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Note</AlertTitle>
+  <AlertDescription>
+    Setting `iconColor` removes the contrasted icon color and its circular background.
+  </AlertDescription>
+</Alert>
+
+## Examples
+
+### Standard Examples
+
+#### Example 1: Quest Completion Notification
+
+Shows a success notification when a quest is completed.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.notify({
+        title = 'Quest Completed',
+        description = 'You have finished the quest!  \n Great job!',
+        type = 'success'
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.notify({
+      title: 'Quest Completed',
+      description: 'You have finished the quest!  \n Great job!',
+      type: 'success',
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Low Health Warning
+
+Displays a warning notification when the player's health is low.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.notify({
+        title = 'Low Health',
+        description = 'Your health is critically low!  \n Find a health pack!',
+        type = 'warning'
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.notify({
+      title: 'Low Health',
+      description: 'Your health is critically low!  \n Find a health pack!',
+      type: 'warning',
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+### Custom Examples
+
+#### Example 1: Welcome Message
+
+Shows a custom welcome message with a styled icon and background.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.notify({
+        id = 'welcome_message',
+        title = 'Welcome Back',
+        description = 'Enjoy your adventure!  \n Stay safe!',
+        showDuration = false,
+        position = 'center-left',
+        style = {
+            backgroundColor = '#1E1F22',
+            color = '#D4D4D8',
+            ['.description'] = {
+                color = '#A1A1AA'
+            }
+        },
+        icon = 'user',
+        iconColor = '#3B82F6'
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.notify({
+      id: 'welcome_message',
+      title: 'Welcome Back',
+      description: 'Enjoy your adventure!  \n Stay safe!',
+      showDuration: false,
+      position: 'center-left',
+      style: {
+        backgroundColor: '#1E1F22',
+        color: '#D4D4D8',
+        '.description': {
+          color: '#A1A1AA'
+        }
+      },
+      icon: 'user',
+      iconColor: '#3B82F6'
+    });
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Timed Event Reminder
+
+Displays a custom event reminder with an animated icon.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.notify({
+        id = 'event_reminder',
+        title = 'Event Reminder',
+        description = 'The event starts in 5 minutes!  \n Don’t miss out!',
+        duration = 5000,
+        position = 'bottom-right',
+        style = {
+            backgroundColor = '#2D2D2D',
+            color = '#E5E5E5',
+            ['.description'] = {
+                color = '#B3B3B3'
+            }
+        },
+        icon = 'calendar',
+        iconColor = '#F59E0B',
+        iconAnimation = 'bounce'
+    })
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.notify({
+      id: 'event_reminder',
+      title: 'Event Reminder',
+      description: 'The event starts in 5 minutes!  \n Don’t miss out!',
+      duration: 5000,
+      position: 'bottom-right',
+      style: {
+        backgroundColor: '#2D2D2D',
+        color: '#E5E5E5',
+        '.description': {
+          color: '#B3B3B3'
+        }
+      },
+      icon: 'calendar',
+      iconColor: '#F59E0B',
+      iconAnimation: 'bounce'
+    });
+    ```
+  </TabsContent>
+</Tabs>

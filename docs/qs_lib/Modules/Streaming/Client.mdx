@@ -1,0 +1,893 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for asset loading with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Client
+
+Verifies the existence of assets such as models and loads them into memory, returning `true` if successful. Throws errors for invalid assets.
+
+## lib.requestModel
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>SetModelAsNoLongerNeeded(model)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestModel(model, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestModel(model, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- model: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+
+### Examples
+
+#### Example 1: Spawning a Vehicle
+
+Loads a vehicle model and spawns it near the player.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local model = "adder"
+    if lib.requestModel(model, 5000) then
+        local coords = GetEntityCoords(PlayerPedId())
+        local vehicle = CreateVehicle(GetHashKey(model), coords.x + 5, coords.y, coords.z, 0.0, true, false)
+        print("Vehicle spawned:", vehicle)
+        SetModelAsNoLongerNeeded(model)
+    else
+        print("Failed to load vehicle model.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const model = "adder";
+    if (await lib.requestModel(model, 5000)) {
+      const coords = GetEntityCoords(PlayerPedId(), false);
+      const vehicle = CreateVehicle(GetHashKey(model), coords.x + 5, coords.y, coords.z, 0.0, true, false);
+      console.log("Vehicle spawned:", vehicle);
+      SetModelAsNoLongerNeeded(model);
+    } else {
+      console.log("Failed to load vehicle model.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Creating a Prop
+
+Loads a prop model and places it at a fixed location.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local model = "prop_chair_01a"
+    if lib.requestModel(model, 5000) then
+        local prop = CreateObject(GetHashKey(model), 100.0, 200.0, 30.0, true, true, false)
+        print("Prop created:", prop)
+        SetModelAsNoLongerNeeded(model)
+    else
+        print("Failed to load prop model.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const model = "prop_chair_01a";
+    if (await lib.requestModel(model, 5000)) {
+      const prop = CreateObject(GetHashKey(model), 100.0, 200.0, 30.0, true, true, false);
+      console.log("Prop created:", prop);
+      SetModelAsNoLongerNeeded(model);
+    } else {
+      console.log("Failed to load prop model.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestAnimSet
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>RemoveAnimSet(set)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestAnimSet(set, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestAnimSet(set, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- set: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+
+### Examples
+
+#### Example 1: Applying a Drunk Movement Set
+
+Loads a drunk movement set for the player character.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local set = "move_m@drunk@verydrunk"
+    if lib.requestAnimSet(set, 5000) then
+        SetPedMovementClipset(PlayerPedId(), set, 1.0)
+        print("Drunk movement set applied!")
+        Citizen.Wait(10000)
+        ResetPedMovementClipset(PlayerPedId(), 1.0)
+        RemoveAnimSet(set)
+    else
+        print("Failed to load drunk movement set.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const set = "move_m@drunk@verydrunk";
+    if (await lib.requestAnimSet(set, 5000)) {
+      SetPedMovementClipset(PlayerPedId(), set, 1.0);
+      console.log("Drunk movement set applied!");
+      setTimeout(() => {
+        ResetPedMovementClipset(PlayerPedId(), 1.0);
+        RemoveAnimSet(set);
+      }, 10000);
+    } else {
+      console.log("Failed to load drunk movement set.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Using a Stealth Movement Set
+
+Loads a stealth movement set for a sneaky approach.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local set = "move_ped_crouched"
+    if lib.requestAnimSet(set, 5000) then
+        SetPedMovementClipset(PlayerPedId(), set, 1.0)
+        print("Stealth movement set applied!")
+        Citizen.Wait(8000)
+        ResetPedMovementClipset(PlayerPedId(), 1.0)
+        RemoveAnimSet(set)
+    else
+        print("Failed to load stealth movement set.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const set = "move_ped_crouched";
+    if (await lib.requestAnimSet(set, 5000)) {
+      SetPedMovementClipset(PlayerPedId(), set, 1.0);
+      console.log("Stealth movement set applied!");
+      setTimeout(() => {
+        ResetPedMovementClipset(PlayerPedId(), 1.0);
+        RemoveAnimSet(set);
+      }, 8000);
+    } else {
+      console.log("Failed to load stealth movement set.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestAnimDict
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>RemoveAnimDict(dict)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestAnimDict(dict, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestAnimDict(dict, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- dict: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+
+### Examples
+
+#### Example 1: Loading a Dance Animation
+
+Loads an animation dictionary for a dance and plays it on the player.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local dict = "anim@amb@nightclub@dancers@crowd"
+    if lib.requestAnimDict(dict, 5000) then
+        TaskPlayAnim(PlayerPedId(), dict, "mi_dance_crowd_15_v1_male^1", 8.0, 8.0, -1, 1, 0.0, false, false, false)
+        print("Dance animation loaded and playing!")
+        Citizen.Wait(5000)
+        RemoveAnimDict(dict)
+    else
+        print("Failed to load dance animation.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const dict = "anim@amb@nightclub@dancers@crowd";
+    if (await lib.requestAnimDict(dict, 5000)) {
+      TaskPlayAnim(PlayerPedId(), dict, "mi_dance_crowd_15_v1_male^1", 8.0, 8.0, -1, 1, 0.0, false, false, false);
+      console.log("Dance animation loaded and playing!");
+      setTimeout(() => {
+        RemoveAnimDict(dict);
+      }, 5000);
+    } else {
+      console.log("Failed to load dance animation.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Playing a Wave Animation
+
+Loads a wave animation for a greeting gesture.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local dict = "friends@frj@ig_1"
+    if lib.requestAnimDict(dict, 3000) then
+        TaskPlayAnim(PlayerPedId(), dict, "wave_a", 8.0, 8.0, 2000, 0, 0.0, false, false, false)
+        print("Wave animation played!")
+        RemoveAnimDict(dict)
+    else
+        print("Failed to load wave animation.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const dict = "friends@frj@ig_1";
+    if (await lib.requestAnimDict(dict, 3000)) {
+      TaskPlayAnim(PlayerPedId(), dict, "wave_a", 8.0, 8.0, 2000, 0, 0.0, false, false, false);
+      console.log("Wave animation played!");
+      RemoveAnimDict(dict);
+    } else {
+      console.log("Failed to load wave animation.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestNamedPtfxAsset
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>RemoveNamedPtfxAsset(ptFxName)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestNamedPtfxAsset(ptFxName, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestNamedPtfxAsset(ptFxName, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- ptFxName: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+
+### Examples
+
+#### Example 1: Adding a Fire Effect
+
+Loads a particle effect asset for a fire explosion and plays it.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local ptFxName = "core"
+    if lib.requestNamedPtfxAsset(ptFxName, 5000) then
+        UseParticleFxAsset(ptFxName)
+        StartParticleFxNonLoopedAtCoord("exp_grd_flare", 100.0, 200.0, 30.0, 0.0, 0.0, 0.0, 1.0, false, false, false)
+        print("Fire effect played!")
+        RemoveNamedPtfxAsset(ptFxName)
+    else
+        print("Failed to load fire effect asset.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const ptFxName = "core";
+    if (await lib.requestNamedPtfxAsset(ptFxName, 5000)) {
+      UseParticleFxAsset(ptFxName);
+      StartParticleFxNonLoopedAtCoord("exp_grd_flare", 100.0, 200.0, 30.0, 0.0, 0.0, 0.0, 1.0, false, false, false);
+      console.log("Fire effect played!");
+      RemoveNamedPtfxAsset(ptFxName);
+    } else {
+      console.log("Failed to load fire effect asset.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Creating a Smoke Effect
+
+Loads a particle effect asset for a smoke trail and applies it.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local ptFxName = "scr_indep_fireworks"
+    if lib.requestNamedPtfxAsset(ptFxName, 5000) then
+        UseParticleFxAsset(ptFxName)
+        StartParticleFxNonLoopedAtCoord("scr_indep_firework_smoke", 150.0, 250.0, 35.0, 0.0, 0.0, 0.0, 1.0, false, false, false)
+        print("Smoke effect applied!")
+        RemoveNamedPtfxAsset(ptFxName)
+    else
+        print("Failed to load smoke effect asset.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const ptFxName = "scr_indep_fireworks";
+    if (await lib.requestNamedPtfxAsset(ptFxName, 5000)) {
+      UseParticleFxAsset(ptFxName);
+      StartParticleFxNonLoopedAtCoord("scr_indep_firework_smoke", 150.0, 250.0, 35.0, 0.0, 0.0, 0.0, 1.0, false, false, false);
+      console.log("Smoke effect applied!");
+      RemoveNamedPtfxAsset(ptFxName);
+    } else {
+      console.log("Failed to load smoke effect asset.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestScaleformMovie
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>SetScaleformMovieAsNoLongerNeeded(scaleformName)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestScaleformMovie(scaleformName, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestScaleformMovie(scaleformName, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- scaleformName: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `1000`
+
+### Examples
+
+#### Example 1: Displaying a Mission Passed Screen
+
+Loads a scaleform movie for a "Mission Passed" screen.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local scaleformName = "MISSION_PASSED"
+    local handle = lib.requestScaleformMovie(scaleformName, 1000)
+    if handle then
+        BeginScaleformMovieMethod(handle, "SHOW")
+        EndScaleformMovieMethod()
+        print("Mission Passed screen displayed!")
+        Citizen.Wait(5000)
+        SetScaleformMovieAsNoLongerNeeded(handle)
+    else
+        print("Failed to load Mission Passed scaleform.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const scaleformName = "MISSION_PASSED";
+    const handle = await lib.requestScaleformMovie(scaleformName, 1000);
+    if (handle) {
+      BeginScaleformMovieMethod(handle, "SHOW");
+      EndScaleformMovieMethod();
+      console.log("Mission Passed screen displayed!");
+      setTimeout(() => {
+        SetScaleformMovieAsNoLongerNeeded(handle);
+      }, 5000);
+    } else {
+      console.log("Failed to load Mission Passed scaleform.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Showing a Wanted Stars Display
+
+Loads a scaleform movie to display wanted stars on the HUD.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local scaleformName = "WANTED_STARS"
+    local handle = lib.requestScaleformMovie(scaleformName, 1000)
+    if handle then
+        BeginScaleformMovieMethod(handle, "SET_WANTED_LEVEL")
+        ScaleformMovieMethodAddParamInt(3) -- 3 stars
+        EndScaleformMovieMethod()
+        print("Wanted stars displayed!")
+        Citizen.Wait(3000)
+        SetScaleformMovieAsNoLongerNeeded(handle)
+    else
+        print("Failed to load wanted stars scaleform.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const scaleformName = "WANTED_STARS";
+    const handle = await lib.requestScaleformMovie(scaleformName, 1000);
+    if (handle) {
+      BeginScaleformMovieMethod(handle, "SET_WANTED_LEVEL");
+      ScaleformMovieMethodAddParamInt(3); // 3 stars
+      EndScaleformMovieMethod();
+      console.log("Wanted stars displayed!");
+      setTimeout(() => {
+        SetScaleformMovieAsNoLongerNeeded(handle);
+      }, 3000);
+    } else {
+      console.log("Failed to load wanted stars scaleform.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestStreamedTextureDict
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>SetStreamedTextureDictAsNoLongerNeeded(dict)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestStreamedTextureDict(dict, timeout)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestStreamedTextureDict(dict, timeout);
+    ```
+  </TabsContent>
+</Tabs>
+
+- dict: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+
+### Examples
+
+#### Example 1: Loading a Custom HUD Texture
+
+Loads a streamed texture dictionary for a custom HUD element.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local dict = "custom_hud"
+    if lib.requestStreamedTextureDict(dict, 5000) then
+        print("Custom HUD texture loaded!")
+        -- Use texture in HUD rendering
+        Citizen.Wait(10000)
+        SetStreamedTextureDictAsNoLongerNeeded(dict)
+    else
+        print("Failed to load HUD texture dictionary.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const dict = "custom_hud";
+    if (await lib.requestStreamedTextureDict(dict, 5000)) {
+      console.log("Custom HUD texture loaded!");
+      // Use texture in HUD rendering
+      setTimeout(() => {
+        SetStreamedTextureDictAsNoLongerNeeded(dict);
+      }, 10000);
+    } else {
+      console.log("Failed to load HUD texture dictionary.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Applying a Texture to a Map
+
+Loads a texture dictionary for a custom map overlay.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local dict = "map_overlay"
+    if lib.requestStreamedTextureDict(dict, 5000) then
+        print("Map overlay texture loaded!")
+        -- Apply texture to map
+        Citizen.Wait(8000)
+        SetStreamedTextureDictAsNoLongerNeeded(dict)
+    else
+        print("Failed to load map overlay texture.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const dict = "map_overlay";
+    if (await lib.requestStreamedTextureDict(dict, 5000)) {
+      console.log("Map overlay texture loaded!");
+      // Apply texture to map
+      setTimeout(() => {
+        SetStreamedTextureDictAsNoLongerNeeded(dict);
+      }, 8000);
+    } else {
+      console.log("Failed to load map overlay texture.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+## lib.requestAudioBank
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>ReleaseScriptAudioBank(audioBank)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+```lua
+lib.requestAudioBank(audioBank, timeout)
+```
+
+- audioBank: `string`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `30000`
+
+### Examples
+
+#### Example 1: Playing a Notification Sound
+
+Loads an audio bank to play a notification sound.
+
+```lua
+local audioBank = "DLC_HEIST_BIOLAB_DELIVER_EMP_SOUNDS"
+if lib.requestAudioBank(audioBank, 5000) then
+    PlaySoundFrontend(-1, "Deliver_EMP", audioBank, true)
+    print("Notification sound played!")
+    ReleaseScriptAudioBank(audioBank)
+else
+    print("Failed to load audio bank.")
+end
+```
+
+#### Example 2: Triggering an Alarm Sound
+
+Loads an audio bank to play an alarm sound for a security alert.
+
+```lua
+local audioBank = "ALARMS"
+if lib.requestAudioBank(audioBank, 5000) then
+    PlaySoundFrontend(-1, "Alarm_Interior", audioBank, true)
+    print("Alarm sound triggered!")
+    ReleaseScriptAudioBank(audioBank)
+else
+    print("Failed to load alarm audio bank.")
+end
+```
+
+## lib.requestWeaponAsset
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Memory Management</AlertTitle>
+  <AlertDescription>
+    Ensure you call <code>RemoveWeaponAsset(weaponType)</code> after use to free memory and prevent leaks.
+  </AlertDescription>
+</Alert>
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.requestWeaponAsset(weaponType, timeout, weaponResourceFlags, extraWeaponComponentFlags)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.requestWeaponAsset(weaponType, timeout, weaponResourceFlags, extraWeaponComponentFlags);
+    ```
+  </TabsContent>
+</Tabs>
+
+- weaponType: `string | number`
+- timeout?: `number`
+  - Number of ticks to wait for the asset to load.
+  - Default: `10000`
+- weaponResourceFlags?: `WeaponResourceFlags`
+  - Default: `31`
+- extraWeaponComponentFlags?: `ExtraWeaponComponentFlags`
+  - Default: `0`
+
+### WeaponResourceFlags
+
+```
+1 WRF_REQUEST_BASE_ANIMS
+2 WRF_REQUEST_COVER_ANIMS
+4 WRF_REQUEST_MELEE_ANIMS
+8 WRF_REQUEST_MOTION_ANIMS
+16 WRF_REQUEST_STEALTH_ANIMS
+32 WRF_REQUEST_ALL_MOVEMENT_VARIATION_ANIMS
+31 WRF_REQUEST_ALL_ANIMS
+```
+
+### ExtraWeaponComponentFlags
+
+```
+0 WEAPON_COMPONENT_NONE
+1 WEAPON_COMPONENT_FLASH
+2 WEAPON_COMPONENT_SCOPE
+4 WEAPON_COMPONENT_SUPP
+8 WEAPON_COMPONENT_SCLIP2
+16 WEAPON_COMPONENT_GRIP
+```
+
+### Examples
+
+#### Example 1: Loading a Pistol with Scope
+
+Loads a pistol asset with a scope component for use.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local weaponType = "WEAPON_PISTOL"
+    if lib.requestWeaponAsset(weaponType, 5000, 31, 2) then
+        GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponType), 50, false, true)
+        print("Pistol with scope loaded and equipped!")
+        RemoveWeaponAsset(weaponType)
+    else
+        print("Failed to load pistol asset.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const weaponType = "WEAPON_PISTOL";
+    if (await lib.requestWeaponAsset(weaponType, 5000, 31, 2)) {
+      GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponType), 50, false, true);
+      console.log("Pistol with scope loaded and equipped!");
+      RemoveWeaponAsset(weaponType);
+    } else {
+      console.log("Failed to load pistol asset.");
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Equipping a Rifle with Suppressor
+
+Loads a rifle asset with a suppressor for combat.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local weaponType = "WEAPON_CARBINERIFLE"
+    if lib.requestWeaponAsset(weaponType, 5000, 31, 4) then
+        GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponType), 100, false, true)
+        print("Rifle with suppressor loaded and equipped!")
+        RemoveWeaponAsset(weaponType)
+    else
+        print("Failed to load rifle asset.")
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const weaponType = "WEAPON_CARBINERIFLE";
+    if (await lib.requestWeaponAsset(weaponType, 5000, 31, 4)) {
+      GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponType), 100, false, true);
+      console.log("Rifle with suppressor loaded and equipped!");
+      RemoveWeaponAsset(weaponType);
+    } else {
+      console.log("Failed to load rifle asset.");
+    }
+    ```
+  </TabsContent>
+</Tabs>

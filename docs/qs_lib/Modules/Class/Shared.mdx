@@ -1,0 +1,136 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared class utilities with qs_lib.
+---
+
+# Shared
+
+## QsClass
+
+QsClass serves as the foundation for all classes created with `lib.class`, offering core attributes and behaviors shared across classes.
+
+### Attributes
+
+- __className: `string`
+  - A private field storing the class's name.
+- initialize?: `function`
+  - A private method for creating a new instance derived from a class.
+  - Invoked by `class:new(...)` if `class:initialize()` is defined.
+- privateData?: `table`
+  - A private field containing all restricted data of a class.
+  - Restricted data is inaccessible outside class methods, ensuring security and integrity.
+  - Must be defined in the `initialize` method, even if no private properties are set.
+- parent?: `class`
+  - A private method pointing to the superclass's constructor.
+  - Required to be called within a class's `initialize` method during instantiation.
+
+## Classes
+
+A class acts as a blueprint for generating objects with predefined properties and actions.
+
+- While Lua doesn't natively support object-oriented programming, [metatables](https://www.lua.org/manual/5.4/manual.html#2.4) can emulate it.
+- Our class system draws inspiration from [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes).
+
+### Encapsulation
+
+Encapsulation involves grouping data (properties) and actions (methods) within a class.
+
+This approach organizes related features, shields internal operations from external tampering, enhances modularity, protects data consistency, and manages how data is accessed or modified in a program.
+
+### Inheritance
+
+Classes can acquire properties and actions from other classes, much like instances inherit from their base class.
+
+When defining a "parent" class in a class declaration, you create a "child" class. This child class inherits fields and methods from its parent, and this inheritance can span multiple levels of child classes, allowing shared properties across the class structure.
+
+## lib.class
+
+This method enables you to create a new class, optionally deriving from a parent class.
+
+```lua
+local NewClass = lib.class(className, parentClass)
+```
+
+### Parameters
+
+- className: `string`
+- parentClass?: `table`
+  - Makes the new class a derivative of the parent class.
+
+### Returns
+- `table`
+  - The newly defined class.
+
+### Example
+
+```lua
+---@class Vehicle : QsClass
+---@field model string
+local Vehicle = lib.class('Vehicle')
+
+function Vehicle:initialize(model)
+    print('Initializing Vehicle with model:', model)
+    self.model = model
+end
+
+-- Car Class (extends Vehicle)
+
+---@class Car : Vehicle
+---@field speed number
+local Car = lib.class('Car', Vehicle)
+
+function Car:initialize(model, speed)
+    print('Initializing Car with model:', model)
+    self:parent(model)
+    self.speed = speed
+end
+
+function Car:displayInfo()
+    print(("This is a %s traveling at %d mph."):format(self.model, self.speed))
+end
+
+function Car:upgradeSpeed(increase)
+    self.speed = self.speed + increase
+    print('New speed:', self.speed)
+end
+
+CreateThread(function()
+    local sedan = Car:new('Sedan', 60)
+    sedan:displayInfo()
+    sedan:upgradeSpeed(20)
+end)
+
+-- Truck Class (extends Vehicle)
+
+---@class Truck : Vehicle
+---@field private privateData { capacity: number }
+local Truck = lib.class('Truck', Vehicle)
+
+---@param model string
+---@param capacity number
+function Truck:initialize(model, capacity)
+    print('Initializing Truck with model:', model)
+    self:parent(model)
+    self.privateData.capacity = capacity
+end
+
+function Truck:displayInfo()
+    print(("This %s truck has a capacity of %d tons."):format(self.model, self.privateData.capacity))
+end
+
+---@param capacity number
+function Truck:setCapacity(capacity)
+    self.privateData.capacity = capacity
+end
+
+CreateThread(function()
+    local hauler = Truck:new('Hauler', 10)
+    hauler:displayInfo() -- This Hauler truck has a capacity of 10 tons.
+    hauler:setCapacity(15)
+    hauler:displayInfo() -- This Hauler truck has a capacity of 15 tons.
+    print(hauler.privateData.capacity) -- nil
+    print(getmetatable(hauler.privateData)) -- privateData
+    hauler.privateData.capacity = 20 -- error
+end)
+```

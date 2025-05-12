@@ -1,0 +1,343 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for array utilities with qs_lib.
+---
+
+# Shared
+
+## lib.array
+
+A prototype table for the Array class, where functions can be used as either class methods or standalone utilities.
+
+## lib.isArray
+
+Checks if a given table is an Array instance or resembles an array-like structure.
+
+- tbl: `table`
+
+```lua
+lib.array.isArray(tbl)
+```
+
+**Returns:**
+
+- isArray: `boolean`
+
+## lib.array.push
+
+Appends specified elements to the end of an array and returns the updated length.
+
+- arr: `Array`
+- ...: `any`
+
+```lua
+lib.array.push(arr, ...)
+```
+
+**Returns:**
+
+- length: `integer`
+
+## lib.array.pop
+
+Extracts and returns the last element from an array.
+
+- arr: `Array`
+
+```lua
+lib.array.pop(arr)
+```
+
+**Returns:**
+
+- element: `unknown`
+
+## lib.array.shift
+
+Removes and returns the first element of an array.
+
+- arr: `Array`
+
+```lua
+lib.array.shift(arr)
+```
+
+**Returns:**
+
+- element: `unknown`
+
+## lib.array.unshift
+
+Adds elements to the beginning of an array and returns the new length.
+
+- arr: `Array`
+- ...: `any`
+
+```lua
+lib.array.unshift(arr, ...)
+```
+
+**Returns:**
+
+- length: `integer`
+
+## lib.array.map
+
+Generates a new array by applying a provided function to each element of the input array.
+
+- arr: `Array`
+- fn: `function(element: unknown, index: integer, arr: Array): unknown`
+
+```lua
+lib.array.map(arr, fn)
+```
+
+**Returns:**
+
+- newArr: `Array`
+
+## lib.array.filter
+
+Produces a new array with elements that satisfy the condition of a given test function.
+
+- arr: `Array`
+- testFn: `function(element: unknown): boolean`
+
+```lua
+lib.array.filter(arr, testFn)
+```
+
+**Returns:**
+
+- newArr: `Array`
+
+## lib.array.forEach
+
+Applies a callback function to each element within an array.
+
+- arr: `Array`
+- cb: `function(element: unknown)`
+
+```lua
+lib.array.forEach(arr, cb)
+```
+
+**Returns:**
+
+- index: `integer`
+
+## lib.array.reduce
+
+Processes an array with a reducer function, accumulating results from each element. If an initial value is provided, it starts as the accumulator; otherwise, it uses the first element and begins iteration from the second.
+
+- arr: `Array`
+- reducer: `function(accumulator: unknown, element: unknown, index?: integer)`
+- initialValue?: `any`
+
+```lua
+lib.array.reduce(arr, reducer)
+```
+
+**Returns:**
+
+- accumulator: `unknown`
+
+## lib.array.every
+
+Verifies if every element in an array passes a specified test function.
+
+- arr: `Array`
+- testFn: `function(element: unknown): boolean`
+
+```lua
+lib.array.every(arr, testFn)
+```
+
+**Returns:**
+
+- success: `boolean`
+
+## lib.array.find
+
+Retrieves the first element in an array that meets the criteria of a test function.
+
+- arr: `Array`
+- testFn: `function(element: unknown): boolean`
+- reverse?: `boolean`
+  - Search the array in reverse order.
+
+```lua
+lib.array.find(arr, testFn, reverse)
+```
+
+**Returns:**
+
+- element: `unknown`
+
+## lib.array.findIndex
+
+Returns the index of the first element in an array that satisfies a test function.
+
+- arr: `Array`
+- testFn: `function(element: unknown): boolean`
+- reverse?: `boolean`
+  - Search the array in reverse order.
+
+```lua
+lib.array.findIndex(arr, testFn, reverse)
+```
+
+**Returns:**
+
+- index: `integer`
+
+## lib.array.indexOf
+
+Locates the index of the first occurrence of a specified value in an array.
+
+- arr: `Array`
+- value: `any`
+- reverse?: `boolean`
+  - Search the array in reverse order.
+
+```lua
+lib.array.indexOf(arr, value, reverse)
+```
+
+**Returns:**
+
+- index: `integer`
+
+## lib.array.join
+
+Joins all elements of an array into a single string, using a specified separator or commas by default.
+
+- arr: `Array`
+- separator?: `string`
+
+```lua
+lib.array.join(arr, separator)
+```
+
+**Returns:**
+
+- str: `string`
+
+## lib.array.fill
+
+Replaces elements within a specified range of an array with a given value, returning the altered array.
+
+- arr: `Array`
+- value: `any`
+- start?: `integer`
+- endIdx?: `integer`
+
+```lua
+lib.array.fill(arr, value, start, endIdx)
+```
+
+**Returns:**
+
+- arr: `Array`
+
+## lib.array.slice
+
+Extracts a shallow copy of a segment of an array into a new array.
+
+- arr: `Array`
+- start?: `integer`
+- end?: `integer`
+
+```lua
+lib.array.slice(arr, start, end)
+```
+
+**Returns:**
+
+- newArr: `Array`
+
+## lib.array.reverse
+
+Reverses the order of elements within an array.
+
+- arr: `Array`
+
+```lua
+lib.array.reverse(arr)
+```
+
+**Returns:**
+
+- arr: `Array`
+
+## lib.array.toReversed
+
+Generates a new array with elements in the reverse order of the input array.
+
+- arr: `Array`
+
+```lua
+lib.array.toReversed(arr)
+```
+
+**Returns:**
+
+- newArr: `Array`
+
+## lib.array.merge
+
+Merges multiple arrays into a single new array.
+
+- ...: `Array`
+
+```lua
+lib.array.merge(...)
+```
+
+**Returns:**
+
+- Array
+
+## lib.array:new
+
+Initializes a new Array instance with the provided elements.
+
+- ...: `any`
+
+```lua
+lib.array:new(...)
+```
+
+**Returns:**
+
+- arr: `Array`
+
+## lib.array.from
+
+Builds a new array from an iterable source.
+
+- iter: `function` | `table` | `string`
+  - Iterator functions like string.gmatch can be used to build arrays.
+
+```lua
+lib.array.from(iter)
+```
+
+**Returns:**
+
+- arr: `Array`
+
+## lib.array.at
+
+Fetches the element at a specific index, where negative indices count from the array's end.
+
+- index: `integer`
+
+```lua
+lib.array.at(index)
+```
+
+**Returns:**
+
+- element: `unknown`

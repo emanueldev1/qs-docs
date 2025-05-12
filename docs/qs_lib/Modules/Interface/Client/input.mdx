@@ -1,0 +1,372 @@
+---
+title: Input Dialog
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Input Dialog
+
+A dialog window designed to collect user input through customizable fields.
+
+## lib.inputDialog
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.inputDialog(title, fields, config)
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    <Alert variant="info" className="mb-4">
+      <AlertTitle>Note</AlertTitle>
+      <AlertDescription>
+        This function is asynchronous, requiring a `.then` callback or an `async` function.
+      </AlertDescription>
+    </Alert>
+
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.inputDialog(title, fields, config);
+    ```
+  </TabsContent>
+</Tabs>
+
+- title: `string`
+- fields: `string[]` or `table` (`array`)
+  - type: `'input'` or `'number'` or `'checkbox'` or `'select'` or `'multi-select'` or `'slider'` or `'color'` or `'date'` or `'date-range'` or `'time'` or `'textarea'`
+- config?: `table` (`object`)
+  - allowCancel?: `boolean`
+    - If false, prevents closing the dialog without submission; if undefined, closing is allowed.
+
+### Field Type Properties
+
+- **input**
+  - label: `string`
+  - description?: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `string`
+  - password?: `boolean`
+  - min?: `number`
+  - max?: `number`
+
+- **number**
+  - label: `string`
+  - description?: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `number`
+  - min?: `number`
+  - max?: `number`
+  - precision?: `number`
+  - step?: `number`
+
+- **checkbox**
+  - label: `string`
+  - checked?: `boolean`
+  - disabled?: `boolean`
+  - required?: `boolean`
+
+- **select** and **multi-select**
+  - label: `string`
+  - options: `table` (`array`)
+    - value: `string`
+    - label?: `string`
+  - description?: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `string` | `table` (for `multi-select`)
+    - Default option value(s).
+  - clearable?: `boolean`
+  - searchable?: `boolean`
+  - maxSelectedValues?: `number` (for `multi-select`)
+    - Maximum selectable options.
+
+- **slider**
+  - label: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `number`
+  - min?: `number`
+  - max?: `number`
+  - step?: `number`
+
+- **color**
+  - label: `string`
+  - description?: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `string`
+  - format?: `'hex'` | `'hexa'` | `'rgb'` | `'rgba'` | `'hsl'` | `'hsla'`
+
+- **date**
+  - label: `string`
+  - description?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `string` or `true`
+    - True sets the current date as default.
+  - format?: `string`
+    - Display format for the date field.
+  - returnString?: `boolean`
+    - Returns the date as a string in `DD/MM/YYYY` format, or the specified `format`.
+  - clearable?: `boolean`
+  - min?: `string`
+    - E.g., "01/01/2000".
+  - max?: `string`
+    - E.g., "12/12/2023".
+
+- **date-range**
+  - label: `string`
+  - description?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `[string, string]`
+  - format?: `string`
+    - Display format for the date field.
+  - returnString?: `boolean`
+    - Returns dates as strings in `DD/MM/YYYY` format, or the specified `format`.
+  - clearable?: `boolean`
+
+- **time**
+  - label: `string`
+  - description?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `string`
+  - format?: `'12'` or `'24'`
+  - clearable?: `boolean`
+
+- **textarea**
+  - label: `string`
+  - description?: `string`
+  - placeholder?: `string`
+  - icon?: `string`
+  - required?: `boolean`
+  - disabled?: `boolean`
+  - default?: `number`
+  - min?: `number`
+    - Minimum rows for the textarea.
+  - max?: `number`
+    - Maximum rows before overflow.
+  - autosize?: `boolean`
+    - If true, textarea grows with content until max rows are reached.
+
+The callback is promise-based, pausing execution until the user submits or exits the dialog. Returned data is a table (array), with indices matching the field order: first field at index `1` (`0` in JS), third field at index `3` (`2` in JS), etc.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Note</AlertTitle>
+  <AlertDescription>
+    Fields like `date`, `date-range`, and `time` return a Unix timestamp for the selected value.
+  </AlertDescription>
+</Alert>
+
+## lib.closeInputDialog
+
+Closes the active input dialog and sets its return data to `nil`.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.closeInputDialog()
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    lib.closeInputDialog();
+    ```
+  </TabsContent>
+</Tabs>
+
+## Examples
+
+### Basic Examples
+
+#### Example 1: Character Creation Dialog
+
+Prompts the player to enter a name and age for character creation.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local data = lib.inputDialog('Create Character', {'Character Name', 'Age'})
+
+    if not data then return end
+    print("Character details:", json.encode(data))
+    print("Name:", data[1], "Age:", data[2])
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const data = await lib.inputDialog('Create Character', ['Character Name', 'Age']);
+
+    if (!data) return;
+    console.log("Character details:", JSON.stringify(data));
+    console.log("Name:", data[0], "Age:", data[1]);
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Vehicle Customization Form
+
+Asks the player to input a vehicle name and color for customization.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local data = lib.inputDialog('Customize Vehicle', {'Vehicle Name', 'Color'})
+
+    if not data then return end
+    print("Vehicle details:", json.encode(data))
+    print("Vehicle Name:", data[1], "Color:", data[2])
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const data = await lib.inputDialog('Customize Vehicle', ['Vehicle Name', 'Color']);
+
+    if (!data) return;
+    console.log("Vehicle details:", JSON.stringify(data));
+    console.log("Vehicle Name:", data[0], "Color:", data[1]);
+    ```
+  </TabsContent>
+</Tabs>
+
+### Advanced Examples
+
+#### Example 1: Feedback Form
+
+Collects detailed feedback from the player with various input types.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local feedback = lib.inputDialog('Feedback Form', {
+      {type = 'textarea', label = 'Comments', description = 'Share your feedback', required = true, min = 3, max = 5},
+      {type = 'number', label = 'Rating', description = 'Rate your experience (1-5)', icon = 'star', min = 1, max = 5},
+      {type = 'checkbox', label = 'Contact Me', checked = false},
+      {type = 'select', label = 'Category', options = {{value = 'bug', label = 'Bug'}, {value = 'suggestion', label = 'Suggestion'}}},
+      {type = 'time', label = 'Preferred Contact Time', format = '24'}
+    })
+
+    if feedback then
+      print("Feedback data:", json.encode(feedback))
+      local timeStamp = math.floor(feedback[5] / 1000)
+      local contactTime = os.date('%H:%M', timeStamp)
+      print("Preferred contact time:", contactTime)
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const feedback = await lib.inputDialog('Feedback Form', [
+      { type: 'textarea', label: 'Comments', description: 'Share your feedback', required: true, min: 3, max: 5 },
+      { type: 'number', label: 'Rating', description: 'Rate your experience (1-5)', icon: 'star', min: 1, max: 5 },
+      { type: 'checkbox', label: 'Contact Me', checked: false },
+      { type: 'select', label: 'Category', options: [{ value: 'bug', label: 'Bug' }, { value: 'suggestion', label: 'Suggestion' }] },
+      { type: 'time', label: 'Preferred Contact Time', format: '24' }
+    ]);
+
+    if (feedback) {
+      console.log("Feedback data:", JSON.stringify(feedback, null, 2));
+      const timeStamp = Math.floor(feedback[4] / 1000);
+      const contactTime = new Date(timeStamp * 1000).toLocaleTimeString('en-US', { hour12: false });
+      console.log("Preferred contact time:", contactTime);
+    }
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Scheduling an Event
+
+Prompts the player to schedule an event with date, time, and details.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    local eventDetails = lib.inputDialog('Schedule Event', {
+      {type = 'input', label = 'Event Name', description = 'Enter event name', required = true},
+      {type = 'date-range', label = 'Event Duration', description = 'Select start and end dates', default = {"01/01/2025", "02/01/2025"}, format = "DD/MM/YYYY"},
+      {type = 'time', label = 'Start Time', description = 'Set start time', format = '12'},
+      {type = 'slider', label = 'Priority', description = 'Set event priority (1-10)', min = 1, max = 10, default = 5},
+      {type = 'color', label = 'Event Color', description = 'Choose a color theme', default = '#34ebab'}
+    })
+
+    if eventDetails then
+      print("Event details:", json.encode(eventDetails))
+      local rgb = lib.math.torgba(eventDetails[5])
+      print("Color RGB:", rgb.r, rgb.g, rgb.b)
+    end
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/client';
+
+    const eventDetails = await lib.inputDialog('Schedule Event', [
+      { type: 'input', label: 'Event Name', description: 'Enter event name', required: true },
+      { type: 'date-range', label: 'Event Duration', description: 'Select start and end dates', default: ["01/01/2025", "02/01/2025"], format: "DD/MM/YYYY" },
+      { type: 'time', label: 'Start Time', description: 'Set start time', format: '12' },
+      { type: 'slider', label: 'Priority', description: 'Set event priority (1-10)', min: 1, max: 10, default: 5 },
+      { type: 'color', label: 'Event Color', description: 'Choose a color theme', default: '#34ebab' }
+    ]);
+
+    if (eventDetails) {
+      console.log("Event details:", JSON.stringify(eventDetails, null, 2));
+      const regExp = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
+      const colorInput = eventDetails[4];
+      const colorMatch = regExp.exec(colorInput);
+      if (colorMatch) {
+        console.log("Color RGB:", +colorMatch[1], +colorMatch[2], +colorMatch[3]);
+      }
+    }
+    ```
+  </TabsContent>
+</Tabs>

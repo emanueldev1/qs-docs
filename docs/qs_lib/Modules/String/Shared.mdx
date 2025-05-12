@@ -1,0 +1,57 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for string utilities with qs_lib.
+---
+
+# Shared
+
+## lib.string
+
+Enhances the standard Lua string library with additional utility functions.
+
+```lua
+string = lib.string
+```
+
+### string.random
+
+Generates a random string based on a specified pattern.
+
+```lua
+string.random(patternStr, strLength)
+```
+
+- patternStr: `string`
+  - `1` generates a random digit from 0-9.
+  - `A` generates a random uppercase letter from A-Z.
+  - `a` generates a random lowercase letter from a-z.
+  - `.` generates a random alphanumeric character.
+  - `^` treats the next character as a literal.
+  - Any other character is output as itself.
+- strLength?: `number`
+  - Defines the length of the resulting string, either by padding or trimming.
+
+**Returns:**
+
+- result: `string`
+
+### Examples
+
+#### Example 1: Generating a Random License Plate
+
+Creates a random license plate with a pattern of three letters followed by three numbers (e.g., "ABC123").
+
+```lua
+local licensePlate = string.random("AAA111", 6)
+print("Generated license plate:", licensePlate)
+```
+
+#### Example 2: Creating a Random Password
+
+Generates a random 8-character password with a mix of uppercase letters, lowercase letters, and numbers (e.g., "Ab1cD2eF").
+
+```lua
+local password = string.random("Aa1.Aa1.", 8)
+print("Generated password:", password)
+```

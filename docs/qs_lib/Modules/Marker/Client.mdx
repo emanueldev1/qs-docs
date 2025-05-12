@@ -1,0 +1,158 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for marker creation with qs_lib.
+---
+
+# Client
+
+## lib.marker
+
+A straightforward method for creating in-game markers.
+
+## Marker Class
+
+A structure defining a marker with the following attributes.
+
+- type: `number` | `string`
+  - Either a numerical marker ID or a string name as listed in the [FiveM Docs](https://docs.fivem.net/docs/game-references/markers/).
+- coords?: `vector3`
+- width?: `number`
+- height?: `number`
+- color?: `{ r: number, g: number, b: number, a: number}`
+- direction?: `vector3`
+- rotation?: `vector3`
+
+## lib.marker.new
+
+```lua
+lib.marker.new(settings)
+```
+
+- settings: `table`
+- **Returns:** `Marker`
+
+## Examples
+
+### Basic Examples
+
+#### Example 1: Creating a Simple Marker
+
+Creates a red marker at the player's position and renders it continuously.
+
+```lua
+local marker = lib.marker.new({
+    type = 1,
+    coords = GetEntityCoords(cache.ped),
+    color = { r = 255, g = 0, b = 0, a = 200 }
+})
+
+Citizen.CreateThread(function()
+    while true do
+        marker:draw()
+        Citizen.Wait(1)
+    end
+end)
+```
+
+#### Example 2: Glowing Checkpoint Marker
+
+Sets up a glowing checkpoint marker at a fixed location with a yellow tint.
+
+```lua
+local checkpoint = lib.marker.new({
+    type = 2,
+    coords = vec3(100.0, 200.0, 30.0),
+    color = { r = 255, g = 215, b = 0, a = 180 }
+})
+
+Citizen.CreateThread(function()
+    while true do
+        checkpoint:draw()
+        Citizen.Wait(1)
+    end
+end)
+```
+
+### Interactive Examples
+
+#### Example 1: Notification Trigger Near Marker
+
+Displays a marker at a central location, showing a TextUI prompt when nearby to trigger a notification.
+
+```lua
+local center = vec3(430.452759, -1026.108032, 27.846140)
+local uiText = "Press [E] to get notified"
+
+local point = lib.points.new({
+    coords = center,
+    distance = 20
+})
+
+local marker = lib.marker.new({
+    coords = center,
+    type = 1
+})
+
+function point:nearby()
+    marker:draw()
+
+    if self.currentDistance < 1.5 then
+        if not lib.isTextUIOpen() then
+            lib.showTextUI("Press [E] to get notified")
+        end
+
+        if IsControlJustPressed(0, 51) then
+            lib.notify({
+                description = "Hello, World!"
+            })
+        end
+    else
+        local isVisible, currentText = lib.isTextUIOpen()
+        if isVisible and currentText == uiText then
+            lib.hideTextUI()
+        end
+    end
+end
+```
+
+#### Example 2: Spinning Marker at Shop Entrance
+
+Places a spinning marker at a shop entrance, prompting the player to enter when close.
+
+```lua
+local shopEntrance = vec3(300.0, 400.0, 25.0)
+local shopPrompt = "Press [F] to enter shop"
+
+local point = lib.points.new({
+    coords = shopEntrance,
+    distance = 15
+})
+
+local marker = lib.marker.new({
+    coords = shopEntrance,
+    type = 27,  -- Spinning marker
+    color = { r = 0, g = 255, b = 0, a = 150 }
+})
+
+function point:nearby()
+    marker:draw()
+
+    if self.currentDistance < 2.0 then
+        if not lib.isTextUIOpen() then
+            lib.showTextUI("Press [F] to enter shop")
+        end
+
+        if IsControlJustPressed(0, 47) then  -- F key
+            lib.notify({
+                description = "Welcome to the shop!"
+            })
+        end
+    else
+        local isVisible, currentText = lib.isTextUIOpen()
+        if isVisible and currentText == shopPrompt then
+            lib.hideTextUI()
+        end
+    end
+end
+```

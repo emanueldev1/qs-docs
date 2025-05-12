@@ -1,0 +1,111 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for console printing with qs_lib.
+---
+
+# Shared
+
+## lib.print
+
+Conditionally logs messages to the console based on configured levels, with color-coded and labeled outputs. The resource name is always included in the log.
+
+```lua
+lib.print.error(...)
+lib.print.warn(...)
+lib.print.info(...)
+lib.print.verbose(...)
+lib.print.debug(...)
+```
+
+- vararg: `any`
+  - Content to log in the console. Tables are automatically formatted for readability.
+
+### Examples
+
+#### Example 1: Warning About High Latency
+
+Logs a warning about high query latency with a specific value.
+
+```lua
+local latency = 120
+lib.print.warn("query latency high: ", latency)
+```
+
+#### Example 2: Debugging Player Data
+
+Logs detailed player data for debugging purposes.
+
+```lua
+local playerData = { id = 123, health = 80, position = vec3(100, 200, 30) }
+lib.print.debug("player data:", playerData)
+```
+
+### Levels
+
+Each print level serves a specific purpose and is color-coded for clarity. Below are the levels, their intended use, and examples.
+
+- **Error**  
+  Signals a critical failure in the system.  
+  **Example 1:** Logging a database connection failure.  
+  ```lua
+  lib.print.error("Failed to connect to database: timeout")
+  ```  
+  **Example 2:** Reporting a resource initialization error.  
+  ```lua
+  lib.print.error("Resource failed to initialize: missing dependency")
+  ```
+
+- **Warn**  
+  Highlights unexpected conditions that may lead to errors in the future.  
+  **Example 1:** Warning about low server memory.  
+  ```lua
+  lib.print.warn("Server memory low:", GetServerMemoryUsage())
+  ```  
+  **Example 2:** Notifying about a deprecated function usage.  
+  ```lua
+  lib.print.warn("Using deprecated function: UpdatePlayerStats")
+  ```
+
+- **Info**  
+  Provides details on significant, successful operations.  
+  **Example 1:** Logging a successful player login.  
+  ```lua
+  lib.print.info("Player logged in: ID", 123)
+  ```  
+  **Example 2:** Confirming a resource has started.  
+  ```lua
+  lib.print.info("Resource started successfully:", GetCurrentResourceName())
+  ```
+
+- **Verbose**  
+  Offers detailed insights into intermediate steps of operations.  
+  **Example 1:** Logging a transaction process step.  
+  ```lua
+  lib.print.verbose("Processing transaction: deducting funds from player", 123)
+  ```  
+  **Example 2:** Detailing a data sync operation.  
+  ```lua
+  lib.print.verbose("Synchronizing player data with server:", playerData)
+  ```
+
+- **Debug**  
+  Assists developers with in-depth system tracing; should be disabled outside debugging.  
+  **Example 1:** Debugging a function's input parameters.  
+  ```lua
+  lib.print.debug("Function input:", inputParams)
+  ```  
+  **Example 2:** Tracing animation playback state.  
+  ```lua
+  lib.print.debug("Animation state:", animState)
+  ```
+
+### Configuration
+
+Set the logging level using the following convars in your `server.cfg`. Only messages at or above the specified level will be logged. For example, setting the level to `info` will log `error`, `warn`, and `info`, but not `verbose` or `debug`. The default level is `info` if not set. Resource-specific levels override the global setting.
+
+```bash
+set qs:printlevel "info"
+set qs:printlevel:qs_inventory "warn"
+set qs:printlevel:<resourceName> "<level>"
+```

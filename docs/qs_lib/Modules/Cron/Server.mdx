@@ -1,0 +1,115 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for scheduling tasks with qs_lib.
+---
+
+# Server
+
+A Lua-based scheduler for running tasks at specific times, dates, or intervals, inspired by cron.
+
+## Functions
+
+### lib.cron.new
+
+Sets up a new [cronjob](https://en.wikipedia.org/wiki/Cron) to execute a task at defined times or intervals.
+
+```lua
+lib.cron.new(schedule, task, config)
+```
+
+- schedule: `string`
+  - A cron expression like `* * * * *` defining minute, hour, day, month, and day of the week
+- task: `function(job: QsTask, time: osdate)`
+- config?: `table`
+  - debug?: `boolean`
+
+**Returns:**
+
+- job: `QsTask`
+
+**Examples:**
+
+#### Example 1: Log Server Status Every Minute
+
+Runs a task every minute to log the server's status.
+
+```lua
+lib.cron.new('* * * * *', function(job, time)
+    print('Server status at', time, ':', GetNumPlayers(), 'players online')
+end, { debug = true })
+```
+
+#### Example 2: Clear Logs Every Day at Midnight
+
+Clears server logs daily at midnight (00:00).
+
+```lua
+lib.cron.new('0 0 * * *', function(job, time)
+    ClearServerLogs()
+    print('Logs cleared on', time.day, time.month, time.year)
+end)
+```
+
+#### Example 3: Send Reminder Every Monday at 9 AM
+
+Sends a reminder to players every Monday at 9:00 AM.
+
+```lua
+lib.cron.new('0 9 * * mon', function(job, time)
+    NotifyPlayers('Weekly reminder: Check your tasks!')
+    print('Reminder sent on', time.wday)
+end)
+```
+
+#### Example 4: Backup Data Every 6 Hours
+
+Backs up server data every 6 hours (e.g., at 0:00, 6:00, 12:00, 18:00).
+
+```lua
+lib.cron.new('0 */6 * * *', function(job, time)
+    BackupServerData()
+    print('Data backed up at', time.hour, ':00')
+end)
+```
+
+#### Example 5: Run Maintenance on the 1st of Each Month
+
+Performs server maintenance on the 1st day of every month at 3:00 AM.
+
+```lua
+lib.cron.new('0 3 1 * *', function(job, time)
+    PerformMaintenance()
+    print('Maintenance completed on', time.month, '1st at 3:00 AM')
+end)
+```
+
+## Cron Expression
+
+A sequence of five space-separated values that specifies when a task should run.
+
+| Component    | Allowed Values      |
+|--------------|---------------------|
+| Minutes      | `0-59`              |
+| Hours        | `0-23`              |
+| Day of Month | `1-31`              |
+| Month        | `1-12` or `jan-dec` |
+| Day of Week  | `1-7` or `sun-sat`  |
+
+**Note:** The day of the week aligns with `os.date`, starting at 1, unlike the standard cron which starts at 0.
+
+### `*` Wildcards
+
+Denotes all possible values. For example, `* * * * *` triggers every minute, while `* * * * 1` triggers every minute on Sunday.
+
+### `,` Lists
+
+Use commas to specify multiple values. For example, `* * * * sun,mon,tue` runs every minute on Sunday, Monday, and Tuesday.
+
+### `-` Ranges
+
+Use dashes to define a range. For example, `10-30 * * * *` runs from the 10th to the 30th minute of every hour.
+
+### `/` Steps
+
+Use slashes for step intervals. For example, `* */4 * * *` runs every 4 hours, equivalent to `* 0,4,8,12,16,20 * * *`.

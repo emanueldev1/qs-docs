@@ -1,0 +1,70 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for server-side callback handling with qs_lib.
+---
+
+# Server
+
+## Register Server Callback
+
+### lib.callback.register
+
+Sets up a handler to process requests from the client.
+
+```lua
+lib.callback.register(event, handler)
+```
+
+- event: `string`
+- handler: `function`
+
+```lua
+lib.callback.register('qs_player:getHealth', function(source, player, detail)
+    local inventory = player and Inventory(player) or Inventory(source)
+    return (inventory and Inventory.GetHealth(inventory, detail, true)) or 100
+end)
+```
+
+## Trigger Client Callback
+
+### lib.callback
+
+Processes the response in a separate coroutine.
+
+```lua
+lib.callback(event, targetId, callback, ...)
+```
+
+- event: `string`
+- targetId: `number`
+- callback: `function`
+- ...: `any`
+
+```lua
+lib.callback('qs:getNearbyItems', source, function(items)
+    for i = 1, #items do
+        RemoveEntity(item)
+    end
+end, args.distance)
+```
+
+### lib.callback.await
+
+Pauses the current coroutine until the client responds.
+
+```lua
+lib.callback.await(event, targetId, ...)
+```
+
+- event: `string`
+- targetId: `number`
+- ...: `any`
+
+```lua
+local items = lib.callback.await('qs:getNearbyItems', source, args.distance)
+
+for i = 1, #items do
+    RemoveEntity(item)
+end
+```

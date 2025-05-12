@@ -1,0 +1,138 @@
+---
+title: Client
+sidebar_position: 6
+description: Documentation for raycasting with qs_lib.
+---
+
+# Client
+
+## lib.raycast.fromCoords
+
+Initiates a raycast from a starting position to a destination position.
+
+```lua
+lib.raycast.fromCoords(startPos, endPos, rayFlags, ignoreMask)
+```
+
+- startPos: `vector3`
+  - The starting coordinates for the raycast.
+- endPos: `vector3`
+  - The destination coordinates for the raycast.
+- rayFlags?: `number`
+  - Flags defining the types of entities to detect.
+  - Default: `511`
+- ignoreMask?: `number`
+  - Bit mask for collider types to ignore (e.g., 1, 2, 4, 7; typically 4 or 7).
+  - Default: `4`
+
+**Returns:**
+
+- hit: `boolean`
+  - Indicates if an entity was hit.
+- entityHit: `number`
+  - Entity handle of the hit entity.
+- endCoords: `vector3`
+  - Closest coordinates to the raycast hit.
+- surfaceNormal: `vector3`
+  - Surface normal at the hit location.
+- materialHash: `number`
+
+### Examples
+
+#### Example 1: Detecting an Obstacle
+
+Performs a raycast to check for obstacles between the player and a target position.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local targetPos = vec3(playerPos.x + 10, playerPos.y, playerPos.z)
+
+local hit, entityHit, endCoords, surfaceNormal, materialHash = lib.raycast.fromCoords(playerPos, targetPos)
+
+if hit then
+    print("Obstacle detected at:", endCoords.x, endCoords.y, endCoords.z)
+else
+    print("No obstacle found.")
+end
+```
+
+#### Example 2: Checking a Drop-Off Point
+
+Uses a raycast to verify if a drop-off point is clear of obstructions.
+
+```lua
+local startPos = vec3(100.0, 200.0, 30.0)
+local dropOffPos = vec3(100.0, 200.0, 10.0)
+
+local hit, entityHit, endCoords, surfaceNormal, materialHash = lib.raycast.fromCoords(startPos, dropOffPos, 511, 7)
+
+if hit then
+    print("Drop-off blocked by entity:", entityHit)
+else
+    print("Drop-off point is clear.")
+end
+```
+
+## lib.raycast.fromCamera
+
+Initiates a raycast from the player's camera, extending a specified distance (default ~10m).
+
+```lua
+lib.raycast.fromCamera(rayFlags, ignoreMask, rayDistance)
+```
+
+- rayFlags?: `number`
+  - Flags defining the types of entities to detect.
+  - Default: `511`
+- ignoreMask?: `number`
+  - Bit mask for collider types to ignore (e.g., 1, 2, 4, 7; typically 4 or 7).
+  - Default: `4`
+- rayDistance?: `number`
+  - Distance for the raycast to extend.
+  - Default: `10`
+
+**Returns:**
+
+- hit: `boolean`
+  - Indicates if an entity was hit.
+- entityHit: `number`
+  - Entity handle of the hit entity.
+- endCoords: `vector3`
+  - Closest coordinates to the raycast hit.
+- surfaceNormal: `vector3`
+  - Surface normal at the hit location.
+- materialHash: `number`
+
+### Examples
+
+#### Example 1: Inspecting an Object
+
+Raycasts from the camera to inspect an object the player is looking at.
+
+```lua
+local hit, entityHit, endCoords, surfaceNormal, materialHash = lib.raycast.fromCamera()
+
+if hit then
+    print("Looking at object:", entityHit, "at:", endCoords.x, endCoords.y, endCoords.z)
+else
+    print("No object in sight.")
+end
+```
+
+#### Example 2: Targeting an Enemy
+
+Uses a raycast from the camera to target an enemy within a longer range.
+
+```lua
+local hit, entityHit, endCoords, surfaceNormal, materialHash = lib.raycast.fromCamera(511, 4, 20)
+
+if hit and IsEntityAPed(entityHit) then
+    print("Targeted enemy at:", endCoords.x, endCoords.y, endCoords.z)
+else
+    print("No enemy targeted.")
+end
+```
+
+## lib.raycast.cam
+
+> **Warning:** `lib.raycast.cam` is a deprecated alias for compatibility with older ox_lib versions and may be removed in the future. Use `lib.raycast.fromCamera` instead.

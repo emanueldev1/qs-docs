@@ -1,0 +1,71 @@
+---
+title: Server
+sidebar_position: 3
+description: Documentation for version checking with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Server
+
+## lib.versionCheck
+
+Checks the resource version against the latest release on GitHub using its release API.
+
+```lua
+lib.versionCheck(repoName)
+```
+
+- repoName: `string`
+
+### Examples
+
+#### Example 1: Checking Version for a Core Resource
+
+Verifies the version of a core resource against the latest release on GitHub.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.versionCheck('emanueldev1/qs_lib')
+    print("Version check initiated for qs_lib.")
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server';
+
+    lib.versionCheck('emanueldev1/qs_lib');
+    console.log("Version check initiated for qs_lib.");
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Checking Version for a Custom Resource
+
+Checks the version of a custom resource against its GitHub repository.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    lib.versionCheck('myusername/myresource')
+    print("Version check initiated for myresource.")
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/server';
+
+    lib.versionCheck('myusername/myresource');
+    console.log("Version check initiated for myresource.");
+    ```
+  </TabsContent>
+</Tabs>

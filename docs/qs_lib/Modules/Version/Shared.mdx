@@ -1,0 +1,84 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for dependency version checking with qs_lib.
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+# Shared
+
+## lib.checkDependency
+
+Verifies if a resource meets or exceeds a specified version, enabling compatibility checks or error handling.
+
+```lua
+lib.checkDependency(resourceName, requiredVersion)
+```
+
+- resourceName: `string`
+- requiredVersion: `string`
+
+**Returns:**
+
+- meetsVersion: `boolean`
+
+### Examples
+
+#### Example 1: Ensuring Core Library Version
+
+Checks if the core library meets the required version, throwing an error if it doesn't.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if not lib.checkDependency('qs_lib', '1.5.0') then
+        error("qs_lib version 1.5.0 or higher is required!")
+    end
+    print("qs_lib version check passed.")
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/shared';
+
+    if (!lib.checkDependency('qs_lib', '1.5.0')) {
+      throw new Error("qs_lib version 1.5.0 or higher is required!");
+    }
+    console.log("qs_lib version check passed.");
+    ```
+  </TabsContent>
+</Tabs>
+
+#### Example 2: Verifying Dependency for a Custom Resource
+
+Ensures a custom resource meets a minimum version requirement before proceeding.
+
+<Tabs defaultValue="lua" className="mt-4">
+  <TabsList className="grid w-full grid-cols-2">
+    <TabsTrigger value="lua">Lua</TabsTrigger>
+    <TabsTrigger value="js">JavaScript</TabsTrigger>
+  </TabsList>
+  <TabsContent value="lua">
+    ```lua
+    if not lib.checkDependency('my_resource', '2.0.0') then
+        error("my_resource version 2.0.0 or higher is required!")
+    end
+    print("my_resource version check passed.")
+    ```
+  </TabsContent>
+  <TabsContent value="js">
+    ```js
+    import lib from '@emanueldev1/qs_lib/shared';
+
+    if (!lib.checkDependency('my_resource', '2.0.0')) {
+      throw new Error("my_resource version 2.0.0 or higher is required!");
+    }
+    console.log("my_resource version check passed.");
+    ```
+  </TabsContent>
+</Tabs>

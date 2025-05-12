@@ -1,0 +1,1016 @@
+---
+title: Player Bridge (Server)
+sidebar_position: 15
+description: Documentation for server-side player management with qs_lib.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Player Bridge (Server)
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Default Compatibility</AlertTitle>
+  <AlertDescription>
+    The functions listed below are compatible by default with the following frameworks: QBX-Core, QB-Core, and ESX. These functions represent the complete set of server-side player operations provided by this bridge. Note that some functions, such as <code>lib.player.getGang</code>, may not be fully supported in all frameworks. In such cases, the function may return default values if gang systems are not implemented.
+  </AlertDescription>
+</Alert>
+
+The Player Bridge provides functions to manage player-related data and actions on the server side, such as retrieving identity, managing jobs, handling financial transactions, and performing moderation tasks.
+
+## lib.player.get
+
+Retrieves a player object by server ID.
+
+```lua
+lib.player.get(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- player: `table` | `nil`
+  - The player object (e.g., `{ PlayerData = { citizenid = "citizenid123" } }` for QBCore/QBXCore, `{ identifier = "license:abc123" }` for ESX), or `nil` if not found.
+
+### Example: Getting Player Object
+
+Fetches and logs a player's citizen ID from their player object.
+
+```lua title="Server: Getting Player Object"
+RegisterCommand('getplayer', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local player = lib.player.get(targetId)
+    if player then
+        local citizenId = player.PlayerData and player.PlayerData.citizenid or player.identifier
+        print("Player", targetId, "citizen ID:", citizenId or "N/A")
+    else
+        print("Player", targetId, "not found.")
+    end
+end, true)
+```
+
+## lib.player.identifier
+
+Retrieves the player's unique identifier.
+
+```lua
+lib.player.identifier(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- identifier: `string` | `nil`
+  - The player's identifier (e.g., "license:abc123" or "citizenid123"), or `nil` if not available.
+
+### Example: Getting Player Identifier
+
+Fetches and logs a player's unique identifier.
+
+```lua title="Server: Getting Player Identifier"
+RegisterCommand('getid', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local identifier = lib.player.identifier(targetId)
+    if identifier then
+        print("Player", targetId, "identifier:", identifier)
+    else
+        print("Player", targetId, "identifier not available.")
+    end
+end, true)
+```
+
+## lib.player.name
+
+Retrieves the player's first and last name.
+
+```lua
+lib.player.name(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- firstName: `string` | `nil`
+  - The player's first name (e.g., "John"), or `nil` if not available.
+- lastName: `string` | `nil`
+  - The player's last name (e.g., "Doe"), or `nil` if not available.
+
+### Example: Getting Player Name
+
+Fetches and logs a player's first and last name.
+
+```lua title="Server: Getting Player Name"
+RegisterCommand('getname', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local firstName, lastName = lib.player.name(targetId)
+    if firstName and lastName then
+        print("Player", targetId, "name:", firstName, lastName)
+    else
+        print("Player", targetId, "name not available.")
+    end
+end, true)
+```
+
+## lib.player.phoneNumber
+
+Retrieves the player's phone number.
+
+```lua
+lib.player.phoneNumber(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- phoneNumber: `string`
+  - The player's phone number (e.g., "123-456-7890"), or "No Number" if not available.
+
+### Example: Getting Player Phone Number
+
+Fetches and logs a player's phone number.
+
+```lua title="Server: Getting Player Phone Number"
+RegisterCommand('getphone', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local phoneNumber = lib.player.phoneNumber(targetId)
+    print("Player", targetId, "phone number:", phoneNumber)
+end, true)
+```
+
+## lib.player.gender
+
+Retrieves the player's gender.
+
+```lua
+lib.player.gender(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- gender: `string`
+  - The player's gender (e.g., "male", "female"), or "unknown" if not available.
+
+### Example: Getting Player Gender
+
+Fetches and logs a player's gender.
+
+```lua title="Server: Getting Player Gender"
+RegisterCommand('getgender', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local gender = lib.player.gender(targetId)
+    print("Player", targetId, "gender:", gender)
+end, true)
+```
+
+## lib.player.deleteCharacter
+
+Deletes a character for a player.
+
+```lua
+lib.player.deleteCharacter(src, citizenId)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- citizenId: `string`
+  - The citizen ID of the character to delete (e.g., "citizenid123").
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the character was successfully deleted, `false` otherwise.
+
+### Example: Deleting a Character
+
+Deletes a character for a player.
+
+```lua title="Server: Deleting a Character"
+RegisterCommand('deletechar', function(source, args, rawCommand)
+    local citizenId = args[1] or "citizenid123"
+    local success = lib.player.deleteCharacter(source, citizenId)
+    if success then
+        print("Successfully deleted character", citizenId, "for player", source)
+    else
+        print("Failed to delete character", citizenId, "for player", source)
+    end
+end, true)
+```
+
+## lib.player.loginCharacter
+
+Logs a player into a character.
+
+```lua
+lib.player.loginCharacter(src, citizenId, newData)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- citizenId: `string`
+  - The citizen ID of the character to log into (e.g., "citizenid123").
+- newData: `table` | `nil`
+  - Optional new data for the character (e.g., `{ position = { x = 100, y = 200, z = 30 } }`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the login was successful, `false` otherwise.
+
+### Example: Logging into a Character
+
+Logs a player into a specified character.
+
+```lua title="Server: Logging into a Character"
+RegisterCommand('loginchar', function(source, args, rawCommand)
+    local citizenId = args[1] or "citizenid123"
+    local success = lib.player.loginCharacter(source, citizenId)
+    if success then
+        print("Player", source, "successfully logged into character", citizenId)
+    else
+        print("Failed to log player", source, "into character", citizenId)
+    end
+end, true)
+```
+
+## lib.player.logoutCharacter
+
+Logs a player out of their character.
+
+```lua
+lib.player.logoutCharacter(src, citizenId)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- citizenId: `string` | `nil`
+  - The citizen ID of the character to log out (optional).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the logout was successful, `false` otherwise.
+
+### Example: Logging out of a Character
+
+Logs a player out of their current character.
+
+```lua title="Server: Logging out of a Character"
+RegisterCommand('logoutchar', function(source, args, rawCommand)
+    local citizenId = args[1] or nil
+    local success = lib.player.logoutCharacter(source, citizenId)
+    if success then
+        print("Player", source, "successfully logged out of character", citizenId or "current character")
+    else
+        print("Failed to log player", source, "out of character", citizenId or "current character")
+    end
+end, true)
+```
+
+## lib.player.getJob
+
+Retrieves the player's job information.
+
+```lua
+lib.player.getJob(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- job: `table` | `nil`
+  - A table containing job details (e.g., `{ name = "police", type = "leo", label = "Police Officer", grade = 2, gradeLabel = "Sergeant", isBoss = false, bankAuth = true, duty = true }`), or `nil` if player not found.
+
+### Example: Getting Player Job
+
+Fetches and logs a player's job information.
+
+```lua title="Server: Getting Player Job"
+RegisterCommand('getjob', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local job = lib.player.getJob(targetId)
+    if job then
+        print("Player", targetId, "job:", job.name, "Grade:", job.gradeLabel, "On Duty:", job.duty and "Yes" or "No")
+    else
+        print("Player", targetId, "not found or job data unavailable.")
+    end
+end, true)
+```
+
+## lib.player.setJob
+
+Sets the player's job and grade.
+
+```lua
+lib.player.setJob(src, name, grade)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- name: `string`
+  - The job name (e.g., "police").
+- grade: `number`
+  - The job grade or rank (e.g., 2).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the job was set successfully, `false` otherwise.
+
+### Example: Setting Player Job
+
+Sets a player's job to "police" with grade 2.
+
+```lua title="Server: Setting Player Job"
+RegisterCommand('setjob', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.setJob(targetId, "police", 2)
+    if success then
+        print("Successfully set job for player", targetId, "to police, grade 2")
+    else
+        print("Failed to set job for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.setDuty
+
+Sets the player's duty status.
+
+```lua
+lib.player.setDuty(src, duty)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- duty: `boolean`
+  - `true` to set the player on duty, `false` otherwise.
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the duty status was set successfully, `false` otherwise.
+
+### Example: Setting Player Duty
+
+Sets a player's duty status to on.
+
+```lua title="Server: Setting Player Duty"
+RegisterCommand('setduty', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.setDuty(targetId, true)
+    if success then
+        print("Successfully set player", targetId, "on duty")
+    else
+        print("Failed to set duty status for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.setPlayerData
+
+Sets player data for a specific key.
+
+```lua
+lib.player.setPlayerData(src, key, data)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- key: `string`
+  - The data key to set (e.g., "position").
+- data: `any`
+  - The data to set (e.g., `{ x = 100, y = 200, z = 30 }`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the data was set successfully, `false` otherwise.
+
+### Example: Setting Player Data
+
+Sets a player's position data.
+
+```lua title="Server: Setting Player Data"
+RegisterCommand('setposition', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local position = { x = 100, y = 200, z = 30 }
+    local success = lib.player.setPlayerData(targetId, "position", position)
+    if success then
+        print("Successfully set position for player", targetId)
+    else
+        print("Failed to set position for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.getPlayerData
+
+Retrieves the player's data or a specific key from it.
+
+```lua
+lib.player.getPlayerData(src, key)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- key: `string` | `nil`
+  - Optional key to retrieve specific data (e.g., "job").
+
+**Returns:**
+
+- data: `table` | `any` | `nil`
+  - The player's data, the value of the specified key (e.g., `{ job = { name = "police" }, money = { cash = 100 } }` or `{ name = "police" }` for `key = "job"`), or `nil` if player not found.
+
+### Example: Getting Player Data
+
+Fetches and logs a player's job data.
+
+```lua title="Server: Getting Player Data"
+RegisterCommand('getjobdata', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local jobData = lib.player.getPlayerData(targetId, "job")
+    if jobData then
+        print("Player", targetId, "job:", jobData.name, "Grade:", jobData.grade)
+    else
+        print("Player", targetId, "job data not available.")
+    end
+end, true)
+```
+
+## lib.player.setMetadata
+
+Sets metadata for a specific key.
+
+```lua
+lib.player.setMetadata(src, key, data)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- key: `string`
+  - The metadata key (e.g., "hunger").
+- data: `any`
+  - The metadata value to set (e.g., 100).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the metadata was set successfully, `false` otherwise.
+
+### Example: Setting Player Metadata
+
+Sets a player's hunger metadata to 100.
+
+```lua title="Server: Setting Player Metadata"
+RegisterCommand('sethunger', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.setMetadata(targetId, "hunger", 100)
+    if success then
+        print("Successfully set hunger to 100 for player", targetId)
+    else
+        print("Failed to set hunger for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.getMetadata
+
+Retrieves metadata for a specific key.
+
+```lua
+lib.player.getMetadata(src, key)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- key: `string`
+  - The metadata key (e.g., "hunger").
+
+**Returns:**
+
+- metadata: `any` | `nil`
+  - The metadata value (e.g., 100 for `key = "hunger"`), or `nil` if not found.
+
+### Example: Getting Player Metadata
+
+Fetches and logs a player's hunger metadata.
+
+```lua title="Server: Getting Player Metadata"
+RegisterCommand('gethunger', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local hunger = lib.player.getMetadata(targetId, "hunger")
+    if hunger then
+        print("Player", targetId, "hunger level:", hunger)
+    else
+        print("Player", targetId, "hunger metadata not available.")
+    end
+end, true)
+```
+
+## lib.player.jail
+
+Jails a player for a specified duration.
+
+```lua
+lib.player.jail(src, time, reason)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- time: `number`
+  - The duration of the jail time in minutes (e.g., 30).
+- reason: `string` | `nil`
+  - Optional reason for jailing (e.g., "Breaking server rules").
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the player was jailed successfully, `false` otherwise.
+
+### Example: Jailing a Player
+
+Jails a player for 30 minutes.
+
+```lua title="Server: Jailing a Player"
+RegisterCommand('jailplayer', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.jail(targetId, 30, "Breaking server rules")
+    if success then
+        print("Successfully jailed player", targetId, "for 30 minutes")
+    else
+        print("Failed to jail player", targetId)
+    end
+end, true)
+```
+
+## lib.player.getMoney
+
+Retrieves the player's money for a specific account.
+
+```lua
+lib.player.getMoney(src, account)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- account: `string`
+  - The account name (e.g., "bank", "cash").
+
+**Returns:**
+
+- amount: `number` | `nil`
+  - The amount of money in the specified account (e.g., 500), or `nil` if player not found.
+
+### Example: Getting Player Money
+
+Fetches and logs a player's cash balance.
+
+```lua title="Server: Getting Player Money"
+RegisterCommand('getmoney', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local cash = lib.player.getMoney(targetId, "cash")
+    if cash then
+        print("Player", targetId, "cash balance:", cash)
+    else
+        print("Player", targetId, "cash balance not available.")
+    end
+end, true)
+```
+
+## lib.player.addMoney
+
+Adds money to a player's account.
+
+```lua
+lib.player.addMoney(src, account, amount, reason)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- account: `string`
+  - The account name (e.g., "bank", "cash").
+- amount: `number`
+  - The amount of money to add (e.g., 100).
+- reason: `string` | `nil`
+  - Optional reason for the transaction (e.g., "Payment").
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the money was added successfully, `false` otherwise.
+
+### Example: Adding Money to Player
+
+Adds 100 cash to a player's account.
+
+```lua title="Server: Adding Money to Player"
+RegisterCommand('addmoney', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.addMoney(targetId, "cash", 100, "Payment")
+    if success then
+        print("Successfully added 100 cash to player", targetId)
+    else
+        print("Failed to add money to player", targetId)
+    end
+end, true)
+```
+
+## lib.player.removeMoney
+
+Removes money from a player's account.
+
+```lua
+lib.player.removeMoney(src, account, amount, reason, force)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- account: `string`
+  - The account name (e.g., "bank", "cash").
+- amount: `number`
+  - The amount of money to remove (e.g., 100).
+- reason: `string` | `nil`
+  - Optional reason for the transaction (e.g., "Fine").
+- force: `boolean` | `nil`
+  - `true` to force removal even if funds are insufficient (optional).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the money was successfully removed, `false` otherwise.
+- errorCode: `string` | `nil`
+  - Error code if removal failed (e.g., "no_account", "insufficient_funds").
+
+### Example: Removing Money from Player
+
+Removes 100 cash from a player's account.
+
+```lua title="Server: Removing Money from Player"
+RegisterCommand('removemoney', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success, errorCode = lib.player.removeMoney(targetId, "cash", 100, "Fine")
+    if success then
+        print("Successfully removed 100 cash from player", targetId)
+    else
+        print("Failed to remove money from player", targetId, "- Error:", errorCode or "unknown")
+    end
+end, true)
+```
+
+## lib.player.setMoney
+
+Sets the money in a player's account.
+
+```lua
+lib.player.setMoney(src, account, amount)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- account: `string`
+  - The account name (e.g., "bank", "cash").
+- amount: `number`
+  - The amount of money to set (e.g., 500).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the money was set successfully, `false` otherwise.
+
+### Example: Setting Player Money
+
+Sets a player's cash balance to 500.
+
+```lua title="Server: Setting Player Money"
+RegisterCommand('setmoney', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.setMoney(targetId, "cash", 500)
+    if success then
+        print("Successfully set cash to 500 for player", targetId)
+    else
+        print("Failed to set money for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.checkOnline
+
+Checks if a player is online by their character ID or server ID.
+
+```lua
+lib.player.checkOnline(identifier)
+```
+
+- identifier: `string` | `number`
+  - The character ID (e.g., "citizenid123") or server ID (e.g., 1).
+
+**Returns:**
+
+- result: `boolean` | `string`
+  - `false` if the player is offline, or the server ID (e.g., "1") if online.
+
+### Example: Checking Player Online Status
+
+Checks if a player is online by their character ID.
+
+```lua title="Server: Checking Player Online Status"
+RegisterCommand('checkonline', function(source, args, rawCommand)
+    local identifier = args[1] or "citizenid123"
+    local result = lib.player.checkOnline(identifier)
+    if result then
+        print("Player with identifier", identifier, "is online with server ID:", result)
+    else
+        print("Player with identifier", identifier, "is offline.")
+    end
+end, true)
+```
+
+## lib.player.kick
+
+Kicks a player from the server.
+
+```lua
+lib.player.kick(src, reason)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- reason: `string` | `nil`
+  - Optional reason for the kick (e.g., "Breaking server rules").
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the player was kicked successfully, `false` otherwise.
+
+### Example: Kicking a Player
+
+Kicks a player from the server.
+
+```lua title="Server: Kicking a Player"
+RegisterCommand('kickplayer', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.kick(targetId, "Breaking server rules")
+    if success then
+        print("Successfully kicked player", targetId)
+    else
+        print("Failed to kick player", targetId)
+    end
+end, true)
+```
+
+## lib.player.getGang
+
+Retrieves the player's gang information (if applicable).
+
+```lua
+lib.player.getGang(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- gang: `table` | `nil`
+  - A table containing gang details (e.g., `{ name = "ballas", label = "Ballas Gang", grade = 1, gradeLabel = "Member", isBoss = false }`), or `nil` if player not found.
+
+### Example: Getting Player Gang
+
+Fetches and logs a player's gang information.
+
+```lua title="Server: Getting Player Gang"
+RegisterCommand('getgang', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local gang = lib.player.getGang(targetId)
+    if gang then
+        print("Player", targetId, "gang:", gang.name, "Grade:", gang.gradeLabel, "Is Boss:", gang.isBoss and "Yes" or "No")
+    else
+        print("Player", targetId, "gang data not available.")
+    end
+end, true)
+```
+
+## lib.player.setGang
+
+Sets the player's gang and grade.
+
+```lua
+lib.player.setGang(src, name, grade)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- name: `string`
+  - The gang name (e.g., "ballas").
+- grade: `number`
+  - The gang grade or rank (e.g., 1).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the gang was set successfully, `false` otherwise.
+
+### Example: Setting Player Gang
+
+Sets a player's gang to "ballas" with grade 1.
+
+```lua title="Server: Setting Player Gang"
+RegisterCommand('setgang', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.setGang(targetId, "ballas", 1)
+    if success then
+        print("Successfully set gang for player", targetId, "to ballas, grade 1")
+    else
+        print("Failed to set gang for player", targetId)
+    end
+end, true)
+```
+
+## lib.player.addItem
+
+Adds an item to the player's inventory.
+
+```lua
+lib.player.addItem(src, item, amount, metadata)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- item: `string`
+  - The item name (e.g., "water").
+- amount: `number`
+  - The amount of the item to add (e.g., 5).
+- metadata: `table` | `nil`
+  - Optional metadata for the item (e.g., `{ quality = 100 }`).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was added successfully, `false` otherwise.
+
+### Example: Adding an Item to Inventory
+
+Adds 5 units of "water" to a player's inventory.
+
+```lua title="Server: Adding an Item to Inventory"
+RegisterCommand('additem', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.addItem(targetId, "water", 5)
+    if success then
+        print("Successfully added 5 water to player", targetId)
+    else
+        print("Failed to add water to player", targetId)
+    end
+end, true)
+```
+
+## lib.player.removeItem
+
+Removes an item from the player's inventory.
+
+```lua
+lib.player.removeItem(src, item, amount)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- item: `string`
+  - The item name (e.g., "water").
+- amount: `number`
+  - The amount of the item to remove (e.g., 5).
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the item was removed successfully, `false` otherwise.
+
+### Example: Removing an Item from Inventory
+
+Removes 5 units of "water" from a player's inventory.
+
+```lua title="Server: Removing an Item from Inventory"
+RegisterCommand('removeitem', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.removeItem(targetId, "water", 5)
+    if success then
+        print("Successfully removed 5 water from player", targetId)
+    else
+        print("Failed to remove water from player", targetId)
+    end
+end, true)
+```
+
+## lib.player.hasItem
+
+Checks if the player has a specific item in their inventory.
+
+```lua
+lib.player.hasItem(src, item, amount)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- item: `string`
+  - The item name (e.g., "water").
+- amount: `number` | `nil`
+  - The minimum amount required (default: 1).
+
+**Returns:**
+
+- hasItem: `boolean`
+  - `true` if the player has the item and amount, `false` otherwise.
+
+### Example: Checking for an Item
+
+Checks if a player has at least 2 units of "water".
+
+```lua title="Server: Checking for an Item"
+RegisterCommand('hasitem', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local hasItem = lib.player.hasItem(targetId, "water", 2)
+    print("Player", targetId, hasItem and "has" or "does not have", "at least 2 water items.")
+end, true)
+```
+
+## lib.player.getAccounts
+
+Retrieves all accounts of the player.
+
+```lua
+lib.player.getAccounts(src)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+
+**Returns:**
+
+- accounts: `table` | `nil`
+  - A table of account names and their amounts (e.g., `{ cash = 100, bank = 500 }`), or `nil` if player not found.
+
+### Example: Getting Player Accounts
+
+Fetches and logs a player's account balances.
+
+```lua title="Server: Getting Player Accounts"
+RegisterCommand('getaccounts', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local accounts = lib.player.getAccounts(targetId)
+    if accounts then
+        for account, amount in pairs(accounts) do
+            print("Player", targetId, account, "balance:", amount)
+        end
+    else
+        print("Player", targetId, "accounts not available.")
+    end
+end, true)
+```
+
+## lib.player.ban
+
+Bans a player from the server.
+
+```lua
+lib.player.ban(src, duration, reason)
+```
+
+- src: `number`
+  - The player server ID (e.g., 1).
+- duration: `number`
+  - The duration of the ban in minutes (0 for permanent, e.g., 1440 for 24 hours).
+- reason: `string` | `nil`
+  - Optional reason for the ban (e.g., "Cheating").
+
+**Returns:**
+
+- success: `boolean`
+  - `true` if the player was banned successfully, `false` otherwise.
+
+### Example: Banning a Player
+
+Bans a player for 24 hours.
+
+```lua title="Server: Banning a Player"
+RegisterCommand('banplayer', function(source, args, rawCommand)
+    local targetId = tonumber(args[1]) or source
+    local success = lib.player.ban(targetId, 1440, "Cheating")
+    if success then
+        print("Successfully banned player", targetId, "for 24 hours")
+    else
+        print("Failed to ban player", targetId)
+    end
+end, true)
+```

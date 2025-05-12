@@ -1,0 +1,64 @@
+---
+title: Shared
+sidebar_position: 5
+description: Documentation for shared utilities with qs_lib.
+---
+
+# Shared
+
+## lib.getNearbyPlayers
+
+Obtains the ID, ped handle, and coordinates of all players within a specified range of a given position.
+
+```lua
+lib.getNearbyPlayers(location, searchRange, includeSelf)
+```
+
+- location: `vector3`
+  - The position to search around.
+- searchRange?: `number`
+  - The maximum distance to search within.
+  - Default: `2.0`
+- includeSelf?: `boolean`
+  - Whether to include the local player in the search. Ignored on the server.
+  - Default: `false`
+
+**Returns:**
+
+- players: `{ id: number, ped: number, coords: vector3 }[]`
+
+## Examples
+
+### Example 1: Forming a Group with Nearby Players
+
+Finds all players within 8.0 units of the player's position, excluding themselves, and invites them to form a group.
+
+```lua
+local playerPos = GetEntityCoords(PlayerPedId())
+local nearbyPlayers = lib.getNearbyPlayers(playerPos, 8.0, false)
+
+for _, player in ipairs(nearbyPlayers) do
+    InviteToGroup(player.id)
+    print("Invited player", player.id, "at:", player.coords.x, player.coords.y, player.coords.z)
+end
+if #nearbyPlayers == 0 then
+    print("No players found to invite nearby.")
+end
+```
+
+### Example 2: Broadcasting a Message to Nearby Players
+
+Locates all players within the default range (2.0 units) from a specific location, including the local player, and broadcasts a message to them.
+
+```lua
+local broadcastPoint = vector3(400.0, 500.0, 60.0)
+local nearbyPlayers = lib.getNearbyPlayers(broadcastPoint, nil, true)
+
+for _, player in ipairs(nearbyPlayers) do
+    SendMessageToPlayer(player.id, "Event starting soon!")
+    print("Sent message to player", player.id, "at:", player.coords.x, player.coords.y, player.coords.z)
+end
+if #nearbyPlayers == 0 then
+    print("No players found to message nearby.")
+end
+```

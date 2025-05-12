@@ -1,0 +1,54 @@
+---
+title: Server
+sidebar_position: 3
+description: Guide for command registration and validation with qs_lib.
+---
+
+# Server
+
+Enables command creation while easing argument checks, access restrictions, and chat suggestions.
+
+```lua
+lib.addCommand(commandName, config, handler)
+```
+
+- commandName: `string` or `string[]`
+- config: `table` or `false`
+  - info?: `string`
+  - restrict?: `boolean` or `string` or `string[]`
+  - inputs?: `table[]`
+    - name: `string`
+    - info?: `string`
+    - type?: `'number'` or `'playerId'` or `'string'` or `'longString'`
+    - mandatory?: `boolean`
+
+```lua
+lib.addCommand('kickplayer', {
+    info = 'Kicks a player from the server',
+    inputs = {
+        {
+            name = 'id',
+            type = 'playerId',
+            info = 'Server ID of the player to kick',
+        },
+        {
+            name = 'reason',
+            type = 'string',
+            info = 'Reason for the kick',
+        },
+        {
+            name = 'notify',
+            type = 'string',
+            info = 'Message to display to the player, if any',
+            mandatory = false,
+        },
+    },
+    restrict = 'group.moderator'
+}, function(source, args, raw)
+    local player = GetPlayer(args.id)
+
+    if player then
+        KickPlayer(args.id, args.reason, args.notify)
+    end
+end)
+```
