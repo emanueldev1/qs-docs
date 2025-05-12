@@ -15,6 +15,17 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
   </AlertDescription>
 </Alert>
 
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Detecting the Inventory system</AlertTitle>
+  <AlertDescription>
+    You can determine the currently detected Inventory system by accessing <code>lib.bridge.inventory</code>. This returns the Inventory's identifier (e.g., "qs-inventory", "qb-inventory", ...).
+    ```lua title="Example: Checking Inventory Name"
+    local inventory = lib.bridge.inventory
+    print("Detected Inventory:", inventory)
+    ```
+  </AlertDescription>
+</Alert>
+
 The Inventory Bridge provides functions to manage inventory operations on the server side, such as retrieving inventory data, adding/removing items, checking item quantities, and managing stashes.
 
 ## lib.inventory.get

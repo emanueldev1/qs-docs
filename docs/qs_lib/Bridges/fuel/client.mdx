@@ -15,6 +15,17 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
   </AlertDescription>
 </Alert>
 
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Detecting the Fuel system</AlertTitle>
+  <AlertDescription>
+    You can determine the currently detected fuel system by accessing <code>lib.bridge.fuel</code>. This returns the fuel's identifier (e.g., "LegacyFuel", "ox_fuel", ...).
+    ```lua title="Example: Checking Fuel Name"
+    local fuel = lib.bridge.fuel
+    print("Detected fuel:", fuel)
+    ```
+  </AlertDescription>
+</Alert>
+
 The Fuel Bridge provides functions to manage vehicle fuel levels on the client side, such as setting and retrieving fuel levels.
 
 ## lib.fuel.setFuel
