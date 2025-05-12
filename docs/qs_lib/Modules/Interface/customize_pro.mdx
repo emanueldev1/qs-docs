@@ -1,0 +1,243 @@
+---
+title: Customizing the UI (Advanced)
+sidebar_position: 19
+description: Advanced guide for customizing the UI of qs_lib with Tailwind CSS and shadcn/ui.
+---
+
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+# Customizing the UI (Advanced)
+
+This guide is for developers familiar with Git, Node.js, and web development who want to customize the UI of the `qs_lib` library. The library's UI is built using [Tailwind CSS](https://tailwindcss.com/docs) and [shadcn/ui](https://ui.shadcn.com/docs), allowing for extensive customization of colors, themes, and other design elements. You’ll learn how to clone the repository, set up the development environment, modify the theme, and build the UI for deployment on your FiveM server using `pnpm`.
+
+## Overview
+
+The `qs_lib` UI is styled using Tailwind CSS, a utility-first CSS framework, and shadcn/ui, a collection of reusable components. The primary configuration file for styling is `web/src/index.css`, where you can define custom design tokens (e.g., colors, radii) for both light and dark modes. Customizing the UI involves editing this file and rebuilding the `/web/` directory to apply your changes. This guide assumes you’re comfortable with Git, `pnpm`, and CSS.
+
+## Prerequisites
+
+Ensure you have the following tools installed:
+
+- **Git**: For cloning the repository. Install from [git-scm.com](https://git-scm.com/).
+- **Node.js**: For managing dependencies and building the UI. Install from [nodejs.org](https://nodejs.org/) (v18 or later recommended, LTS version).
+- **pnpm**: A package manager for Node.js, used to install dependencies and build the UI. Install instructions are provided below.
+- A code editor like [Visual Studio Code](https://code.visualstudio.com/) with extensions for CSS (e.g., Tailwind CSS IntelliSense).
+
+### Installing pnpm
+
+If you don’t already have `pnpm` installed, you can install it using Node.js:
+
+1. Open a terminal (e.g., Command Prompt on Windows, Terminal on Mac).
+2. Run the following command to install `pnpm` globally:
+
+   ```bash
+   npm install -g pnpm
+   ```
+
+3. Verify the installation by checking the version:
+
+   ```bash
+   pnpm --version
+   ```
+
+   You should see a version number (e.g., `8.x.x`). If you encounter an error, ensure Node.js is installed correctly (`node --version` should show a version like `v18.x.x`), and try the installation command again.
+
+## Step 1: Clone the Repository
+
+The source code for `qs_lib` is hosted on GitHub. Clone the repository to access the UI source files.
+
+1. Open a terminal and run:
+
+   ```bash
+   git clone https://github.com/emanueldev1/qs_lib.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd qs_lib
+   ```
+
+## Step 2: Set Up the Development Environment
+
+The UI source code resides in the `web/` directory. You’ll need to install dependencies to build the UI.
+
+1. Navigate to the `web/` directory:
+
+   ```bash
+   cd web
+   ```
+
+2. Install dependencies using `pnpm`:
+
+   ```bash
+   pnpm i
+   ```
+
+   This installs Tailwind CSS, shadcn/ui dependencies, and other packages listed in `package.json`.
+
+## Step 3: Customize the Theme
+
+The main file for UI customization is `web/src/index.css`. This file defines design tokens using CSS custom properties (`--variable-name`) for both light and dark modes, which Tailwind CSS and shadcn/ui components use to style the UI.
+
+### Understanding the Structure
+
+The `index.css` file includes:
+
+- **Imports and Plugins**: Imports Tailwind CSS and plugins like `tailwindcss-animate` and `@midudev/tailwind-animations`.
+- **Root Variables (`:root`)**: Defines the light mode theme with variables like `--background`, `--foreground`, `--primary`, etc.
+- **Dark Mode (`.dark`)**: Overrides variables for dark mode, ensuring theme adaptability.
+- **Theme Mapping (`@theme inline`)**: Maps custom properties to Tailwind utilities, making them accessible in components.
+- **Base Styles (`@layer base`)**: Applies default styles across the UI, such as border and text colors.
+
+### Modifying Colors
+
+To customize the UI, edit the variables in the `:root` and `.dark` sections. For example, to change the primary color to a vibrant teal:
+
+1. Open `web/src/index.css` in your code editor.
+2. Update the `--primary` color in the `:root` section:
+
+   ```css
+   :root {
+     --primary: #14b8a6; /* Vibrant teal */
+     --primary-foreground: #ffffff; /* White text for contrast */
+   }
+   ```
+
+3. Update the `.dark` section for dark mode:
+
+   ```css
+   .dark {
+     --primary: #2dd4bf; /* Lighter teal for dark mode */
+     --primary-foreground: #000000; /* Black text for contrast */
+   }
+   ```
+
+### Available Variables
+
+Key variables you can customize include:
+
+- `--background` and `--foreground`: Overall background and text colors.
+- `--primary` and `--primary-foreground`: Primary color for buttons, highlights, and focus states.
+- `--secondary` and `--secondary-foreground`: Secondary color for less prominent elements.
+- `--muted` and `--muted-foreground`: Muted colors for subtle elements.
+- `--accent` and `--accent-foreground`: Accent colors for decorative elements.
+- `--destructive`: Color for destructive actions (e.g., errors, delete buttons).
+- `--border`, `--input`, `--ring`: Colors for borders, inputs, and focus rings.
+- `--sidebar-*`: Sidebar-specific colors.
+
+See `web/src/index.css` for the full list of variables.
+
+### Creating a Custom Theme
+
+You can define a new theme by adding a custom class with your variables. For example, to create a "customEmerald" theme:
+
+1. Add a new class in `index.css`:
+
+   ```css
+   .customEmerald {
+     --background: #f0fdf4;
+     --foreground: #065f46;
+     --primary: #10b981;
+     --primary-foreground: #ffffff;
+     --secondary: #d1fae5;
+     --secondary-foreground: #065f46;
+   }
+   ```
+
+2. Apply the theme dynamically in your application by adding the `customEmerald` class to the root element (implementation depends on your app's logic).
+
+## Step 4: Build the UI
+
+After customizing the theme, rebuild the UI to apply your changes.
+
+1. From the `web/` directory, run the build command:
+
+   ```bash
+   pnpm build
+   ```
+
+   This generates the updated UI files in `web/build/`.
+
+2. Copy the contents of `web/build/` to your server's `/web/` directory, replacing the existing files:
+
+   ```bash
+   cp -r build/* /path/to/your/server/web/
+   ```
+
+   - **Windows Users**: If using Command Prompt or PowerShell, you can use:
+
+     ```bash
+     xcopy build\* /path/to/your/server/web /E /H /C /I
+     ```
+
+     Replace `/path/to/your/server/web` with the actual path to your server’s `web` directory.
+
+## Step 5: Test and Debug
+
+Restart your FiveM server to apply the updated UI. Test UI elements (e.g., buttons, dialogs, radial menus) in both light and dark modes to ensure your custom theme is applied correctly.
+
+<Alert variant="info" className="mb-4">
+  <AlertTitle>Debugging Tips</AlertTitle>
+  <AlertDescription>
+    If the theme doesn’t apply as expected, use the browser’s developer tools (F12) to inspect CSS variables and ensure they’re applied correctly. Check for errors in the terminal during the build process (e.g., run `pnpm build` again to see error messages), and clear your browser cache or perform a hard refresh (Ctrl+Shift+R). If dependencies are missing, run `pnpm i` again to ensure all packages are installed.
+  </AlertDescription>
+</Alert>
+
+<Alert variant="success" className="mb-4">
+  <AlertTitle>Development Tip</AlertTitle>
+  <AlertDescription>
+    Use `pnpm start` for browser development with hot reloading to see changes in real-time. For in-game development, run `pnpm start:game` to write changes to disk and automatically restart the resource, making it easier to test UI updates directly in FiveM.
+  </AlertDescription>
+</Alert>
+
+## Examples
+
+### Example 1: Applying a Vibrant Teal Theme
+
+Customizes the UI with a vibrant teal primary color.
+
+1. Edit `web/src/index.css`:
+
+   ```css
+   :root {
+     --primary: #14b8a6;
+     --primary-foreground: #ffffff;
+   }
+   .dark {
+     --primary: #2dd4bf;
+     --primary-foreground: #000000;
+   }
+   ```
+
+2. Build and deploy as described in Step 4.
+
+### Example 2: Creating a Dark Purple Theme
+
+Sets the UI to a dark purple theme with contrasting foreground colors.
+
+1. Edit `web/src/index.css`:
+
+   ```css
+   :root {
+     --background: #f5f3ff;
+     --foreground: #4c1d95;
+     --primary: #8b5cf6;
+     --primary-foreground: #ffffff;
+   }
+   .dark {
+     --background: #1e1b4b;
+     --foreground: #e9d5ff;
+     --primary: #a78bfa;
+     --primary-foreground: #000000;
+   }
+   ```
+
+2. Build and deploy as described in Step 4.
+
+## Further Reading
+
+- **Tailwind CSS Documentation**: Learn more about theming at [tailwindcss.com/docs/dark-mode](https://tailwindcss.com/docs/dark-mode).
+- **shadcn/ui Customization**: Explore component customization at [ui.shadcn.com/docs/customization](https://ui.shadcn.com/docs/customization).
+- **qs_lib Repository**: Access the source code at [github.com/emanueldev1/qs_lib](https://github.com/emanueldev1/qs_lib).
+- **pnpm Documentation**: Find more about `pnpm` commands at [pnpm.io](https://pnpm.io/).

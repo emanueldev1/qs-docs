@@ -1,0 +1,466 @@
+---
+title: Customizing the UI (Beginners)
+sidebar_position: 20
+description: Beginner-friendly guide for customizing and building the UI of qs_lib.
+---
+
+# Customizing the UI (Beginners)
+
+This guide is for people who are completely new to working with computers or FiveM servers and want to change the look of the `qs_lib` library’s user interface (UI). The UI includes things like buttons, menus, and text boxes that players see in the game. You’ll learn how to change colors (like making buttons blue or purple) in a simple way, without needing to know how to code. We’ll explain every step carefully, so you can follow along easily and make your server’s UI look the way you want it to!
+
+## What You’ll Be Doing
+
+The `qs_lib` library has a file that controls the colors of its UI. We’ll download this file from the internet, change the colors to ones you like, build the updated UI (which means preparing the files for your server), and then put the updated files on your FiveM server. You don’t need to know coding—we’ll guide you through each step with pictures and simple instructions.
+
+## Step 1: Download the Library Files
+
+The files for `qs_lib` are stored on a website called GitHub, which is a place where people share their projects. We’ll download these files to your computer using a simple button on the GitHub website.
+
+1. Open your web browser (like Google Chrome, Firefox, or Microsoft Edge).
+2. Go to this web address by clicking this link or typing it into your browser: [github.com/emanueldev1/qs_lib](https://github.com/emanueldev1/qs_lib). This is the `qs_lib` project page.
+3. On the GitHub page, look for a green button near the top-right corner that says **Code**. Click on this button.
+4. A small menu will appear. Click on the option that says **Download ZIP**. This will download a file called `qs_lib-main.zip` to your computer.
+   - The file might go to your Downloads folder, or your browser might ask you where to save it. Choose a place you can find easily, like your Desktop.
+5. Find the `qs_lib-main.zip` file on your computer and double-click it to open it. This will "unzip" the file, which means it will turn into a folder named `qs_lib-main`.
+   - **On Windows**: Double-clicking the ZIP file will open it like a folder. Drag the `qs_lib-main` folder inside to your Desktop or another easy-to-find place.
+   - **On Mac**: Double-clicking the ZIP file will create a `qs_lib-main` folder in the same place as the ZIP file (like your Downloads folder). Move this folder to your Desktop if you want.
+
+Now you have a folder called `qs_lib-main` on your computer with all the files we need to change the colors and build the UI.
+
+## Step 2: Install Tools to Build the UI
+
+To change the UI colors and make them work on your server, we need to "build" the UI, which means preparing the files so your server can use them. To do this, we need two tools on your computer: **Node.js** and **pnpm**. Don’t worry if you’ve never heard of these—we’ll explain how to install them step by step.
+
+### Install Node.js
+
+Node.js is a tool that helps us build the UI. It’s free and easy to install.
+
+1. Open your web browser and go to this website: [nodejs.org](https://nodejs.org/).
+2. You’ll see two green buttons. Click the one that says **LTS** (it might say something like "18.x.x LTS" or "20.x.x LTS"). LTS means "Long Term Support," which is the most stable version.
+   - If you’re on Windows, this will download a file like `node-v18.x.x-x64.msi`.
+   - If you’re on a Mac, this will download a file like `node-v18.x.x.pkg`.
+3. Open the downloaded file to start the installation:
+   - **On Windows**: Double-click the `.msi` file. A window will pop up. Click **Next**, then check the box to agree to the terms, and keep clicking **Next** until you see **Install**. Click **Install**, and wait for it to finish. Click **Finish** when done.
+   - **On Mac**: Double-click the `.pkg` file. A window will pop up. Click **Continue**, agree to the terms, and keep clicking **Continue** until you see **Install**. Enter your computer password if asked, and click **Install Software**. Click **Close** when done.
+4. To make sure Node.js installed correctly, we’ll check it:
+   - **On Windows**: Press the Windows key (it looks like a flag on your keyboard), type "cmd", and press Enter to open the Command Prompt.
+   - **On Mac**: Press Command (⌘) + Space, type "Terminal", and press Enter to open the Terminal.
+   - In the Command Prompt or Terminal, type this and press Enter:
+
+     ```bash
+     node --version
+     ```
+
+   - You should see something like `v18.x.x` or `v20.x.x`. If you see a version number, Node.js is installed! If you see an error like "command not found", try installing Node.js again.
+
+### Install pnpm
+
+pnpm is another tool we need to build the UI. It works with Node.js and is also free.
+
+1. Open the Command Prompt (Windows) or Terminal (Mac) again, just like you did to check Node.js.
+2. Type this command and press Enter:
+
+   ```bash
+   npm install -g pnpm
+   ```
+
+   - This might take a minute or two. You’ll see some text scrolling as it installs.
+   - If you see any errors, make sure Node.js installed correctly (check the version again with `node --version`), and try running the command again.
+3. To check if pnpm installed correctly, type this command and press Enter:
+
+   ```bash
+   pnpm --version
+   ```
+
+   - You should see a version number, like `8.x.x`. If you see a version number, pnpm is ready! If you see an error, try installing pnpm again.
+
+## Step 3: Open the Color File with an Editor
+
+Now that we have the tools installed, let’s open the file that controls the colors of the UI. We’ll use a text editor to make changes.
+
+1. Open the `qs_lib-main` folder on your computer.
+2. Inside this folder, find a folder named `web` and double-click to open it.
+3. Inside the `web` folder, find a folder named `src` and double-click to open it.
+4. Inside the `src` folder, you’ll see a file named `index.css`. This is the file that controls the colors!
+   - The full path to the file is: `qs_lib-main/web/src/index.css`.
+5. Open the `index.css` file with a text editor. Here are some free text editors you can use:
+   - **Windows**: Use Notepad (comes with Windows). Right-click `index.css`, choose "Open with", and select Notepad.
+   - **Mac**: Use TextEdit (comes with macOS). Right-click `index.css`, choose "Open with", and select TextEdit.
+   - **Visual Studio Code (VS Code)**: This is a great free editor for both Windows and Mac. It’s easy to use and will help you edit the file. Here’s how to get it:
+     - Go to [code.visualstudio.com](https://code.visualstudio.com/) in your web browser.
+     - Click the big blue **Download** button (it will say "Download for Windows" or "Download for Mac").
+     - **On Windows**: Open the downloaded file (like `VSCodeUserSetup-x64-x.xx.x.exe`), click **Next**, agree to the terms, and keep clicking **Next** until you see **Install**. Click **Install**, then **Finish**.
+     - **On Mac**: Open the downloaded file (like `VSCode-darwin-universal.zip`), and it will unzip into a file called "Visual Studio Code.app". Drag this file to your Applications folder.
+     - Open VS Code: On Windows, search for "Visual Studio Code" in the Start menu and click it. On Mac, go to your Applications folder and double-click "Visual Studio Code.app".
+     - In VS Code, click **File > Open File**, then find and select the `index.css` file in `qs_lib-main/web/src/`, and click **Open**.
+
+Now you should have the `index.css` file open in your text editor, and it will look like a page of text with lots of lines.
+
+## Step 4: Change the Colors
+
+The `index.css` file has a section that lists the colors for the UI. These colors are written in a special code called a "hex code," which looks like `#ffffff` (that’s white). We’ll change these codes to the colors you want, like blue, purple, or green.
+
+### Finding the Colors to Change
+
+Scroll down in the `index.css` file until you find a section that starts with `:root`. It looks like this:
+
+```css
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717b;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #e7000b;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #9f9fa9;
+  --chart-1: #f54a00;
+  --chart-2: #009689;
+  --chart-3: #104e64;
+  --chart-4: #ffba00;
+  --chart-5: #fd9a00;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #09090b;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #9f9fa9;
+}
+```
+
+This section controls the colors when the UI has a bright background (called "light mode"). The lines we’ll change are:
+
+- `--primary`: This is the main color for buttons, highlights, and other important parts of the UI.
+- `--primary-foreground`: This is the color of text on top of the primary color (like the text on a button).
+- `--background`: This is the background color of the entire UI.
+- `--foreground`: This is the main text color in the UI.
+
+### Picking New Colors
+
+To change colors, you need to pick new colors using a "hex code." A hex code starts with a `#` and has 6 letters or numbers, like `#14b8a6` (which is a teal color). Here’s how to find hex codes for colors you like:
+
+1. Open your web browser and go to this website: [htmlcolorcodes.com/color-picker](https://htmlcolorcodes.com/color-picker/). This is a tool that helps you choose colors.
+2. On the website, you’ll see a big color wheel or square. Click around to pick a color you like.
+   - For example, if you want a teal color, click on a teal shade.
+3. Once you pick a color, look for the hex code at the top of the page. It will look like `#14b8a6`. Copy this code by clicking on it (it might say "HEX") and pressing Ctrl+C (or Command+C on a Mac).
+
+### Changing the Colors
+
+Let’s change the main button color to teal and the background to a light gray. Follow these steps carefully:
+
+1. In the `:root` section of `index.css`, find the line that says:
+
+   ```css
+   --primary: #18181b;
+   ```
+
+2. Replace `#18181b` with the hex code for teal, like `#14b8a6`:
+
+   ```css
+   --primary: #14b8a6;
+   ```
+
+3. Now find the line that says:
+
+   ```css
+   --primary-foreground: #fafafa;
+   ```
+
+4. Since teal is a darker color, we want the text on buttons to be white so it’s easy to read. Change `#fafafa` (which is already white) to `#ffffff` (also white, just to be sure):
+
+   ```css
+   --primary-foreground: #ffffff;
+   ```
+
+5. Next, find the line that says:
+
+   ```css
+   --background: #ffffff;
+   ```
+
+6. Replace `#ffffff` (which is white) with a light gray color, like `#f5f5f5`:
+
+   ```css
+   --background: #f5f5f5;
+   ```
+
+7. Find the line that says:
+
+   ```css
+   --foreground: #09090b;
+   ```
+
+8. Since the background is now light gray, we’ll keep the text dark so it’s readable. Change `#09090b` to pure black `#000000`:
+
+   ```css
+   --foreground: #000000;
+   ```
+
+### Changing Colors for Dark Mode
+
+The UI also has a "dark mode" where the background is dark, and the text is light. We need to change the colors for this mode too, so they look good. Scroll down in `index.css` until you find a section that starts with `.dark`. It looks like this:
+
+```css
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --primary: #e4e4e7;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #9f9fa9;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #ff6467;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
+  --ring: #70707b;
+  --chart-1: #1447e6;
+  --chart-2: #00bc7d;
+  --chart-3: #fd9a00;
+  --chart-4: #ad46ff;
+  --chart-5: #ff2056;
+  --sidebar: #18181b;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #1447e6;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #71717b;
+}
+```
+
+Let’s change the button color in dark mode to a lighter teal so it looks good on a dark background:
+
+1. Find the line that says:
+
+   ```css
+   --primary: #e4e4e7;
+   ```
+
+2. Replace `#e4e4e7` with a lighter teal, like `#2dd4bf`:
+
+   ```css
+   --primary: #2dd4bf;
+   ```
+
+3. Find the line that says:
+
+   ```css
+   --primary-foreground: #18181b;
+   ```
+
+4. Since the lighter teal is still a medium-dark color, change the text to black so it’s readable:
+
+   ```css
+   --primary-foreground: #000000;
+   ```
+
+5. Find the line that says:
+
+   ```css
+   --background: #09090b;
+   ```
+
+6. Replace `#09090b` (a very dark color) with a slightly lighter dark color, like `#1f2937` (a dark gray):
+
+   ```css
+   --background: #1f2937;
+   ```
+
+7. The `--foreground` is already `#fafafa` (white), which looks good on a dark background, so you can leave it as is.
+
+8. Save the file by clicking **File > Save** in your text editor, or pressing Ctrl+S (Command+S on a Mac).
+   - In VS Code: Click **File > Save**, or press Ctrl+S (Command+S on a Mac).
+   - In Notepad: Click **File > Save**.
+   - In TextEdit: Click **File > Save**.
+
+## Step 5: Build the UI
+
+Now that you’ve changed the colors, we need to "build" the UI. This means using the tools we installed (Node.js and pnpm) to turn your changes into files that your FiveM server can use. Don’t worry—we’ll go through this step by step.
+
+### Open the Command Prompt or Terminal
+
+We’ll use the Command Prompt (Windows) or Terminal (Mac) to run some commands that build the UI.
+
+1. Open the Command Prompt or Terminal:
+   - **On Windows**: Press the Windows key (it looks like a flag on your keyboard), type "cmd", and press Enter to open the Command Prompt.
+   - **On Mac**: Press Command (⌘) + Space, type "Terminal", and press Enter to open the Terminal.
+2. You need to "navigate" to the `web` folder inside `qs_lib-main`. Here’s how:
+   - First, find out where your `qs_lib-main` folder is. For example, if it’s on your Desktop, the path might be:
+     - **Windows**: `C:\Users\YourName\Desktop\qs_lib-main\web`
+     - **Mac**: `/Users/YourName/Desktop/qs_lib-main/web`
+   - In the Command Prompt or Terminal, type this command to go to the `web` folder, replacing `YourName` with your actual username:
+     - **On Windows**:
+
+       ```bash
+       cd C:\Users\YourName\Desktop\qs_lib-main\web
+       ```
+
+     - **On Mac**:
+
+       ```bash
+       cd /Users/YourName/Desktop/qs_lib-main/web
+       ```
+
+   - Press Enter. If you don’t see any errors, you’re now in the `web` folder.
+
+### Install the Building Tools
+
+We need to install some extra tools that help build the UI. These tools are specific to the `qs_lib` project.
+
+1. In the Command Prompt or Terminal, type this command and press Enter:
+
+   ```bash
+   pnpm i
+   ```
+
+   - This might take a few minutes. You’ll see a lot of text scrolling as it downloads and installs the tools.
+   - If you see an error like "pnpm is not recognized" or "command not found", go back to Step 2 and make sure you installed pnpm correctly by running `pnpm --version`.
+   - If it finishes without errors, you’re ready for the next step!
+
+### Build the UI Files
+
+Now we’ll build the UI, which turns your color changes into files your server can use.
+
+1. In the same Command Prompt or Terminal (make sure you’re still in the `web` folder), type this command and press Enter:
+
+   ```bash
+   pnpm build
+   ```
+
+   - This will take a minute or two. You’ll see more text scrolling as it builds the UI.
+   - If it finishes without errors, the new UI files will be created in a folder called `build` inside the `web` folder (the full path is `qs_lib-main/web/build`).
+   - If you see an error, double-check that you installed Node.js and pnpm correctly (Step 2), and try running `pnpm i` and `pnpm build` again.
+
+## Step 6: Copy the Built Files to Your Server
+
+Now that you’ve built the UI, you need to copy the new files to your FiveM server so players can see your updated colors.
+
+1. Find your FiveM server’s folder on your computer. This is the folder where your server files are stored. It might be called something like `server` or `fxserver`, and it’s where you run your server from.
+2. Inside your server folder, look for a folder named `web`. This is where the UI files are kept.
+3. Open the `qs_lib-main/web/build` folder on your computer. This is where the new UI files were created after building.
+4. Copy everything inside the `build` folder:
+   - **On Windows**: Open the `build` folder, press Ctrl+A to select all files, then press Ctrl+C to copy them.
+   - **On Mac**: Open the `build` folder, press Command+A to select all files, then press Command+C to copy them.
+5. Go to your server’s `web` folder, right-click inside it, and paste the files:
+   - **On Windows**: Right-click and select "Paste" (or press Ctrl+V).
+   - **On Mac**: Right-click and select "Paste" (or press Command+V).
+   - If asked to replace files, choose "Yes" or "Replace". This will update your server with the new UI files.
+
+## Step 7: Restart Your Server to See the Changes
+
+To see your new colors in the game, you need to restart your FiveM server:
+
+1. If your server is running, stop it:
+   - If you see a black window with text (the server window), click inside it and press Ctrl+C, or close the window.
+   - If you’re using a hosting service, use their control panel to stop the server.
+2. Start your server again:
+   - Double-click the file you usually use to start your server (like `run.cmd` or `start.sh`).
+   - Or use your hosting service’s control panel to start it.
+3. Join your server in FiveM by starting the game and connecting to your server.
+4. Open a menu, dialog, or button in the game to see your new colors! For example, if you changed the button color to teal, buttons should now look teal.
+
+## Examples
+
+### Example 1: Making Buttons Teal
+
+Here’s how to change the buttons to a teal color:
+
+1. Open `index.css` as described in Step 3.
+2. In the `:root` section, change these lines:
+
+   ```css
+   --primary: #14b8a6;
+   --primary-foreground: #ffffff;
+   --background: #f5f5f5;
+   --foreground: #000000;
+   ```
+
+3. In the `.dark` section, change these lines:
+
+   ```css
+   --primary: #2dd4bf;
+   --primary-foreground: #000000;
+   --background: #1f2937;
+   ```
+
+4. Save the file.
+5. Build the UI as described in Step 5.
+6. Copy the `build` folder contents to your server’s `web` folder as described in Step 6.
+7. Restart your server as described in Step 7.
+8. When you join your server, buttons should now be teal, and the background will be light gray (or dark gray in dark mode).
+
+### Example 2: Using a Purple Theme
+
+Here’s how to make the UI purple with a light background:
+
+1. Open `index.css` as described in Step 3.
+2. In the `:root` section, change these lines:
+
+   ```css
+   --background: #f5f3ff; /* Light purple background */
+   --foreground: #4c1d95; /* Dark purple text */
+   --primary: #8b5cf6; /* Purple buttons */
+   --primary-foreground: #ffffff; /* White text on buttons */
+   ```
+
+3. In the `.dark` section, change these lines:
+
+   ```css
+   --background: #1e1b4b; /* Very dark purple background */
+   --foreground: #e9d5ff; /* Light purple text */
+   --primary: #a78bfa; /* Lighter purple buttons */
+   --primary-foreground: #000000; /* Black text on buttons */
+   ```
+
+4. Save the file.
+5. Build the UI as described in Step 5.
+6. Copy the `build` folder contents to your server’s `web` folder as described in Step 6.
+7. Restart your server as described in Step 7.
+8. When you join your server, the UI should have a purple theme with a light background in light mode and a dark background in dark mode.
+
+## Tips if Something Goes Wrong
+
+- **Node.js or pnpm Won’t Install**:
+  - If `node --version` or `pnpm --version` doesn’t show a version number, try installing them again by following Step 2 carefully.
+  - Make sure you’re connected to the internet, as the installer needs to download files.
+- **Errors When Running `pnpm i` or `pnpm build`**:
+  - Make sure you’re in the `web` folder (check with `cd C:\Users\YourName\Desktop\qs_lib-main\web` on Windows or `cd /Users/YourName/Desktop/qs_lib-main/web` on Mac).
+  - If you see an error, try running `pnpm i` again, then `pnpm build`.
+  - If it still doesn’t work, try downloading the `qs_lib-main.zip` file again and start over from Step 1.
+- **Colors Don’t Change**:
+  - Make sure you copied the contents of the `build` folder (not the `build` folder itself) to your server’s `web` folder. Open `build`, select all files inside, and copy them.
+  - Double-check that you saved the `index.css` file after making changes.
+- **UI Looks Broken**:
+  - If the UI doesn’t look right, you might have made a typo in `index.css`. Open the file again and check that the lines you changed still look like the examples (e.g., `--primary: #14b8a6;`). Make sure there’s a semicolon (`;`) at the end of each line.
+  - If you’re not sure, download the files again from GitHub and start over.
+
+## More Ideas
+
+You can try different colors to make your UI unique! Here are some hex codes to experiment with:
+
+- Red: `#ff0000`
+- Green: `#00ff00`
+- Pink: `#ff69b4`
+- Blue: `#0000ff`
+
+Just follow the same steps, picking new hex codes and replacing them in the `:root` and `.dark` sections. You can keep using the color picker at [htmlcolorcodes.com/color-picker](https://htmlcolorcodes.com/color-picker/) to find more colors. Have fun making your server’s UI look exactly how you want it to!
