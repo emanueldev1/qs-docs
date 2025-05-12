@@ -8,7 +8,7 @@ description: Documentation for string utilities with qs_lib.
 
 ## lib.string
 
-Enhances the standard Lua string library with additional utility functions.
+Enhances the standard Lua string library with additional utility functions for generating random strings, creating unique identifiers, and manipulating text.
 
 ```lua
 string = lib.string
@@ -19,39 +19,130 @@ string = lib.string
 Generates a random string based on a specified pattern.
 
 ```lua
-string.random(patternStr, strLength)
+string.random(pattern, length)
 ```
 
-- patternStr: `string`
+- pattern: `string`
   - `1` generates a random digit from 0-9.
   - `A` generates a random uppercase letter from A-Z.
   - `a` generates a random lowercase letter from a-z.
-  - `.` generates a random alphanumeric character.
+  - `.` generates a random alphanumeric character (A-Z or 0-9).
   - `^` treats the next character as a literal.
   - Any other character is output as itself.
-- strLength?: `number`
-  - Defines the length of the resulting string, either by padding or trimming.
+- length?: `number`
+  - Optional length to pad or truncate the output string.
 
 **Returns:**
 
 - result: `string`
+  - The generated random string.
 
-### Examples
-
-#### Example 1: Generating a Random License Plate
+#### Example: Generating a Random License Plate
 
 Creates a random license plate with a pattern of three letters followed by three numbers (e.g., "ABC123").
 
-```lua
+```lua title="Shared: Generating a Random License Plate"
 local licensePlate = string.random("AAA111", 6)
 print("Generated license plate:", licensePlate)
 ```
 
-#### Example 2: Creating a Random Password
+### string.uuid
 
-Generates a random 8-character password with a mix of uppercase letters, lowercase letters, and numbers (e.g., "Ab1cD2eF").
+Generates a UUID v4 (random) in the format 8-4-4-4-12, useful for unique identifiers in FiveM resources or player tracking.
 
 ```lua
-local password = string.random("Aa1.Aa1.", 8)
-print("Generated password:", password)
+string.uuid()
+```
+
+**Returns:**
+
+- uuid: `string`
+  - A UUID (e.g., "123e4567-e89b-12d3-a456-426614174000").
+
+#### Example: Generating a UUID
+
+Generates a unique identifier for a resource.
+
+```lua title="Shared: Generating a UUID"
+local uniqueId = string.uuid()
+print("Generated UUID:", uniqueId)
+```
+
+### string.slug
+
+Converts a string to a slug (lowercase, no spaces, hyphens for separators), useful for resource names, file paths, or URLs in FiveM.
+
+```lua
+string.slug(str)
+```
+
+- str: `string`
+  - The input string to convert.
+
+**Returns:**
+
+- slug: `string`
+  - The slugified string (e.g., "Hello World!" -> "hello-world").
+
+#### Example: Creating a Slug
+
+Converts a resource name to a slug for a file path.
+
+```lua title="Shared: Creating a Slug"
+local resourceName = string.slug("My Awesome Resource!")
+print("Slugified resource name:", resourceName) -- Outputs: "my-awesome-resource"
+```
+
+### string.truncate
+
+Truncates a string to a maximum length, appending an optional suffix, useful for UI text or chat messages in FiveM.
+
+```lua
+string.truncate(str, maxLen, suffix)
+```
+
+- str: `string`
+  - The input string to truncate.
+- maxLen: `number`
+  - The maximum length (including suffix).
+- suffix?: `string`
+  - The suffix to append if truncated (defaults to "...").
+
+**Returns:**
+
+- truncated: `string`
+  - The truncated string.
+
+#### Example: Truncating a Chat Message
+
+Truncates a long chat message to fit within a 10-character limit.
+
+```lua title="Shared: Truncating a Chat Message"
+local message = string.truncate("This is a very long message", 10)
+print("Truncated message:", message) -- Outputs: "This is..."
+```
+
+### string.capitalize
+
+Capitalizes the first letter of a string, leaving the rest unchanged, useful for formatting player names or messages in FiveM.
+
+```lua
+string.capitalize(str)
+```
+
+- str: `string`
+  - The input string to capitalize.
+
+**Returns:**
+
+- capitalized: `string`
+  - The capitalized string (e.g., "hello" -> "Hello").
+
+#### Example: Capitalizing a Player Name
+
+Capitalizes the first letter of a player's name.
+
+```lua title="Shared: Capitalizing a Player Name"
+local playerName = string.capitalize("john")
+print("Capitalized name:", playerName) -- Outputs: "John"
 ```
